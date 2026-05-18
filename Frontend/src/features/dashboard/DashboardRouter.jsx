@@ -1,4 +1,4 @@
-import useAuthStore from '../../store/authStore';
+import useAuthStore from '../../store/auth.store';
 import AdminDashboard from './AdminDashboard';
 import DoctorDashboard from './DoctorDashboard';
 import ReceptionistDashboard from './ReceptionistDashboard';
@@ -12,7 +12,7 @@ const ROLE_COMPONENT_MAP = {
 };
 
 function DashboardRouter() {
-  const role = useAuthStore((s) => s.role);
+  const role = useAuthStore((s) => s.user?.role);
   const Component = ROLE_COMPONENT_MAP[role];
 
   if (!Component) {

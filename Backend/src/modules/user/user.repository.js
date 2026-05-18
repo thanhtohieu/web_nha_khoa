@@ -20,11 +20,8 @@ const userRepository = {
   },
 
   async update(id, data) {
-    const [, [updated]] = await User.update(data, {
-      where: { id },
-      returning: true,
-    });
-    return updated || User.findByPk(id);
+    await User.update(data, { where: { id } });
+    return User.findByPk(id);
   },
 
   async findAll({ page, limit, offset, role, isActive, search }) {

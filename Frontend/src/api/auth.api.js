@@ -16,7 +16,7 @@ const authApi = {
 
   /**
    * POST /auth/register
-   * @param {{ name: string, email: string, password: string, confirmPassword: string }} data
+   * @param {{ fullName: string, email: string, phone: string, password: string, gender: string, dateOfBirth: string }} data
    * @returns {{ message: string }}
    */
   register: (data) => axiosClient.post('/auth/register', data),
@@ -37,26 +37,31 @@ const authApi = {
 
   /**
    * POST /auth/reset-password
-   * @param {{ token: string, password: string, confirmPassword: string }} data
+   * @param {{ token: string, newPassword: string }} data
    * @returns {{ message: string }}
    */
   resetPassword: (data) => axiosClient.post('/auth/reset-password', data),
 
   /**
-   * GET /auth/verify-email?token=xxx
-   * @param {string} token - token từ URL query param
+   * POST /auth/verify-email
+   * @param {{ email: string, otp: string }} data
    * @returns {{ message: string }}
    */
-  verifyEmail: (token) =>
-    axiosClient.get('/auth/verify-email', { params: { token } }),
+  verifyEmail: (data) => axiosClient.post('/auth/verify-email', data),
 
   /**
-   * POST /auth/resend-verification
+   * POST /auth/resend-verify
    * @param {{ email: string }} data
    * @returns {{ message: string }}
    */
-  resendVerification: (data) =>
-    axiosClient.post('/auth/resend-verification', data),
+  resendVerification: (data) => axiosClient.post('/auth/resend-verify', data),
+
+  /**
+   * POST /auth/refresh-token
+   * @param {{ refreshToken: string }} data
+   * @returns {{ ACCESS_TOKEN, expiresIn }}
+   */
+  refreshToken: (data) => axiosClient.post('/auth/refresh-token', data),
 
   /**
    * GET /auth/me — lấy thông tin user đang đăng nhập

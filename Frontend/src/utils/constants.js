@@ -1,16 +1,6 @@
-// ─── Auth Token Keys ───────────────────────────────────────────────────────────
+// ─── Auth Token Keys (localStorage) ────────────────────────────────────────────
 export const ACCESS_TOKEN = 'app_access_token';
 export const REFRESH_TOKEN = 'app_refresh_token';
-
-// ─── API ───────────────────────────────────────────────────────────────────────
-export const API_BASE_URL = '/api/v1';
-
-// src/constants/routes.js
-export const ROUTES = {
-  LOGIN: '/auth/login',
-  DASHBOARD: '/admin/dashboard',
-};
-
 
 // ─── HTTP Status ───────────────────────────────────────────────────────────────
 export const HTTP_STATUS = {
@@ -25,4 +15,4 @@ export const HTTP_STATUS = {
 };
 
 // ─── Misc ──────────────────────────────────────────────────────────────────────
-export const APP_NAME = 'MyApp';
+export const APP_NAME = 'HealthCare Portal';

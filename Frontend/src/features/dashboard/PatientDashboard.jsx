@@ -69,16 +69,18 @@ function DashboardPatient() {
     setLoading(true);
     setError(null);
     try {
-      const [statsRes, apptRes, historyRes, prescRes] = await Promise.all([
-        dashboardApi.getPatientStats(),
-        dashboardApi.getPatientUpcomingAppointments(),
-        dashboardApi.getPatientMedicalHistory(),
-        dashboardApi.getPatientPrescriptions(),
-      ]);
-      setStats(statsRes.data);
-      setUpcomingAppointments(apptRes.data?.appointments ?? []);
-      setMedicalHistory(historyRes.data?.history ?? []);
-      setPrescriptions(prescRes.data?.prescriptions ?? []);
+      const res = await dashboardApi.getPatientDashboard();
+      const payload = res.data?.data || {};
+
+      setStats({
+        upcomingAppointments: payload.upcomingAppointments,
+        totalVisits: payload.completedAppointments,
+        activePrescriptions: 0,
+        lastVisitDate: null,
+      });
+      setUpcomingAppointments(payload.upcomingList ?? []);
+      setMedicalHistory([]);
+      setPrescriptions([]);
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || 'Lỗi tải dữ liệu');
     } finally {

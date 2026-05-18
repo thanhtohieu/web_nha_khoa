@@ -1,15 +1,7 @@
+import { ROUTES } from '../routes/constants';
+
 // ─── Roles ─────────────────────────────────────────────────────────────────
-export const ROLES = {
-  ADMIN:        'admin',
-  DOCTOR:       'doctor',
-  RECEPTIONIST: 'receptionist',
-  PATIENT:      'patient',
-};
+export { ROLES } from '../routes/constants';
 
 // ─── Default redirect per role after login ──────────────────────────────────
-export const ROLE_HOME = {
-  [ROLES.ADMIN]:        ROUTES.ADMIN_DASHBOARD,
-  [ROLES.DOCTOR]:       ROUTES.DOCTOR_DASHBOARD,
-  [ROLES.RECEPTIONIST]: ROUTES.RECEPTIONIST_DASHBOARD,
-  [ROLES.PATIENT]:      ROUTES.PATIENT_DASHBOARD,
-};
+export { ROLE_HOME } from '../routes/constants';

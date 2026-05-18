@@ -62,16 +62,17 @@ function DashboardDoctor() {
     setLoading(true);
     setError(null);
     try {
-      const [statsRes, scheduleRes, chartRes, upcomingRes] = await Promise.all([
-        dashboardApi.getDoctorStats(),
-        dashboardApi.getDoctorTodaySchedule(),
-        dashboardApi.getDoctorPatientChart({ period: 'month' }),
-        dashboardApi.getDoctorUpcomingAppointments(),
-      ]);
-      setStats(statsRes.data);
-      setTodaySchedule(scheduleRes.data?.schedule ?? []);
-      setPatientChart(chartRes.data?.chart ?? []);
-      setUpcomingAppointments(upcomingRes.data?.appointments ?? []);
+      const res = await dashboardApi.getDoctorDashboard({ period: 'month' });
+      const payload = res.data?.data || {};
+
+      setStats(payload.stats || {});
+      setTodaySchedule(payload.stats?.todayAppointments ?? []);
+      
+      // Since doctor dashboard doesn't have a patientChart returned currently, leave empty for now
+      setPatientChart([]);
+      
+      // Upcoming appointments are not implemented in doctor stats backend yet.
+      setUpcomingAppointments([]);
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || 'Lỗi tải dữ liệu');
     } finally {

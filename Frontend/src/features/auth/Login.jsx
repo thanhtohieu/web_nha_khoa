@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '../../store/auth.store';
+import useAuthStore from '../../store/auth.store';
 import { ROLE_HOME, ROUTES } from '../../routes/constants';
 import './Login.css';
 
@@ -23,7 +23,7 @@ function validate(fields) {
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isLoading, error, clearError } = useAuthStore();
+  const { login, loading: isLoading, error, clearError } = useAuthStore();
 
   const [fields, setFields] = useState({ email: '', password: '' });
   const [fieldErrors, setFieldErrors] = useState({});

@@ -20,25 +20,33 @@ function useDebounce(value, delay = 400) {
 
 /* ── Row actions ── */
 function UserRow({ user, onView, onToggle, onDelete }) {
+  const fullName = user.full_name || 'Người dùng';
+  const email = user.email || '—';
+  const avatarUrl = user.avatar;
+  const role = user.role || 'patient';
+  const phone = user.phone;
+  const status = user.is_active ? 'active' : 'inactive';
+  const createdAt = user.created_at;
+
   return (
     <tr>
       {/* Avatar + name */}
       <td>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <AvatarPlaceholder name={user.fullName} size="sm" src={user.avatarUrl} />
+          <AvatarPlaceholder name={fullName} size="sm" src={avatarUrl} />
           <div>
-            <div style={{ fontWeight: 500, lineHeight: 1.2 }}>{user.fullName}</div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>{user.email}</div>
+            <div style={{ fontWeight: 500, lineHeight: 1.2 }}>{fullName}</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>{email}</div>
           </div>
         </div>
       </td>
-      <td><RoleBadge role={user.role} /></td>
-      <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem' }}>{user.phone ?? '—'}</td>
+      <td><RoleBadge role={role} /></td>
+      <td style={{ color: 'var(--color-text-secondary)', fontSize: '0.85rem' }}>{phone ?? '—'}</td>
       <td>
-        <StatusBadge status={user.status ?? 'active'} />
+        <StatusBadge status={status} />
       </td>
       <td style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>
-        {user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : '—'}
+        {createdAt ? new Date(createdAt).toLocaleDateString('vi-VN') : '—'}
       </td>
       <td>
         <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
@@ -51,14 +59,14 @@ function UserRow({ user, onView, onToggle, onDelete }) {
           </button>
           <button
             className="btn-icon-only"
-            onClick={() => onToggle(user)}
-            title={user.status === 'active' ? 'Vô hiệu hoá' : 'Kích hoạt'}
+            onClick={() => onToggle({ ...user, fullName, status })}
+            title={status === 'active' ? 'Vô hiệu hoá' : 'Kích hoạt'}
           >
             <Icon name="ban" size={15} />
           </button>
           <button
             className="btn-icon-only"
-            onClick={() => onDelete(user)}
+            onClick={() => onDelete({ ...user, fullName })}
             title="Xoá"
             style={{ color: 'var(--color-error)' }}
           >

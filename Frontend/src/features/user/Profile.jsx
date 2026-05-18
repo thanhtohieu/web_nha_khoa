@@ -314,6 +314,17 @@ export default function Profile() {
     );
   }
 
+  const mappedProfile = profile ? {
+    fullName: profile.full_name || profile.fullName || '',
+    email: profile.email || '',
+    phone: profile.phone || '',
+    address: profile.address || '',
+    dob: profile.date_of_birth || profile.dob || '',
+    gender: profile.gender || '',
+    avatarUrl: profile.avatar || profile.avatarUrl || '',
+    role: profile.role || '',
+  } : null;
+
   return (
     <div>
       {/* Page header */}
@@ -327,22 +338,22 @@ export default function Profile() {
       <div className="profile-layout">
         {/* Left – avatar card */}
         <div className="card profile-avatar-card">
-          <AvatarUpload profile={profile} onUploaded={fetchProfile} />
+          <AvatarUpload profile={mappedProfile} onUploaded={fetchProfile} />
           <div>
-            <div className="profile-name">{profile?.fullName ?? '—'}</div>
+            <div className="profile-name">{mappedProfile?.fullName ?? '—'}</div>
             <div style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', marginTop: 2 }}>
-              {profile?.email}
+              {mappedProfile?.email}
             </div>
           </div>
           <div className="profile-role-badge">
-            <RoleBadge role={profile?.role} />
+            <RoleBadge role={mappedProfile?.role} />
           </div>
           <hr className="divider" style={{ width: '100%', margin: '8px 0' }} />
           <div style={{ width: '100%', textAlign: 'left' }}>
             {[
-              ['Điện thoại', profile?.phone],
-              ['Ngày sinh', profile?.dob],
-              ['Giới tính', profile?.gender === 'male' ? 'Nam' : profile?.gender === 'female' ? 'Nữ' : profile?.gender],
+              ['Điện thoại', mappedProfile?.phone],
+              ['Ngày sinh', mappedProfile?.dob ? new Date(mappedProfile.dob).toLocaleDateString('vi-VN') : '—'],
+              ['Giới tính', mappedProfile?.gender === 'male' ? 'Nam' : mappedProfile?.gender === 'female' ? 'Nữ' : mappedProfile?.gender],
             ].map(([label, value]) => (
               <div key={label} style={{ marginBottom: 10 }}>
                 <div className="detail-field-label">{label}</div>
@@ -360,7 +371,7 @@ export default function Profile() {
               <span className="card-title">Thông tin cá nhân</span>
             </div>
             <div className="card-body">
-              {profile && <ProfileForm profile={profile} onSaved={fetchProfile} />}
+              {mappedProfile && <ProfileForm profile={mappedProfile} onSaved={fetchProfile} />}
             </div>
           </div>
 

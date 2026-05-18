@@ -1,17 +1,25 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import authApi from '../api/auth.api';
-import { ACCESS_TOKEN } from '../utils/constants';
 import {
   setTokens,
   removeTokens,
   getRefreshToken,
   getACCESS_TOKEN,
+  setACCESS_TOKEN,
   extractErrorMessage,
 } from '../utils/helpers';
 
 /**
  * AUTH STORE
+ *
+ * Backend response format (successResponse):
+ *   { success: true, message: '...', data: { ... } }
+ *
+ * Axios response:
+ *   response.data = { success, message, data }
+ *
+ * Nên để lấy payload thực tế: response.data.data
  *
  * State shape:
  *   user          — object | null
@@ -34,12 +42,15 @@ const useAuthStore = create(
       // ── Helpers nội bộ ───────────────────────────────────────────────────────
       _setLoading: (loading) => set({ loading }, false, 'setLoading'),
       _setError: (error) => set({ error }, false, 'setError'),
-      _clearError: () => set({ error: null }, false, 'clearError'),
+      clearError: () => set({ error: null }, false, 'clearError'),
 
       // ── Actions ──────────────────────────────────────────────────────────────
 
       /**
        * Login: gọi API → lưu token → set user vào store
+       *
+       * Backend login response.data:
+       *   { success: true, message: '...', data: { ACCESS_TOKEN, expiresIn, user } }
        */
       login: async (credentials) => {
         const { _setLoading, _setError } = get();
@@ -47,10 +58,19 @@ const useAuthStore = create(
         set({ error: null });
 
         try {
-          const { data } = await authApi.login(credentials);
-          const { ACCESS_TOKEN, refreshToken, user } = data;
+          const response = await authApi.login(credentials);
+          // response.data = { success, message, data: { ACCESS_TOKEN, expiresIn, user } }
+          const payload = response.data.data;
+          const { ACCESS_TOKEN: accessToken, user } = payload;
 
-          setTokens({ ACCESS_TOKEN, refreshToken });
+          // Backend gửi refreshToken qua httpOnly cookie,
+          // nhưng cũng có thể trả trong body nếu cần
+          const refreshToken = payload.refreshToken;
+
+          if (accessToken) {
+            setTokens({ ACCESS_TOKEN: accessToken, refreshToken: refreshToken || '' });
+          }
+
           set({ user, isAuth: true, error: null }, false, 'login/success');
 
           return { success: true, user };
@@ -72,8 +92,8 @@ const useAuthStore = create(
         set({ error: null });
 
         try {
-          const { data } = await authApi.register(formData);
-          return { success: true, message: data.message };
+          const response = await authApi.register(formData);
+          return { success: true, message: response.data.message };
         } catch (err) {
           const message = extractErrorMessage(err, 'Đăng ký thất bại.');
           _setError(message);
@@ -115,8 +135,8 @@ const useAuthStore = create(
         set({ error: null });
 
         try {
-          const { data } = await authApi.forgotPassword({ email });
-          return { success: true, message: data.message };
+          const response = await authApi.forgotPassword({ email });
+          return { success: true, message: response.data.message };
         } catch (err) {
           const message = extractErrorMessage(
             err,
@@ -138,12 +158,11 @@ const useAuthStore = create(
         set({ error: null });
 
         try {
-          const { data } = await authApi.resetPassword({
+          const response = await authApi.resetPassword({
             token,
-            password,
-            confirmPassword,
+            newPassword: password,
           });
-          return { success: true, message: data.message };
+          return { success: true, message: response.data.message };
         } catch (err) {
           const message = extractErrorMessage(
             err,
@@ -157,16 +176,16 @@ const useAuthStore = create(
       },
 
       /**
-       * Verify email bằng token từ URL
+       * Verify email bằng email + OTP
        */
-      verifyEmail: async (token) => {
+      verifyEmail: async ({ email, otp }) => {
         const { _setLoading, _setError } = get();
         _setLoading(true);
         set({ error: null });
 
         try {
-          const { data } = await authApi.verifyEmail(token);
-          return { success: true, message: data.message };
+          const response = await authApi.verifyEmail({ email, otp });
+          return { success: true, message: response.data.message };
         } catch (err) {
           const message = extractErrorMessage(err, 'Xác thực email thất bại.');
           _setError(message);
@@ -185,8 +204,8 @@ const useAuthStore = create(
         set({ error: null });
 
         try {
-          const { data } = await authApi.resendVerification({ email });
-          return { success: true, message: data.message };
+          const response = await authApi.resendVerification({ email });
+          return { success: true, message: response.data.message };
         } catch (err) {
           const message = extractErrorMessage(err, 'Không thể gửi lại email.');
           _setError(message);
@@ -210,9 +229,11 @@ const useAuthStore = create(
         }
 
         try {
-          const { data } = await authApi.getMe();
+          const response = await authApi.getMe();
+          // response.data = { success: true, data: user }
+          const user = response.data.data;
           set(
-            { user: data.user, isAuth: true, initialized: true },
+            { user, isAuth: true, initialized: true },
             false,
             'initialize/success'
           );
@@ -234,7 +255,9 @@ const useAuthStore = create(
   )
 );
 
+// ── Default export + Named export (cả hai đều hỗ trợ) ─────────────────────────
 export default useAuthStore;
+export { useAuthStore };
 
 // ── Named selectors để tránh re-render thừa ───────────────────────────────────
 export const selectUser = (state) => state.user;

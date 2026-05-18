@@ -50,51 +50,34 @@ function DashboardAdmin() {
   const [error, setError] = useState(null);
   const [chartLoading, setChartLoading] = useState(false);
 
-  const fetchStats = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
+    setChartLoading(true);
     setError(null);
     try {
-      const [statsRes, topDoctorsRes, activitiesRes] = await Promise.all([
-        dashboardApi.getAdminStats(),
-        dashboardApi.getAdminTopDoctors(),
-        dashboardApi.getAdminRecentActivities(),
-      ]);
-      setStats(statsRes.data);
-      setTopDoctors(topDoctorsRes.data?.doctors ?? []);
-      setRecentActivities(activitiesRes.data?.activities ?? []);
+      const res = await dashboardApi.getAdminDashboard({ period });
+      const payload = res.data?.data || {};
+      
+      setStats(payload.overview);
+      setTopDoctors(payload.topDoctors ?? []);
+      setRecentActivities(payload.recentAppointments ?? []);
+      
+      setRevenueData(payload.charts?.revenue ?? []);
+      setAppointmentData(payload.charts?.appointments ?? []);
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || 'Lỗi tải dữ liệu');
     } finally {
       setLoading(false);
-    }
-  }, []);
-
-  const fetchChartData = useCallback(async () => {
-    setChartLoading(true);
-    try {
-      const [revenueRes, appointmentRes] = await Promise.all([
-        dashboardApi.getAdminRevenueChart({ period }),
-        dashboardApi.getAdminAppointmentChart({ period }),
-      ]);
-      setRevenueData(revenueRes.data?.chart ?? []);
-      setAppointmentData(appointmentRes.data?.chart ?? []);
-    } catch {
-      // chart errors are non-critical; keep existing data
-    } finally {
       setChartLoading(false);
     }
   }, [period]);
 
   useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
-
-  useEffect(() => {
-    fetchChartData();
-  }, [fetchChartData]);
+    fetchData();
+  }, [fetchData]);
 
   if (loading) return <LoadingSpinner text="Đang tải dashboard Admin..." />;
-  if (error) return <ErrorAlert message={error} onRetry={fetchStats} />;
+  if (error) return <ErrorAlert message={error} onRetry={fetchData} />;
 
   return (
     <div className="dashboard">

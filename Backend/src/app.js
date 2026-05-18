@@ -7,8 +7,8 @@ const morgan = require('morgan');
 const path = require('path');
 
 const { errorHandler, notFoundHandler } = require('./middlewares/error.middleware');
-const { loggerMiddleware } = require('./middlewares/logger.middleware');
-const { globalLimiter } = require('./middlewares/rateLimiter.middleware');
+const loggerMiddleware = require('./middlewares/logger.middleware');
+const { apiLimiter } = require('./middlewares/rateLimiter.middleware');
 const setupAssociations = require('./config/associations');
 const logger = require('./utils/logger');
 
@@ -64,7 +64,7 @@ if (process.env.NODE_ENV !== 'test') {
   }));
 }
 app.use(loggerMiddleware);
-app.use('/api/', globalLimiter);
+app.use('/api/', apiLimiter);
 
 // Health check
 app.get('/api/v1/health', (req, res) => {
@@ -100,3 +100,5 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 module.exports = app;
+
+// Trigger nodemon restart

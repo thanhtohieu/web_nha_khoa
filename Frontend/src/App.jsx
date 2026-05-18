@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
 // Guards
-import { GuestRoute } from './components/guards'
+import { GuestRoute } from './routes/guards';
 
 // Layouts
 import AuthLayout from './layouts/AuthLayout';
@@ -12,24 +12,38 @@ import ReceptionistLayout from './layouts/ReceptionistLayout';
 import PatientLayout from './layouts/PatientLayout';
 
 // Auth pages (eager — small, always needed)
-import Login from './pages/auth/Login';
+import Login from './features/auth/Login';
 
 // Dashboard pages (lazy)
-const AdminDashboard        = lazy(() => import('./pages/admin/AdminDashboard'));
-const DoctorDashboard       = lazy(() => import('./pages/doctor/DoctorDashboard'));
-const ReceptionistDashboard = lazy(() => import('./pages/receptionist/ReceptionistDashboard'));
-const PatientDashboard      = lazy(() => import('./pages/patient/PatientDashboard'));
+const AdminDashboard        = lazy(() => import('./features/dashboard/AdminDashboard'));
+const DoctorDashboard       = lazy(() => import('./features/dashboard/DoctorDashboard'));
+const ReceptionistDashboard = lazy(() => import('./features/dashboard/ReceptionistDashboard'));
+const PatientDashboard      = lazy(() => import('./features/dashboard/PatientDashboard'));
 
 // Error pages
-import { NotFoundPage } from './pages/ErrorPages';
+import { NotFoundPage, UnderConstructionPage } from './features/dashboard/ErrorPages';
 
-// Root redirect — users are redirected based on role by GuestRoute / auth store
-import { useAuthStore } from './store/auth.store';
+// Feature pages (lazy)
+const AdminReports = lazy(() => import('./features/dashboard/AdminReports'));
+const UserList = lazy(() => import('./features/user/UserList'));
+const DoctorList = lazy(() => import('./features/doctor/DoctorList'));
+const DoctorProfile = lazy(() => import('./features/doctor/DoctorProfile'));
+const DoctorSchedule = lazy(() => import('./features/doctor/DoctorSchedule'));
+const AppointmentList = lazy(() => import('./features/appointment/AppointmentList'));
+const MedicalRecordList = lazy(() => import('./features/medical/MedicalRecordList'));
+const PaymentList = lazy(() => import('./features/payment/PaymentList'));
+const Profile = lazy(() => import('./features/user/Profile'));
+
+// Root redirect — users are redirected based on role by auth store
+import useAuthStore from './store/auth.store';
 import { ROLE_HOME } from './routes/constants';
 
 function RootRedirect() {
-  const { isAuthenticated, user } = useAuthStore();
-  if (isAuthenticated && user?.role) {
+  const { isAuth, user } = useAuthStore((s) => ({
+    isAuth: s.isAuth,
+    user: s.user,
+  }));
+  if (isAuth && user?.role) {
     return <Navigate to={ROLE_HOME[user.role] ?? '/auth/login'} replace />;
   }
   return <Navigate to="/auth/login" replace />;
@@ -76,28 +90,44 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
-          {/* Add more admin pages here */}
+          <Route path="users" element={<UserList />} />
+          <Route path="doctors" element={<DoctorList />} />
+          <Route path="reports" element={<AdminReports />} />
+          <Route path="audit" element={<UnderConstructionPage />} />
+          <Route path="settings" element={<UnderConstructionPage />} />
         </Route>
 
         {/* ── Doctor routes ────────────────────────────────────── */}
         <Route path="/doctor" element={<DoctorLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<DoctorDashboard />} />
-          {/* Add more doctor pages here */}
+          <Route path="appointments" element={<AppointmentList />} />
+          <Route path="patients" element={<UserList />} />
+          <Route path="schedule" element={<DoctorSchedule />} />
+          <Route path="records" element={<MedicalRecordList />} />
+          <Route path="profile" element={<DoctorProfile />} />
         </Route>
 
         {/* ── Receptionist routes ──────────────────────────────── */}
         <Route path="/receptionist" element={<ReceptionistLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ReceptionistDashboard />} />
-          {/* Add more receptionist pages here */}
+          <Route path="appointments" element={<AppointmentList />} />
+          <Route path="patients" element={<UserList />} />
+          <Route path="checkin" element={<UnderConstructionPage />} />
+          <Route path="billing" element={<PaymentList />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
 
         {/* ── Patient routes ───────────────────────────────────── */}
         <Route path="/patient" element={<PatientLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<PatientDashboard />} />
-          {/* Add more patient pages here */}
+          <Route path="appointments" element={<AppointmentList />} />
+          <Route path="records" element={<MedicalRecordList />} />
+          <Route path="prescriptions" element={<UnderConstructionPage />} />
+          <Route path="billing" element={<PaymentList />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
 
         {/* 404 */}

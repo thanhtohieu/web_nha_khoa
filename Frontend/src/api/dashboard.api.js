@@ -1,43 +1,17 @@
-import axiosClient from '../utils/axiosClient';
+import axiosClient from './axiosClient';
 
 const dashboardApi = {
   // Admin
-  getAdminStats: () => axiosClient.get('/dashboard/admin/stats'),
-  getAdminRevenueChart: (params) =>
-    axiosClient.get('/dashboard/admin/revenue', { params }),
-  getAdminAppointmentChart: (params) =>
-    axiosClient.get('/dashboard/admin/appointments', { params }),
-  getAdminTopDoctors: () => axiosClient.get('/dashboard/admin/top-doctors'),
-  getAdminRecentActivities: () =>
-    axiosClient.get('/dashboard/admin/recent-activities'),
+  getAdminDashboard: (params) => axiosClient.get('/dashboard/admin', { params }),
 
   // Doctor
-  getDoctorStats: () => axiosClient.get('/dashboard/doctor/stats'),
-  getDoctorTodaySchedule: () =>
-    axiosClient.get('/dashboard/doctor/today-schedule'),
-  getDoctorPatientChart: (params) =>
-    axiosClient.get('/dashboard/doctor/patients', { params }),
-  getDoctorUpcomingAppointments: () =>
-    axiosClient.get('/dashboard/doctor/upcoming-appointments'),
+  getDoctorDashboard: (params) => axiosClient.get('/dashboard/doctor', { params }),
 
   // Receptionist
-  getReceptionistStats: () =>
-    axiosClient.get('/dashboard/receptionist/stats'),
-  getReceptionistTodayAppointments: () =>
-    axiosClient.get('/dashboard/receptionist/today-appointments'),
-  getReceptionistPendingTasks: () =>
-    axiosClient.get('/dashboard/receptionist/pending-tasks'),
-  getReceptionistQueueStatus: () =>
-    axiosClient.get('/dashboard/receptionist/queue'),
+  getReceptionistDashboard: (params) => axiosClient.get('/dashboard/receptionist', { params }),
 
   // Patient
-  getPatientStats: () => axiosClient.get('/dashboard/patient/stats'),
-  getPatientUpcomingAppointments: () =>
-    axiosClient.get('/dashboard/patient/upcoming-appointments'),
-  getPatientMedicalHistory: () =>
-    axiosClient.get('/dashboard/patient/medical-history'),
-  getPatientPrescriptions: () =>
-    axiosClient.get('/dashboard/patient/prescriptions'),
+  getPatientDashboard: (params) => axiosClient.get('/dashboard/patient', { params }),
 };
 
 export default dashboardApi;

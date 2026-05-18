@@ -60,16 +60,20 @@ function DashboardReceptionist() {
     setLoading(true);
     setError(null);
     try {
-      const [statsRes, apptRes, tasksRes, queueRes] = await Promise.all([
-        dashboardApi.getReceptionistStats(),
-        dashboardApi.getReceptionistTodayAppointments(),
-        dashboardApi.getReceptionistPendingTasks(),
-        dashboardApi.getReceptionistQueueStatus(),
-      ]);
-      setStats(statsRes.data);
-      setAppointments(apptRes.data?.appointments ?? []);
-      setTasks(tasksRes.data?.tasks ?? []);
-      setQueue(queueRes.data?.queue ?? []);
+      const res = await dashboardApi.getReceptionistDashboard();
+      const payload = res.data?.data || {};
+
+      setStats({
+        totalToday: payload.today?.total,
+        checkedIn: payload.today?.checkedIn,
+        pendingCheckin: payload.today?.confirmed, // Assuming confirmed are pending checkin
+        currentQueueSize: payload.today?.checkedIn, // Rough estimation for now
+        avgWaitTime: 0,
+        completedToday: payload.today?.completed,
+      });
+      setAppointments(payload.recentAppointments ?? []);
+      setTasks([]);
+      setQueue([]);
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || 'Lỗi tải dữ liệu');
     } finally {
@@ -83,8 +87,8 @@ function DashboardReceptionist() {
     // Auto-refresh queue every 60 seconds
     const interval = setInterval(async () => {
       try {
-        const queueRes = await dashboardApi.getReceptionistQueueStatus();
-        setQueue(queueRes.data?.queue ?? []);
+        const queueRes = await dashboardApi.getReceptionistDashboard();
+        // setQueue(queueRes.data?.data?.queue ?? []); // uncomment when queue is implemented
       } catch {
         // silent fail for auto-refresh
       }

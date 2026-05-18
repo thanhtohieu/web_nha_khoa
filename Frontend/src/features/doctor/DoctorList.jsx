@@ -16,36 +16,38 @@ function useDebounce(val, ms = 400) {
 
 /* ── Doctor card ── */
 function DoctorCard({ doctor, onClick }) {
+  const fullName = doctor.user?.full_name || 'Bác sĩ';
+  const specialtyName = doctor.specialty?.name || 'Đa khoa';
+  const avatarUrl = doctor.user?.avatar;
+  const rating = parseFloat(doctor.rating_avg || 0);
+  const reviewCount = doctor.rating_count || 0;
+  const yearsExp = doctor.experience_years;
+  const isAvailable = doctor.is_available;
+
   return (
     <div className="doctor-card" onClick={onClick} role="button" tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}>
-      <AvatarPlaceholder name={doctor.fullName} size="lg" src={doctor.avatarUrl} />
-      <div className="doctor-card-name">{doctor.fullName}</div>
-      <div className="doctor-card-specialty">{doctor.specialty}</div>
+      <AvatarPlaceholder name={fullName} size="lg" src={avatarUrl} />
+      <div className="doctor-card-name">{fullName}</div>
+      <div className="doctor-card-specialty">{specialtyName}</div>
 
-      {doctor.rating != null && (
+      {reviewCount > 0 && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
-          <Stars value={doctor.rating} />
+          <Stars value={rating} />
           <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
-            ({doctor.reviewCount ?? 0})
+            ({reviewCount})
           </span>
         </div>
       )}
 
       <div className="doctor-card-meta">
         <Icon name="stethoscope" size={13} />
-        {doctor.yearsExp != null ? `${doctor.yearsExp} năm kinh nghiệm` : 'Bác sĩ'}
+        {yearsExp != null ? `${yearsExp} năm kinh nghiệm` : 'Bác sĩ chuyên khoa'}
       </div>
 
-      {doctor.room && (
-        <div className="doctor-card-meta">
-          <Icon name="info" size={13} /> Phòng {doctor.room}
-        </div>
-      )}
-
       <Badge
-        label={doctor.status === 'active' ? 'Đang làm việc' : 'Nghỉ'}
-        type={doctor.status === 'active' ? 'active' : 'inactive'}
+        label={isAvailable ? 'Đang làm việc' : 'Nghỉ'}
+        type={isAvailable ? 'active' : 'inactive'}
       />
 
       <div className="doctor-card-actions">

@@ -3,18 +3,18 @@ import axiosClient from './axiosClient';
 const userApi = {
   // ── Profile ──────────────────────────────────────────────────────────────
   getProfile: () =>
-    axiosClient.get('/users/me'),
+    axiosClient.get('/users/profile'),
 
   updateProfile: (data) =>
-    axiosClient.put('/users/me', data),
+    axiosClient.put('/users/profile', data),
 
   updateAvatar: (formData) =>
-    axiosClient.put('/users/me/avatar', formData, {
+    axiosClient.put('/users/profile/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
 
   changePassword: (data) =>
-    axiosClient.put('/users/me/password', data),
+    axiosClient.put('/auth/change-password', data),
 
   // ── Admin – User list ─────────────────────────────────────────────────────
   getUsers: (params) =>

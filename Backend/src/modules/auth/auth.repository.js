@@ -38,7 +38,7 @@ const authRepository = {
   },
 
   async findUserByEmail(email) {
-    return User.findOne({ where: { email: email.toLowerCase() } });
+    return User.scope('withPassword').findOne({ where: { email: email.toLowerCase() } });
   },
 
   async findUserByPhone(phone) {

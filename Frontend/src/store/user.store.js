@@ -11,7 +11,7 @@ const useUserStore = create((set, get) => ({
     set({ profileLoading: true, profileError: null });
     try {
       const res = await userApi.getProfile();
-      set({ profile: res.data, profileLoading: false });
+      set({ profile: res.data.data ?? res.data, profileLoading: false });
     } catch (err) {
       set({
         profileError: err.response?.data?.message ?? 'Không thể tải hồ sơ.',
@@ -23,8 +23,14 @@ const useUserStore = create((set, get) => ({
   updateProfile: async (data) => {
     set({ profileLoading: true, profileError: null });
     try {
-      const res = await userApi.updateProfile(data);
-      set({ profile: res.data, profileLoading: false });
+      const res = await userApi.updateProfile({
+        fullName: data.fullName,
+        phone: data.phone,
+        gender: data.gender,
+        dateOfBirth: data.dob,
+        address: data.address,
+      });
+      set({ profile: res.data.data ?? res.data, profileLoading: false });
       return { success: true };
     } catch (err) {
       const message = err.response?.data?.message ?? 'Cập nhật thất bại.';

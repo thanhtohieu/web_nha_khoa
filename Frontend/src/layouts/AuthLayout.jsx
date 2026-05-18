@@ -1,41 +1,10 @@
-import { Link } from 'react-router-dom';
-import { APP_NAME } from '../utils/constants';
+import { Outlet } from 'react-router-dom';
 import './AuthLayout.css';
 
 /**
- * AuthLayout — wrapper chung cho tất cả auth pages
- * Props: title, subtitle, children, footerText, footerLink, footerLinkText
+ * AuthLayout — layout wrapper cho auth pages (Login, Register, Forgot, etc.)
+ * Sử dụng <Outlet /> để render child routes
  */
-const AuthLayout = ({
-  title,
-  subtitle,
-  children,
-  footerText,
-  footerLink,
-  footerLinkText,
-}) => {
-  return (
-    <div className="auth-layout">
-      <div className="auth-card">
-        <div className="auth-card__header">
-          <h1 className="auth-card__app-name">{APP_NAME}</h1>
-          <h2 className="auth-card__title">{title}</h2>
-          {subtitle && <p className="auth-card__subtitle">{subtitle}</p>}
-        </div>
-
-        <div className="auth-card__body">{children}</div>
-
-        {footerText && footerLink && (
-          <div className="auth-card__footer">
-            <span>{footerText} </span>
-            <Link to={footerLink}>{footerLinkText}</Link>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
 function AuthLayout() {
   return (
     <div className="auth-layout">

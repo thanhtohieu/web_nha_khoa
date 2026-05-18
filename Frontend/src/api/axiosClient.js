@@ -1,12 +1,16 @@
 import axios from 'axios';
-import { API_BASE_URL, HTTP_STATUS } from '../utils/constants';
-import { ROUTES } from '../utils/constants';
+import { HTTP_STATUS } from '../utils/constants';
+import { ROUTES } from '../routes/constants';
 import {
   getACCESS_TOKEN,
   getRefreshToken,
   setACCESS_TOKEN,
   removeTokens,
 } from '../utils/helpers';
+
+// ─── API Base URL ───────────────────────────────────────────────────────────────
+// Dùng relative path '/api/v1' → Vite proxy sẽ forward sang backend
+const API_BASE_URL = '/api/v1';
 
 // ─── Axios Instance ────────────────────────────────────────────────────────────
 
@@ -69,7 +73,7 @@ axiosClient.interceptors.response.use(
     }
 
     // Nếu chính request refresh token bị 401 → đăng xuất
-    if (originalRequest.url === '/auth/refresh') {
+    if (originalRequest.url === '/auth/refresh-token') {
       redirectToLogin();
       return Promise.reject(error);
     }
@@ -99,11 +103,12 @@ axiosClient.interceptors.response.use(
     }
 
     try {
-      const { data } = await axiosClient.post('/auth/refresh', {
+      const { data } = await axiosClient.post('/auth/refresh-token', {
         refreshToken,
       });
 
-      const newACCESS_TOKEN = data.ACCESS_TOKEN;
+      // Backend trả { success: true, data: { ACCESS_TOKEN, expiresIn } }
+      const newACCESS_TOKEN = data.data.ACCESS_TOKEN;
       setACCESS_TOKEN(newACCESS_TOKEN);
 
       // Cập nhật header cho request gốc và drain queue

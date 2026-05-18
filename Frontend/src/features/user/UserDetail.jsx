@@ -72,6 +72,19 @@ export default function UserDetail() {
 
   if (!user) return null;
 
+  const fullName = user.full_name || 'Người dùng';
+  const avatarUrl = user.avatar;
+  const status = user.is_active ? 'active' : 'inactive';
+  const dob = user.date_of_birth;
+  const createdAt = user.created_at;
+  const updatedAt = user.updated_at;
+  const lastLoginAt = user.last_login_at;
+
+  const bloodType = user.blood_type || user.patientInfo?.bloodType;
+  const allergies = user.allergies || user.patientInfo?.allergies;
+  const emergencyName = user.emergency_contact_name || user.patientInfo?.emergencyContactName;
+  const emergencyPhone = user.emergency_contact_phone || user.patientInfo?.emergencyContactPhone;
+
   return (
     <div>
       {/* Back button */}
@@ -82,12 +95,12 @@ export default function UserDetail() {
       {/* Page header */}
       <div className="page-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <AvatarPlaceholder name={user.fullName} size="lg" src={user.avatarUrl} />
+          <AvatarPlaceholder name={fullName} size="lg" src={avatarUrl} />
           <div>
-            <div className="page-title">{user.fullName}</div>
+            <div className="page-title">{fullName}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
               <RoleBadge role={user.role} />
-              <StatusBadge status={user.status ?? 'active'} />
+              <StatusBadge status={status} />
             </div>
           </div>
         </div>
@@ -104,10 +117,10 @@ export default function UserDetail() {
 
       {/* Personal info */}
       <Section title="Thông tin cá nhân">
-        <DetailField label="Họ và tên"      value={user.fullName} />
+        <DetailField label="Họ và tên"      value={fullName} />
         <DetailField label="Email"           value={user.email} />
         <DetailField label="Số điện thoại"  value={user.phone} />
-        <DetailField label="Ngày sinh"       value={fmtDate(user.dob)} />
+        <DetailField label="Ngày sinh"       value={fmtDate(dob)} />
         <DetailField label="Giới tính"       value={GENDER_LABEL[user.gender] ?? user.gender} />
         <DetailField label="Địa chỉ"         value={user.address} />
       </Section>
@@ -119,11 +132,11 @@ export default function UserDetail() {
           <RoleBadge role={user.role} />
         </DetailField>
         <DetailField label="Trạng thái">
-          <StatusBadge status={user.status ?? 'active'} />
+          <StatusBadge status={status} />
         </DetailField>
-        <DetailField label="Ngày tạo"        value={fmtDateTime(user.createdAt)} />
-        <DetailField label="Cập nhật lần cuối" value={fmtDateTime(user.updatedAt)} />
-        <DetailField label="Đăng nhập gần nhất" value={fmtDateTime(user.lastLoginAt)} />
+        <DetailField label="Ngày tạo"        value={fmtDateTime(createdAt)} />
+        <DetailField label="Cập nhật lần cuối" value={fmtDateTime(updatedAt)} />
+        <DetailField label="Đăng nhập gần nhất" value={fmtDateTime(lastLoginAt)} />
       </Section>
 
       {/* Role-specific extra fields */}
@@ -136,12 +149,12 @@ export default function UserDetail() {
         </Section>
       )}
 
-      {user.role === 'patient' && user.patientInfo && (
+      {user.role === 'patient' && (bloodType || allergies || emergencyName || emergencyPhone) && (
         <Section title="Thông tin bệnh nhân">
-          <DetailField label="Mã bệnh nhân"   value={user.patientInfo.patientCode} />
-          <DetailField label="Nhóm máu"        value={user.patientInfo.bloodType} />
-          <DetailField label="Dị ứng"          value={user.patientInfo.allergies} />
-          <DetailField label="Bảo hiểm y tế"  value={user.patientInfo.insuranceNumber} />
+          <DetailField label="Nhóm máu"        value={bloodType} />
+          <DetailField label="Dị ứng"          value={allergies} />
+          <DetailField label="Người liên hệ khẩn cấp" value={emergencyName} />
+          <DetailField label="SĐT khẩn cấp"    value={emergencyPhone} />
         </Section>
       )}
     </div>

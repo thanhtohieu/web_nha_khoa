@@ -29,11 +29,8 @@ function Header({ collapsed, pageTitle }) {
   const handleLogout = useCallback(async () => {
     setLoggingOut(true);
     try {
-      await authApi.logout();
-    } catch {
-      // Ignore API error — log out locally anyway
+      await logout();
     } finally {
-      logout();
       navigate(ROUTES.LOGIN, { replace: true });
     }
   }, [logout, navigate]);

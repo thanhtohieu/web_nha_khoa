@@ -16,7 +16,7 @@ const RefreshToken = sequelize.define(
       onDelete: 'CASCADE',
     },
     token: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING(500),
       allowNull: false,
     },
     expires_at: {
