@@ -1,0 +1,136 @@
+.checkout-page {
+  max-width: 1100px;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.checkout-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.checkout-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 24px;
+}
+
+/* Method selector */
+.method-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.method-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.method-option:hover {
+  border-color: var(--color-primary, #2563eb);
+  background: #f8faff;
+}
+
+.method-option.selected {
+  border-color: var(--color-primary, #2563eb);
+  background: #eff6ff;
+}
+
+.method-option input {
+  accent-color: var(--color-primary, #2563eb);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.method-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.method-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.method-info strong {
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+.method-desc {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Summary */
+.summary-card {
+  border: 2px solid var(--color-primary, #2563eb) !important;
+}
+
+.summary-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.summary-row.discount {
+  color: #059669;
+}
+
+.summary-row.total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.btn-block {
+  width: 100%;
+  justify-content: center;
+  padding: 12px;
+  font-size: 0.95rem;
+}
+
+/* Alert */
+.alert-info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  color: #1d4ed8;
+  margin-bottom: 16px;
+}
