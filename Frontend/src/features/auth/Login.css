@@ -186,3 +186,81 @@
   animation: spin 0.7s linear infinite;
   flex-shrink: 0;
 }
+
+/* ─── Register specific ──────────────────────────────────── */
+.register-row {
+  display: flex;
+  gap: var(--space-3, 12px);
+}
+
+.register-row > .form-group {
+  flex: 1;
+}
+
+.form-select {
+  appearance: auto;
+  cursor: pointer;
+}
+
+.register-footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #6b7280);
+  margin-top: var(--space-4, 16px);
+}
+
+.register-footer__link {
+  color: var(--color-primary, #2563eb);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-footer__link:hover {
+  text-decoration: underline;
+}
+
+/* Password strength */
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.password-strength__bar {
+  display: flex;
+  gap: 3px;
+  flex: 1;
+}
+
+.password-strength__segment {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+
+.password-strength__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Success state */
+.register-success {
+  text-align: center;
+  padding: var(--space-6, 24px) 0;
+}
+
+.register-success__icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4, 16px);
+  animation: bounceIn 0.5s ease-out;
+}
+
+@keyframes bounceIn {
+  0%   { transform: scale(0.3); opacity: 0; }
+  50%  { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+

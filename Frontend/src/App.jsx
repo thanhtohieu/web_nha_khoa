@@ -13,6 +13,7 @@ import PatientLayout from './layouts/PatientLayout';
 
 // Auth pages (eager — small, always needed)
 import Login from './features/auth/Login';
+const Register = lazy(() => import('./features/auth/Register'));
 
 // Dashboard pages (lazy)
 const AdminDashboard        = lazy(() => import('./features/dashboard/AdminDashboard'));
@@ -25,6 +26,8 @@ import { NotFoundPage, UnderConstructionPage } from './features/dashboard/ErrorP
 
 // Feature pages (lazy)
 const AdminReports = lazy(() => import('./features/dashboard/AdminReports'));
+const AdminAuditLog = lazy(() => import('./features/admin/AdminAuditLog'));
+const AdminSettings = lazy(() => import('./features/admin/AdminSettings'));
 const UserList = lazy(() => import('./features/user/UserList'));
 const DoctorList = lazy(() => import('./features/doctor/DoctorList'));
 const DoctorProfile = lazy(() => import('./features/doctor/DoctorProfile'));
@@ -83,7 +86,7 @@ function App() {
           }
         >
           <Route path="/auth/login" element={<Login />} />
-          {/* Future: register, forgot-password, reset-password */}
+          <Route path="/auth/register" element={<Register />} />
         </Route>
 
         {/* ── Admin routes ─────────────────────────────────────── */}
@@ -93,8 +96,8 @@ function App() {
           <Route path="users" element={<UserList />} />
           <Route path="doctors" element={<DoctorList />} />
           <Route path="reports" element={<AdminReports />} />
-          <Route path="audit" element={<UnderConstructionPage />} />
-          <Route path="settings" element={<UnderConstructionPage />} />
+          <Route path="audit" element={<AdminAuditLog />} />
+          <Route path="settings" element={<AdminSettings />} />
         </Route>
 
         {/* ── Doctor routes ────────────────────────────────────── */}

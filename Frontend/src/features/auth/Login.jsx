@@ -146,6 +146,11 @@ function Login() {
           {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </button>
       </form>
+
+      <div className="register-footer">
+        Chưa có tài khoản?{' '}
+        <Link to={ROUTES.REGISTER} className="register-footer__link">Đăng ký ngay</Link>
+      </div>
     </div>
   );
 }
