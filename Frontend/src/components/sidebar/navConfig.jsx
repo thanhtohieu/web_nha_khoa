@@ -95,11 +95,6 @@ export const NAV_CONFIG = {
       Icon: Icons.Calendar,
     },
     {
-      label: 'Bệnh nhân',
-      path: ROUTES.DOCTOR_PATIENTS,
-      Icon: Icons.Patient,
-    },
-    {
       label: 'Lịch làm việc',
       path: ROUTES.DOCTOR_SCHEDULE,
       Icon: Icons.Clipboard,

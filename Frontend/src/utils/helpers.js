@@ -79,3 +79,19 @@ export const validate = (value, rules) => {
   }
   return null;
 };
+
+export const formatDate = (str) => {
+  if (!str) return '—';
+  return new Date(str).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+};
+
+export const formatDateTime = (str) => {
+  if (!str) return '—';
+  return new Date(str).toLocaleString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};

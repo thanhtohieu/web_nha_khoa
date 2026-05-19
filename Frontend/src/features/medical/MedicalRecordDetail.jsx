@@ -1,24 +1,29 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import medicalApi from '../../api/medical.api';
+import appointmentApi from '../../api/appointment.api';
 import useAuthStore from '../../store/auth.store';
 // removed missing imports
 import { formatDate, formatDateTime, getRecordStatus, validate, validators } from '../../utils/helpers';
 import './MedicalRecordDetail.css';
 
 const EMPTY_FORM = {
+  appointmentId: '',
   diagnosis: '',
   chiefComplaint: '',
   clinicalFindings: '',
   treatment: '',
   followUpDate: '',
   notes: '',
-  status: 'active',
+  status: 'draft',
 };
 
-function buildFormErrors(form) {
+function buildFormErrors(form, isNew) {
   const errors = {};
   const req = validators.required;
+  if (isNew && !form.appointmentId) {
+    errors.appointmentId = 'Vui lòng chọn lịch hẹn khám';
+  }
   if (validate(form.diagnosis, [req])) errors.diagnosis = validate(form.diagnosis, [req]);
   if (validate(form.chiefComplaint, [req])) errors.chiefComplaint = validate(form.chiefComplaint, [req]);
   return errors;
@@ -39,6 +44,29 @@ export default function MedicalRecordDetail() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
+
+  const [appointments, setAppointments] = useState([]);
+  const [loadingAppointments, setLoadingAppointments] = useState(false);
+
+  useEffect(() => {
+    if (isNew) {
+      const fetchAppts = async () => {
+        setLoadingAppointments(true);
+        try {
+          const res = await appointmentApi.getAppointments({ limit: 100 });
+          const payload = res.data?.data ?? res.data ?? res;
+          const list = Array.isArray(payload) ? payload : (payload.items || []);
+          const filtered = list.filter(a => ['checkin', 'confirmed', 'pending', 'completed'].includes(a.status));
+          setAppointments(filtered);
+        } catch (err) {
+          console.error('Failed to fetch appointments:', err);
+        } finally {
+          setLoadingAppointments(false);
+        }
+      };
+      fetchAppts();
+    }
+  }, [isNew]);
 
   const fetchRecord = useCallback(async () => {
     if (isNew) return;
@@ -78,7 +106,7 @@ export default function MedicalRecordDetail() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = buildFormErrors(form);
+    const errors = buildFormErrors(form, isNew);
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
@@ -90,16 +118,19 @@ export default function MedicalRecordDetail() {
       if (isNew) {
         const res = await medicalApi.createRecord(form);
         setSuccessMsg('Tạo bệnh án thành công!');
-        setTimeout(() => navigate(`/medical/${res.data._id}`), 1200);
+        const payload = res.data?.data ?? res.data ?? res;
+        const newId = payload.id || payload._id;
+        setTimeout(() => navigate(`/${user?.role || 'doctor'}/records/${newId}`), 1200);
       } else {
         const res = await medicalApi.updateRecord(id, form);
-        setRecord(res.data);
+        const payload = res.data?.data ?? res.data ?? res;
+        setRecord(payload);
         setEditMode(false);
         setSuccessMsg('Cập nhật thành công!');
         setTimeout(() => setSuccessMsg(''), 3000);
       }
     } catch (err) {
-      setError(err.message);
+      setError(err?.response?.data?.message || err.message || 'Thao tác thất bại');
     } finally {
       setSaving(false);
     }
@@ -113,12 +144,21 @@ export default function MedicalRecordDetail() {
   );
 
   const statusMeta = record ? getRecordStatus(record.status) : null;
+  const selectedAppointment = appointments.find(a => a.id === form.appointmentId);
+  const activePatient = isNew ? selectedAppointment?.patient : record?.patient;
+  const activeDoctor = isNew ? selectedAppointment?.doctor : record?.doctor;
+
+  const patientName = activePatient?.full_name || activePatient?.fullName || '—';
+  const patientDob = activePatient?.date_of_birth || activePatient?.dob || activePatient?.dateOfBirth;
+  const patientGender = activePatient?.gender;
+  const patientPhone = activePatient?.phone || '—';
+  const doctorName = activeDoctor?.user?.full_name || activeDoctor?.user?.fullName || activeDoctor?.fullName || '—';
 
   return (
     <div className="page-container">
       {/* Breadcrumb */}
       <nav className="breadcrumb">
-        <Link to="/medical">Hồ sơ bệnh án</Link>
+        <Link to={`/${user?.role || 'doctor'}/records`}>Hồ sơ bệnh án</Link>
         <span>›</span>
         <span>{isNew ? 'Tạo mới' : (record?.code || id.slice(-8).toUpperCase())}</span>
       </nav>
@@ -174,35 +214,35 @@ export default function MedicalRecordDetail() {
       {successMsg && <div className="success-msg">{successMsg}</div>}
 
       {/* Patient info (read-only) */}
-      {record?.patient && (
+      {activePatient && (
         <div className="info-card">
-          <h2 className="card-title">Thông tin bệnh nhân</h2>
+          <h2 className="card-title">Thông tin bệnh nhân {isNew && "(Từ Lịch Hẹn Được Chọn)"}</h2>
           <div className="info-grid">
             <div className="info-item">
               <span className="info-label">Họ tên</span>
-              <span className="info-value">{record.patient.fullName}</span>
+              <span className="info-value">{patientName}</span>
             </div>
             <div className="info-item">
               <span className="info-label">Ngày sinh</span>
-              <span className="info-value">{formatDate(record.patient.dob)}</span>
+              <span className="info-value">{formatDate(patientDob)}</span>
             </div>
             <div className="info-item">
               <span className="info-label">Giới tính</span>
               <span className="info-value">
-                {record.patient.gender === 'male' ? 'Nam' : record.patient.gender === 'female' ? 'Nữ' : '—'}
+                {patientGender === 'male' ? 'Nam' : patientGender === 'female' ? 'Nữ' : '—'}
               </span>
             </div>
             <div className="info-item">
               <span className="info-label">Điện thoại</span>
-              <span className="info-value">{record.patient.phone}</span>
+              <span className="info-value">{patientPhone}</span>
             </div>
             <div className="info-item">
               <span className="info-label">BHYT</span>
-              <span className="info-value">{record.patient.insuranceCode || '—'}</span>
+              <span className="info-value">{activePatient?.insuranceCode || '—'}</span>
             </div>
             <div className="info-item">
               <span className="info-label">Bác sĩ</span>
-              <span className="info-value">{record.doctor?.fullName || '—'}</span>
+              <span className="info-value">{doctorName}</span>
             </div>
           </div>
         </div>
@@ -211,6 +251,37 @@ export default function MedicalRecordDetail() {
       {/* Medical form */}
       {(editMode || isNew) && isDoctor ? (
         <form className="medical-form" onSubmit={handleSubmit} noValidate>
+          {isNew && (
+            <div className="form-section" style={{ marginBottom: 20 }}>
+              <h2 className="card-title">Chọn Lịch Hẹn</h2>
+              <div className={`form-group ${formErrors.appointmentId ? 'has-error' : ''}`}>
+                <label className="form-label">
+                  Lịch khám của bệnh nhân <span className="required">*</span>
+                </label>
+                {loadingAppointments ? (
+                  <div style={{ fontSize: '0.85rem', color: '#6b7280' }}>Đang tải lịch hẹn...</div>
+                ) : (
+                  <select
+                    name="appointmentId"
+                    className="form-select"
+                    value={form.appointmentId}
+                    onChange={handleChange}
+                  >
+                    <option value="">-- Chọn lịch hẹn khám --</option>
+                    {appointments.map(a => (
+                      <option key={a.id} value={a.id}>
+                        {a.patient?.full_name || a.patient?.fullName} - {formatDate(a.appointment_date || a.date)} ({a.appointment_time || a.slotTime}) - {a.status}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                {formErrors.appointmentId && (
+                  <span className="field-error">{formErrors.appointmentId}</span>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="form-section">
             <h2 className="card-title">Thông tin lâm sàng</h2>
             <div className="form-grid">

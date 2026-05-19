@@ -111,7 +111,7 @@ export default function AppointmentDetail() {
     const { status } = appt;
     const actions = [];
 
-    if (status === 'pending' && (isDoctor || isReceptionist || isAdmin))
+    if (status === 'pending' && (isReceptionist || isAdmin))
       actions.push({ key: 'confirm', label: 'Xác nhận', variant: 'primary' });
 
     if (status === 'confirmed' && (isReceptionist || isAdmin))
@@ -158,21 +158,23 @@ export default function AppointmentDetail() {
       <div className="detail-grid">
         <section className="detail-section">
           <h2>Thông tin cuộc hẹn</h2>
-          <InfoRow label="Bác sĩ" value={appt.doctor?.fullName} />
-          <InfoRow label="Chuyên khoa" value={appt.doctor?.specialization} />
-          <InfoRow label="Ngày khám" value={formatDateTime(appt.date)} />
-          <InfoRow label="Giờ khám" value={appt.slotTime} />
+          <InfoRow label="Bác sĩ" value={appt.doctor?.user?.full_name || appt.doctor?.fullName} />
+          <InfoRow label="Chuyên khoa" value={appt.doctor?.specialty?.name || appt.doctor?.specialization} />
+          <InfoRow label="Ngày khám" value={formatDateTime(appt.appointment_date || appt.date)} />
+          <InfoRow label="Giờ khám" value={appt.appointment_time || appt.slotTime} />
           <InfoRow label="Lý do" value={appt.reason} />
           {appt.notes && <InfoRow label="Ghi chú" value={appt.notes} />}
         </section>
 
-        <section className="detail-section">
-          <h2>Thông tin bệnh nhân</h2>
-          <InfoRow label="Họ tên" value={appt.patient?.fullName} />
-          <InfoRow label="Ngày sinh" value={appt.patient?.dob} />
-          <InfoRow label="Điện thoại" value={appt.patient?.phone} />
-          <InfoRow label="Email" value={appt.patient?.email} />
-        </section>
+        {!isDoctor && (
+          <section className="detail-section">
+            <h2>Thông tin bệnh nhân</h2>
+            <InfoRow label="Họ tên" value={appt.patient?.full_name || appt.patient?.fullName} />
+            <InfoRow label="Ngày sinh" value={appt.patient?.date_of_birth ? new Date(appt.patient.date_of_birth).toLocaleDateString('vi-VN') : appt.patient?.dob} />
+            <InfoRow label="Điện thoại" value={appt.patient?.phone} />
+            <InfoRow label="Email" value={appt.patient?.email} />
+          </section>
+        )}
 
         {(appt.completedAt || appt.cancelledAt || appt.checkinAt) && (
           <section className="detail-section">

@@ -31,7 +31,7 @@ const medicalRepository = {
     return MedicalRecord.findOne({ where: { appointment_id: appointmentId }, include: defaultIncludes });
   },
 
-  async findAll({ offset, limit, patientId, doctorProfileId, startDate, endDate, status }) {
+  async findAll({ offset, limit, patientId, doctorProfileId, startDate, endDate, status, search }) {
     const where = {};
     if (patientId) where.patient_id = patientId;
     if (doctorProfileId) where.doctor_profile_id = doctorProfileId;
@@ -42,9 +42,22 @@ const medicalRepository = {
       if (endDate) where.created_at[Op.lte] = endDate;
     }
 
+    const include = defaultIncludes.map((inc) => {
+      if (inc.as === 'patient' && search) {
+        return {
+          ...inc,
+          where: {
+            full_name: { [Op.like]: `%${search}%` },
+          },
+          required: true, // INNER JOIN to filter records by patient name
+        };
+      }
+      return inc;
+    });
+
     const { count, rows } = await MedicalRecord.findAndCountAll({
       where,
-      include: defaultIncludes,
+      include,
       limit, offset,
       order: [['created_at', 'DESC']],
       distinct: true,
