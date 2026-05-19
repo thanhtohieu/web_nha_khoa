@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useappointment.store from '../../store/appointment.store';
+import useAuth from '../../hooks/useAuth';
+import useAppointmentStore from '../../store/appointment.store';
 import './Booking.css';
 
 const STEPS = ['Chọn bác sĩ', 'Chọn ngày & giờ', 'Xác nhận'];
@@ -34,8 +35,9 @@ const getMaxDateStr = () => {
 
 export default function Booking() {
   const navigate = useNavigate();
+  const { role } = useAuth();
   const { doctors, doctorsLoading, slots, slotsLoading, bookingLoading, bookingError,
-    fetchDoctors, fetchSlots, createAppointment, clearBookingError } = useappointment.store();
+    fetchDoctors, fetchSlots, createAppointment, clearBookingError } = useAppointmentStore();
 
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({ doctorId: '', doctorName: '', date: '', slotId: '', slotTime: '', reason: '', notes: '' });
@@ -92,7 +94,7 @@ export default function Booking() {
       <p>Lịch hẹn với <strong>{form.doctorName}</strong> vào <strong>{form.slotTime}</strong> ngày <strong>{form.date}</strong> đã được ghi nhận.</p>
       <p className="success-note">Chúng tôi sẽ xác nhận lịch hẹn trong thời gian sớm nhất.</p>
       <div className="success-actions">
-        <button className="btn-primary" onClick={() => navigate('/appointments')}>Xem lịch hẹn</button>
+        <button className="btn-primary" onClick={() => navigate(`/${role}/appointments`)}>Xem lịch hẹn</button>
         <button className="btn-ghost" onClick={() => { setStep(0); setForm({ doctorId: '', doctorName: '', date: '', slotId: '', slotTime: '', reason: '', notes: '' }); setSuccessId(null); }}>Đặt lịch khác</button>
       </div>
     </div>

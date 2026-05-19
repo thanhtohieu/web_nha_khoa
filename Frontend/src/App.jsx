@@ -33,8 +33,13 @@ const DoctorList = lazy(() => import('./features/doctor/DoctorList'));
 const DoctorProfile = lazy(() => import('./features/doctor/DoctorProfile'));
 const DoctorSchedule = lazy(() => import('./features/doctor/DoctorSchedule'));
 const AppointmentList = lazy(() => import('./features/appointment/AppointmentList'));
+const AppointmentDetail = lazy(() => import('./features/appointment/AppointmentDetail'));
+const Booking = lazy(() => import('./features/appointment/Booking'));
 const MedicalRecordList = lazy(() => import('./features/medical/MedicalRecordList'));
+const MedicalRecordDetail = lazy(() => import('./features/medical/MedicalRecordDetail'));
+const Prescription = lazy(() => import('./features/medical/Prescription'));
 const PaymentList = lazy(() => import('./features/payment/PaymentList'));
+const PaymentCheckout = lazy(() => import('./features/payment/PaymentCheckout'));
 const Profile = lazy(() => import('./features/user/Profile'));
 
 // Root redirect — users are redirected based on role by auth store
@@ -105,9 +110,12 @@ function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<DoctorDashboard />} />
           <Route path="appointments" element={<AppointmentList />} />
+          <Route path="appointments/:id" element={<AppointmentDetail />} />
           <Route path="patients" element={<UserList />} />
           <Route path="schedule" element={<DoctorSchedule />} />
           <Route path="records" element={<MedicalRecordList />} />
+          <Route path="records/:id" element={<MedicalRecordDetail />} />
+          <Route path="records/:id/prescription" element={<Prescription />} />
           <Route path="profile" element={<DoctorProfile />} />
         </Route>
 
@@ -116,9 +124,11 @@ function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ReceptionistDashboard />} />
           <Route path="appointments" element={<AppointmentList />} />
+          <Route path="appointments/:id" element={<AppointmentDetail />} />
           <Route path="patients" element={<UserList />} />
           <Route path="checkin" element={<UnderConstructionPage />} />
           <Route path="billing" element={<PaymentList />} />
+          <Route path="billing/:id" element={<PaymentCheckout />} />
           <Route path="profile" element={<Profile />} />
         </Route>
 
@@ -127,9 +137,14 @@ function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<PatientDashboard />} />
           <Route path="appointments" element={<AppointmentList />} />
+          <Route path="appointments/booking" element={<Booking />} />
+          <Route path="appointments/:id" element={<AppointmentDetail />} />
           <Route path="records" element={<MedicalRecordList />} />
-          <Route path="prescriptions" element={<UnderConstructionPage />} />
+          <Route path="records/:id" element={<MedicalRecordDetail />} />
+          <Route path="records/:id/prescription" element={<Prescription />} />
+          <Route path="prescriptions" element={<Navigate to="../records" replace />} />
           <Route path="billing" element={<PaymentList />} />
+          <Route path="billing/:id" element={<PaymentCheckout />} />
           <Route path="profile" element={<Profile />} />
         </Route>
 

@@ -1,15 +1,17 @@
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useappointment.store from '../../store/appointment.store';
+import useAppointmentStore from '../../store/appointment.store';
 import useAuth from '../../hooks/useAuth';
 import './AppointmentList.css';
 
 const STATUS_LABELS = {
-  pending:   { label: 'Chờ xác nhận', color: 'status-pending' },
-  confirmed: { label: 'Đã xác nhận',  color: 'status-confirmed' },
-  checkin:   { label: 'Đã check-in',  color: 'status-checkin' },
-  completed: { label: 'Hoàn thành',   color: 'status-completed' },
-  cancelled: { label: 'Đã hủy',       color: 'status-cancelled' },
+  pending:      { label: 'Chờ xác nhận', color: 'status-pending' },
+  confirmed:    { label: 'Đã xác nhận',  color: 'status-confirmed' },
+  checked_in:   { label: 'Đã check-in',  color: 'status-checkin' },
+  in_progress:  { label: 'Đang khám',    color: 'status-inprogress' },
+  completed:    { label: 'Hoàn thành',    color: 'status-completed' },
+  cancelled:    { label: 'Đã hủy',       color: 'status-cancelled' },
+  no_show:      { label: 'Vắng mặt',     color: 'status-noshow' },
 };
 
 const STATUS_OPTIONS = [
@@ -18,14 +20,14 @@ const STATUS_OPTIONS = [
 ];
 
 const ROLE_FILTER_OPTIONS = {
-  patient:      [],
-  doctor:       [{ value: 'confirmed', label: 'Cần xác nhận' }, { value: 'checkin', label: 'Hôm nay' }],
+  patient:      STATUS_OPTIONS,
+  doctor:       STATUS_OPTIONS,
   receptionist: STATUS_OPTIONS,
   admin:        STATUS_OPTIONS,
 };
 
 const formatDate = (str) => {
-  if (!str) return '';
+  if (!str) return '—';
   return new Date(str).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
@@ -33,11 +35,11 @@ export default function AppointmentList() {
   const navigate = useNavigate();
   const { role, isPatient, isDoctor } = useAuth();
   const { appointments, listLoading, listError, listFilters, pagination,
-    fetchAppointments, setListFilters } = useappointment.store();
+    fetchAppointments, setListFilters } = useAppointmentStore();
 
   useEffect(() => {
     fetchAppointments();
-  }, [listFilters]);
+  }, [listFilters.page, listFilters.status, listFilters.search]);
 
   const handleFilterChange = useCallback((key, val) => {
     setListFilters({ [key]: val, page: 1 });
@@ -45,11 +47,9 @@ export default function AppointmentList() {
 
   const handlePageChange = (page) => {
     setListFilters({ page });
-    fetchAppointments();
   };
 
   const filterOptions = ROLE_FILTER_OPTIONS[role] ?? STATUS_OPTIONS;
-  const showStatusFilter = !isPatient;
 
   return (
     <div className="apptlist-container">
@@ -64,22 +64,20 @@ export default function AppointmentList() {
           </p>
         </div>
         {isPatient && (
-          <button className="btn-primary" onClick={() => navigate('/appointments/booking')}>
+          <button className="btn-primary" onClick={() => navigate('/patient/appointments/booking')}>
             + Đặt lịch mới
           </button>
         )}
       </div>
 
       <div className="apptlist-filters">
-        {showStatusFilter && (
-          <select
-            className="filter-select"
-            value={listFilters.status}
-            onChange={(e) => handleFilterChange('status', e.target.value)}
-          >
-            {filterOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
-        )}
+        <select
+          className="filter-select"
+          value={listFilters.status}
+          onChange={(e) => handleFilterChange('status', e.target.value)}
+        >
+          {filterOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
         <input
           className="filter-search"
           placeholder={isDoctor ? 'Tìm bệnh nhân...' : 'Tìm bác sĩ...'}
@@ -104,7 +102,7 @@ export default function AppointmentList() {
               <div className="list-empty">
                 <div className="empty-icon">📅</div>
                 <p>Chưa có lịch hẹn nào</p>
-                {isPatient && <button className="btn-primary" onClick={() => navigate('/appointments/booking')}>Đặt lịch ngay</button>}
+                {isPatient && <button className="btn-primary" onClick={() => navigate('/patient/appointments/booking')}>Đặt lịch ngay</button>}
               </div>
             )
             : (
@@ -124,18 +122,20 @@ export default function AppointmentList() {
                   </thead>
                   <tbody>
                     {appointments.map((appt, idx) => {
-                      const statusMeta = STATUS_LABELS[appt.status] || { label: appt.status, color: '' };
+                      const statusMeta = STATUS_LABELS[appt.status] || { label: appt.status || '—', color: '' };
+                      const patientName = appt.patient?.full_name || appt.patient?.fullName || appt.patient_name || '—';
+                      const doctorName = appt.doctor?.user?.full_name || appt.doctor?.fullName || appt.doctor_name || '—';
                       return (
-                        <tr key={appt.id || appt._id} className="appt-row">
+                        <tr key={appt.id || idx} className="appt-row">
                           <td className="td-idx">{(listFilters.page - 1) * listFilters.limit + idx + 1}</td>
-                          {!isPatient && <td>{appt.patient?.fullName || '—'}</td>}
-                          {!isDoctor && <td>{appt.doctor?.fullName || '—'}</td>}
-                          <td>{formatDate(appt.date)}</td>
-                          <td>{appt.slotTime || '—'}</td>
+                          {!isPatient && <td>{patientName}</td>}
+                          {!isDoctor && <td>{doctorName}</td>}
+                          <td>{formatDate(appt.appointment_date || appt.date)}</td>
+                          <td>{appt.appointment_time || appt.slotTime || '—'}</td>
                           <td><span className={`status-badge ${statusMeta.color}`}>{statusMeta.label}</span></td>
                           <td className="td-reason">{appt.reason || '—'}</td>
                           <td>
-                            <button className="btn-link" onClick={() => navigate(`/appointments/${appt.id || appt._id}`)}>
+                            <button className="btn-link" onClick={() => navigate(`/${role}/appointments/${appt.id}`)}>
                               Chi tiết →
                             </button>
                           </td>

@@ -3,8 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import paymentApi from '../../api/payment.api';
 import medicalApi from '../../api/medical.api';
 import useAuthStore from '../../store/auth.store';
-import Spinner from '../../components/common/Spinner';
-import ErrorMessage from '../../components/common/ErrorMessage';
+// removed missing imports
 import { formatCurrency, formatDate, validate, validators } from '../../utils/helpers';
 import './PaymentCheckout.css';
 
@@ -86,7 +85,12 @@ export default function PaymentCheckout() {
     }
   };
 
-  if (loading) return <Spinner text="Đang tải thông tin..." />;
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px 0', gap: 12, color: '#6b7280' }}>
+      <div style={{ width: 24, height: 24, border: '2.5px solid #e5e7eb', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+      Đang tải thông tin...
+    </div>
+  );
 
   if (!recordId) {
     return (
@@ -112,7 +116,11 @@ export default function PaymentCheckout() {
 
       <h1 className="page-title" style={{ marginBottom: 28 }}>Thanh toán</h1>
 
-      {error && <ErrorMessage message={error} />}
+      {error && (
+        <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '12px 16px', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#b91c1c', fontSize: '0.88rem' }}>
+          <span>⚠️ {error}</span>
+        </div>
+      )}
 
       <div className="checkout-layout">
         {/* LEFT: Invoice summary */}

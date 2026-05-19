@@ -2,9 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import medicalApi from '../../api/medical.api';
 import useAuthStore from '../../store/auth.store';
-import Spinner from '../../components/common/Spinner';
-import ErrorMessage from '../../components/common/ErrorMessage';
-import StatusBadge from '../../components/common/StatusBadge';
+// removed missing imports
 import { formatDate, formatDateTime, getRecordStatus, validate, validators } from '../../utils/helpers';
 import './MedicalRecordDetail.css';
 
@@ -107,7 +105,12 @@ export default function MedicalRecordDetail() {
     }
   };
 
-  if (loading) return <Spinner text="Đang tải bệnh án..." />;
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px 0', gap: 12, color: '#6b7280' }}>
+      <div style={{ width: 24, height: 24, border: '2.5px solid #e5e7eb', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+      Đang tải bệnh án...
+    </div>
+  );
 
   const statusMeta = record ? getRecordStatus(record.status) : null;
 
@@ -127,7 +130,9 @@ export default function MedicalRecordDetail() {
           </h1>
           {record && (
             <div className="detail-meta">
-              <StatusBadge label={statusMeta.label} color={statusMeta.color} />
+              <span style={{ display: 'inline-block', padding: '4px 12px', borderRadius: 99, fontSize: '0.8rem', fontWeight: 600, color: statusMeta.color, background: statusMeta.bg || '#f3f4f6' }}>
+                {statusMeta.label}
+              </span>
               <span className="meta-sep">•</span>
               <span>Ngày khám: {formatDate(record.visitDate)}</span>
               <span className="meta-sep">•</span>
@@ -160,7 +165,12 @@ export default function MedicalRecordDetail() {
         </div>
       </div>
 
-      {error && <ErrorMessage message={error} onRetry={isNew ? undefined : fetchRecord} />}
+      {error && (
+        <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '12px 16px', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#b91c1c', fontSize: '0.88rem' }}>
+          <span>⚠️ {error}</span>
+          {!isNew && <button style={{ border: '1px solid currentColor', borderRadius: 6, padding: '4px 12px', background: 'transparent', color: 'inherit', cursor: 'pointer' }} onClick={fetchRecord}>Thử lại</button>}
+        </div>
+      )}
       {successMsg && <div className="success-msg">{successMsg}</div>}
 
       {/* Patient info (read-only) */}

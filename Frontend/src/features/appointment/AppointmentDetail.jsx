@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import useappointment.store from '../../store/appointment.store';
+import useAppointmentStore from '../../store/appointment.store';
 import useAuth from '../../hooks/useAuth';
 import './AppointmentDetail.css';
 
@@ -82,7 +82,7 @@ export default function AppointmentDetail() {
   const navigate = useNavigate();
   const { role, isDoctor, isPatient, isReceptionist, isAdmin } = useAuth();
   const { currentAppointment: appt, detailLoading, detailError,
-    fetchAppointmentById, performAction, clearDetail } = useappointment.store();
+    fetchAppointmentById, performAction, clearDetail } = useAppointmentStore();
 
   const [modal, setModal] = useState(null); // 'cancel' | 'complete'
   const [actionError, setActionError] = useState('');

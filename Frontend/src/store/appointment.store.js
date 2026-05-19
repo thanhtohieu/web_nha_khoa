@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import appointmentApi from '../api/appointment.api';
 
-const useappointment.store = create((set, get) => ({
+const useAppointmentStore = create((set, get) => ({
   // List
   appointments: [],
   listLoading: false,
   listError: null,
-  listFilters: { status: '', role: '', page: 1, limit: 10 },
+  listFilters: { status: '', role: '', page: 1, limit: 10, search: '' },
   pagination: { total: 0, page: 1, totalPages: 1 },
 
   // Detail
@@ -24,19 +24,24 @@ const useappointment.store = create((set, get) => ({
 
   // Actions
   setListFilters: (filters) =>
-    set((s) => ({ listFilters: { ...s.listFilters, ...filters, page: 1 } })),
+    set((s) => ({ listFilters: { ...s.listFilters, ...filters } })),
 
   fetchAppointments: async () => {
     set({ listLoading: true, listError: null });
     try {
       const res = await appointmentApi.getAppointments(get().listFilters);
+      const payload = res.data;
+      const items = payload?.data?.items ?? payload?.data ?? payload ?? [];
+      const total = payload?.data?.total ?? payload?.total ?? (Array.isArray(items) ? items.length : 0);
+      const page = get().listFilters.page;
+      const limit = get().listFilters.limit;
       set({
-        appointments: res.data || res,
-        pagination: res.pagination || { total: res.length, page: 1, totalPages: 1 },
+        appointments: Array.isArray(items) ? items : [],
+        pagination: { total, page, totalPages: Math.ceil(total / limit) || 1 },
         listLoading: false,
       });
     } catch (err) {
-      set({ listLoading: false, listError: err.message || 'Không thể tải danh sách lịch hẹn' });
+      set({ listLoading: false, listError: err?.response?.data?.message || err.message || 'Không thể tải danh sách lịch hẹn' });
     }
   },
 
@@ -44,7 +49,7 @@ const useappointment.store = create((set, get) => ({
     set({ detailLoading: true, detailError: null });
     try {
       const res = await appointmentApi.getAppointmentById(id);
-      set({ currentAppointment: res.data || res, detailLoading: false });
+      set({ currentAppointment: res.data?.data ?? res.data ?? res, detailLoading: false });
     } catch (err) {
       set({ detailLoading: false, detailError: err.message || 'Không thể tải thông tin lịch hẹn' });
     }
@@ -54,7 +59,16 @@ const useappointment.store = create((set, get) => ({
     set({ doctorsLoading: true });
     try {
       const res = await appointmentApi.getDoctors(params);
-      set({ doctors: res.data || res, doctorsLoading: false });
+      const payload = res.data?.data ?? res.data ?? res;
+      const items = Array.isArray(payload) ? payload : (payload?.items ?? []);
+      const mappedDoctors = items.map(d => ({
+        ...d,
+        id: d.id || d._id,
+        fullName: d.user?.full_name || d.fullName || d.user?.fullName,
+        specialization: d.specialty?.name || d.specialization,
+        experience: d.experience_years || d.experience,
+      }));
+      set({ doctors: mappedDoctors, doctorsLoading: false });
     } catch {
       set({ doctorsLoading: false });
     }
@@ -64,7 +78,14 @@ const useappointment.store = create((set, get) => ({
     set({ slotsLoading: true, slots: [] });
     try {
       const res = await appointmentApi.getDoctorSlots(doctorId, date);
-      set({ slots: res.data || res, slotsLoading: false });
+      const payload = res.data?.data ?? res.data ?? res;
+      const slotItems = Array.isArray(payload) ? payload : (payload?.items ?? []);
+      const mappedSlots = slotItems.map(s => ({
+        id: s.id || s._id || s.time,
+        time: s.time,
+        available: !s.isBooked && !s.is_booked
+      }));
+      set({ slots: mappedSlots, slotsLoading: false });
     } catch {
       set({ slotsLoading: false });
     }
@@ -73,11 +94,18 @@ const useappointment.store = create((set, get) => ({
   createAppointment: async (payload) => {
     set({ bookingLoading: true, bookingError: null });
     try {
-      const res = await appointmentApi.createAppointment(payload);
+      const mappedPayload = {
+        doctorProfileId: payload.doctorId,
+        appointmentDate: payload.date,
+        appointmentTime: payload.slotId || payload.time || payload.slotTime,
+        reason: payload.reason,
+        notes: payload.notes
+      };
+      const res = await appointmentApi.createAppointment(mappedPayload);
       set({ bookingLoading: false });
-      return { success: true, data: res.data || res };
+      return { success: true, data: res.data?.data ?? res.data ?? res };
     } catch (err) {
-      set({ bookingLoading: false, bookingError: err.message || 'Đặt lịch thất bại' });
+      set({ bookingLoading: false, bookingError: err?.response?.data?.message || err?.response?.data?.errors?.[0]?.msg || err.message || 'Đặt lịch thất bại' });
       return { success: false, error: err.message };
     }
   },
@@ -93,7 +121,7 @@ const useappointment.store = create((set, get) => ({
         case 'complete': res = await appointmentApi.completeAppointment(id, extra.notes); break;
         default: throw new Error('Unknown action');
       }
-      set({ currentAppointment: res.data || res, detailLoading: false });
+      set({ currentAppointment: res.data?.data ?? res.data ?? res, detailLoading: false });
       return { success: true };
     } catch (err) {
       set({ detailLoading: false });
@@ -105,4 +133,4 @@ const useappointment.store = create((set, get) => ({
   clearDetail: () => set({ currentAppointment: null, detailError: null }),
 }));
 
-export default useappointment.store;
+export default useAppointmentStore;
