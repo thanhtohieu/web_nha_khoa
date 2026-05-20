@@ -59,6 +59,13 @@ const paymentController = {
       return successResponse(res, { message: 'Hoàn tiền thành công', data });
     } catch (error) { next(error); }
   },
+
+  async verifyVnpay(req, res, next) {
+    try {
+      const result = await paymentService.handleVnpayReturn(req.query);
+      return successResponse(res, { data: result });
+    } catch (error) { next(error); }
+  },
 };
 
 module.exports = paymentController;

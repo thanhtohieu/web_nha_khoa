@@ -5,6 +5,7 @@ const { isAdmin, isAdminOrReceptionist } = require('../../middlewares/role.middl
 
 // VNPay callback - không cần auth (VNPay gọi trực tiếp)
 router.get('/vnpay-return', paymentController.vnpayReturn);
+router.get('/vnpay/return', paymentController.verifyVnpay);
 
 router.use(authenticate);
 

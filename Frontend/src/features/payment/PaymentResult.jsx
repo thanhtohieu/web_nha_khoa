@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import paymentApi from '../../api/payment.api';
+import useAuthStore from '../../store/auth.store';
 import Spinner from '../../components/common/Spinner';
 import { formatCurrency, formatDateTime } from '../../utils/helpers';
 import './PaymentResult.css';
@@ -13,6 +14,7 @@ import './PaymentResult.css';
 export default function PaymentResult() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
 
   const [payment, setPayment] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -152,20 +154,20 @@ export default function PaymentResult() {
 
           {!isPaid && payment && (
             <Link
-              to={`/payment/checkout?recordId=${payment.medicalRecord?._id || payment.record}`}
+              to={`/${user?.role === 'patient' ? 'patient' : 'receptionist'}/billing/${payment.medicalRecord?._id || payment.record}?recordId=${payment.medicalRecord?._id || payment.record}`}
               className="btn btn-primary"
             >
               Thử lại
             </Link>
           )}
 
-          <Link to="/payment" className="btn btn-ghost">
+          <Link to={`/${user?.role === 'patient' ? 'patient' : 'receptionist'}/billing`} className="btn btn-ghost">
             Danh sách thanh toán
           </Link>
 
           {payment?.medicalRecord && (
             <Link
-              to={`/medical/${payment.medicalRecord._id || payment.medicalRecord}`}
+              to={`/${user?.role === 'patient' ? 'patient' : 'doctor'}/records/${payment.medicalRecord._id || payment.medicalRecord}`}
               className="btn btn-ghost"
             >
               Xem bệnh án

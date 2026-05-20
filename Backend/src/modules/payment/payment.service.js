@@ -13,10 +13,10 @@ const logger = require('../../utils/logger');
 // VNPAY HELPERS
 // ========================
 const vnpayConfig = {
-  tmnCode: process.env.VNPAY_TMN_CODE || 'DEMO',
-  hashSecret: process.env.VNPAY_HASH_SECRET || 'DEMOSECRET',
+  tmnCode: process.env.VNPAY_TMN_CODE || 'F5DZKW5R',
+  hashSecret: process.env.VNPAY_HASH_SECRET || 'FNIKCLMXJHBOBDODGDNMRISRHXSFRHDQ',
   url: process.env.VNPAY_URL || 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
-  returnUrl: `${process.env.CLIENT_URL}/payment/vnpay-return`,
+  returnUrl: `${process.env.CLIENT_URL}/payment/result`,
   apiUrl: 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction',
 };
 
@@ -28,9 +28,21 @@ const sortObject = (obj) => {
 
 const createVnpayUrl = (transactionCode, amount, orderInfo, ipAddr) => {
   const date = new Date();
-  const createDate = date.toISOString().replace(/[-:T.Z]/g, '').slice(0, 14);
-  const expireDate = new Date(date.getTime() + 15 * 60 * 1000)
-    .toISOString().replace(/[-:T.Z]/g, '').slice(0, 14);
+  
+  // Format GMT+7 date (Vietnam Time)
+  const formatVNTime = (d) => {
+    const vnTime = new Date(d.getTime() + 7 * 60 * 60 * 1000);
+    return vnTime.toISOString().replace(/[-:T.Z]/g, '').slice(0, 14);
+  };
+  
+  const createDate = formatVNTime(date);
+  const expireDate = formatVNTime(new Date(date.getTime() + 15 * 60 * 1000));
+  
+  // Sửa lỗi IPv6 loopback (::1) sang IPv4 hợp lệ cho VNPay
+  let ipv4 = ipAddr || '127.0.0.1';
+  if (ipv4 === '::1' || ipv4.includes('::ffff:')) {
+    ipv4 = '127.0.0.1';
+  }
 
   let params = {
     vnp_Version: '2.1.0',
@@ -43,17 +55,17 @@ const createVnpayUrl = (transactionCode, amount, orderInfo, ipAddr) => {
     vnp_OrderType: 'other',
     vnp_Amount: Math.round(amount) * 100,
     vnp_ReturnUrl: vnpayConfig.returnUrl,
-    vnp_IpAddr: ipAddr || '127.0.0.1',
+    vnp_IpAddr: ipv4,
     vnp_CreateDate: createDate,
     vnp_ExpireDate: expireDate,
   };
 
   params = sortObject(params);
-  const signData = querystring.stringify(params, { encode: false });
+  const signData = querystring.stringify(params, { encode: true });
   const hmac = crypto.createHmac('sha512', vnpayConfig.hashSecret);
   params.vnp_SecureHash = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
 
-  return `${vnpayConfig.url}?${querystring.stringify(params, { encode: false })}`;
+  return `${vnpayConfig.url}?${querystring.stringify(params, { encode: true })}`;
 };
 
 const verifyVnpayReturn = (query) => {
@@ -63,7 +75,7 @@ const verifyVnpayReturn = (query) => {
   delete params.vnp_SecureHashType;
 
   const sorted = sortObject(params);
-  const signData = querystring.stringify(sorted, { encode: false });
+  const signData = querystring.stringify(sorted, { encode: true });
   const hmac = crypto.createHmac('sha512', vnpayConfig.hashSecret);
   const checkHash = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
 

@@ -12,6 +12,8 @@ const paymentApi = {
    * @param {Object} data - { appointmentId, method: 'cash' | 'vnpay', returnUrl? }
    */
   createPayment: (data) => axiosClient.post('/payments', data),
+  createCashPayment: (data) => axiosClient.post('/payments/cash', data),
+  createVnpayPayment: (data) => axiosClient.post('/payments/vnpay', data),
 
   /**
    * Process cash payment (doctor/receptionist confirms)

@@ -17,11 +17,12 @@ export default function PaymentCheckout() {
   const [searchParams] = useSearchParams();
   const recordId = searchParams.get('recordId');
   const { user } = useAuthStore();
-  const canCheckout = ['doctor', 'receptionist', 'admin'].includes(user?.role);
+  const isPatient = user?.role === 'patient';
+  const isStaff = ['doctor', 'receptionist', 'admin'].includes(user?.role);
 
   const [record, setRecord] = useState(null);
   const [existingPayment, setExistingPayment] = useState(null);
-  const [method, setMethod] = useState('cash');
+  const [method, setMethod] = useState(isPatient ? 'vnpay' : 'cash');
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState(null);
@@ -32,14 +33,48 @@ export default function PaymentCheckout() {
     setError(null);
     try {
       const res = await medicalApi.getRecordById(recordId);
-      setRecord(res.data);
+      const recordData = res.data?.data || res.data;
+
+      if (recordData) {
+        const consultationFee = parseFloat(recordData.appointment?.doctor?.consultation_fee || 0);
+        const servicePrice = parseFloat(recordData.appointment?.service?.price || 0);
+        const invoiceItems = [];
+        if (recordData.appointment?.service) {
+          invoiceItems.push({
+            name: recordData.appointment.service.name,
+            price: servicePrice,
+            quantity: 1,
+          });
+        }
+
+        const mappedRecord = {
+          ...recordData,
+          patient: {
+            fullName: recordData.patient?.full_name || recordData.patient?.fullName || '—',
+          },
+          doctor: {
+            fullName: (recordData.doctor?.user?.full_name || recordData.doctor?.user?.fullName)
+              ? `${recordData.doctor?.title || 'BS.'} ${recordData.doctor?.user?.full_name || recordData.doctor?.user?.fullName}`
+              : '—',
+          },
+          visitDate: recordData.appointment?.appointment_date || recordData.created_at,
+          consultationFee,
+          medicineFee: 0,
+          discount: 0,
+          totalAmount: consultationFee + servicePrice,
+          invoiceItems,
+        };
+        setRecord(mappedRecord);
+      } else {
+        setRecord(null);
+      }
 
       // Check if payment already exists
       const pRes = await paymentApi.getPayments({ recordId, limit: 1 });
-      const found = pRes.data?.payments?.[0];
+      const found = pRes.data?.data?.[0];
       if (found) setExistingPayment(found);
     } catch (err) {
-      setError(err.message);
+      setError(err?.response?.data?.message || err.message || 'Không thể tải thông tin bệnh án');
     } finally {
       setLoading(false);
     }
@@ -52,35 +87,39 @@ export default function PaymentCheckout() {
       setError('Thiếu mã bệnh án');
       return;
     }
+    const appointmentId = record?.appointment_id || record?.appointment?.id;
+    if (!appointmentId) {
+      setError('Không tìm thấy thông tin lịch hẹn để thực hiện thanh toán.');
+      return;
+    }
+
     setProcessing(true);
     setError(null);
 
     try {
-      // 1. Create payment invoice
-      const res = await paymentApi.createPayment({
-        appointmentId: record?.appointment,
-        recordId,
-        method,
-        returnUrl: `${window.location.origin}/payment/result`,
-      });
-      const payment = res.data;
-
       if (method === 'cash') {
         // Confirm cash immediately (receptionist/doctor)
-        await paymentApi.confirmCash(payment._id);
-        navigate(`/payment/result?paymentId=${payment._id}&status=paid`);
+        const res = await paymentApi.createCashPayment({
+          appointmentId,
+          notes: 'Thanh toán tiền mặt tại quầy',
+        });
+        const payment = res.data?.data || res.data;
+        const paymentIdVal = payment?.id || payment?._id;
+        navigate(`/payment/result?paymentId=${paymentIdVal}&status=paid`);
       } else {
-        // VNPay: redirect to payment gateway
-        const vnRes = await paymentApi.initiateVnpay(payment._id);
-        const { payUrl } = vnRes.data;
-        if (payUrl) {
-          window.location.href = payUrl;
+        // VNPay: create payment, get URL, and redirect
+        const res = await paymentApi.createVnpayPayment({
+          appointmentId,
+        });
+        const { paymentUrl } = res.data?.data || res.data;
+        if (paymentUrl) {
+          window.location.href = paymentUrl;
         } else {
           throw new Error('Không lấy được URL thanh toán VNPay');
         }
       }
     } catch (err) {
-      setError(err.message);
+      setError(err?.response?.data?.message || err.message || 'Lỗi xử lý thanh toán');
       setProcessing(false);
     }
   };
@@ -128,8 +167,8 @@ export default function PaymentCheckout() {
           {existingPayment && (
             <div className="alert-info">
               Bệnh án này đã có hoá đơn{' '}
-              <Link to={`/payment/${existingPayment._id}`} className="link">
-                #{existingPayment.code || existingPayment._id.slice(-8).toUpperCase()}
+              <Link to={`/payment/${existingPayment.id}`} className="link">
+                #{existingPayment.code || existingPayment.id?.slice(-8).toUpperCase() || ''}
               </Link>
               {' '}({existingPayment.status}). Bạn có muốn tạo hoá đơn mới?
             </div>
@@ -205,7 +244,7 @@ export default function PaymentCheckout() {
                     value={m.id}
                     checked={method === m.id}
                     onChange={() => setMethod(m.id)}
-                    disabled={!canCheckout}
+                    disabled={m.id === 'cash' && isPatient}
                   />
                   <span className="method-icon">{m.icon}</span>
                   <span className="method-info">
@@ -243,7 +282,7 @@ export default function PaymentCheckout() {
               </div>
             </div>
 
-            {canCheckout ? (
+            {isStaff || (isPatient && method === 'vnpay') ? (
               <button
                 className="btn btn-primary btn-block"
                 onClick={handleCheckout}
@@ -257,7 +296,9 @@ export default function PaymentCheckout() {
               </button>
             ) : (
               <div className="alert-info">
-                Chỉ nhân viên y tế mới có thể thực hiện thanh toán.
+                {isPatient && method === 'cash'
+                  ? 'Vui lòng chọn hình thức VNPay để thanh toán trực tuyến, hoặc đến quầy lễ tân để thanh toán tiền mặt.'
+                  : 'Chỉ nhân viên y tế mới có thể thực hiện thanh toán.'}
               </div>
             )}
           </div>

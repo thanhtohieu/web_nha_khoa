@@ -40,6 +40,7 @@ const MedicalRecordDetail = lazy(() => import('./features/medical/MedicalRecordD
 const Prescription = lazy(() => import('./features/medical/Prescription'));
 const PaymentList = lazy(() => import('./features/payment/PaymentList'));
 const PaymentCheckout = lazy(() => import('./features/payment/PaymentCheckout'));
+const PaymentResult = lazy(() => import('./features/payment/PaymentResult'));
 const Profile = lazy(() => import('./features/user/Profile'));
 
 // Root redirect — users are redirected based on role by auth store
@@ -146,6 +147,9 @@ function App() {
           <Route path="billing/:id" element={<PaymentCheckout />} />
           <Route path="profile" element={<Profile />} />
         </Route>
+
+        {/* Public Payment Result Route */}
+        <Route path="/payment/result" element={<PaymentResult />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />

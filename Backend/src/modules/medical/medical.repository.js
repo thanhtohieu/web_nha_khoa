@@ -16,7 +16,23 @@ const defaultIncludes = [
     include: [{ model: User, as: 'user', attributes: doctorUserAttrs }],
     attributes: ['id', 'title'],
   },
-  { model: Appointment, as: 'appointment', attributes: ['id', 'booking_code', 'appointment_date', 'appointment_time'] },
+  {
+    model: Appointment,
+    as: 'appointment',
+    include: [
+      {
+        model: DoctorProfile,
+        as: 'doctor',
+        attributes: ['id', 'title', 'consultation_fee'],
+      },
+      {
+        model: require('../service/service.model'),
+        as: 'service',
+        attributes: ['id', 'name', 'price'],
+      }
+    ],
+    attributes: ['id', 'booking_code', 'appointment_date', 'appointment_time'],
+  },
   { model: Prescription, as: 'prescriptions', separate: true, order: [['sort_order', 'ASC']] },
 ];
 

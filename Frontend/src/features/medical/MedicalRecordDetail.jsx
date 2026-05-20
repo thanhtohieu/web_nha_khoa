@@ -188,7 +188,7 @@ export default function MedicalRecordDetail() {
           )}
           {!isNew && (
             <Link
-              to={`/medical/${id}/prescription`}
+              to={`/${user?.role || 'doctor'}/records/${id}/prescription`}
               className="btn btn-outline"
             >
               Đơn thuốc
@@ -196,7 +196,7 @@ export default function MedicalRecordDetail() {
           )}
           {!isNew && (
             <Link
-              to={`/payment/checkout?recordId=${id}`}
+              to={`/${user?.role === 'patient' ? 'patient' : 'receptionist'}/billing/${id}?recordId=${id}`}
               className="btn btn-outline"
             >
               Thanh toán

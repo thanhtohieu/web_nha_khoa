@@ -50,3 +50,12 @@ coverage/
 # Temporary files
 tmp/
 temp/
+
+# Extraction temp files
+extract_docx.py
+extracted_docx.txt
+
+# Local uploads and media
+Backend/uploads/
+Backend/logs/
+
