@@ -107,15 +107,15 @@ export default function PaymentCheckout() {
         const paymentIdVal = payment?.id || payment?._id;
         navigate(`/payment/result?paymentId=${paymentIdVal}&status=paid`);
       } else {
-        // VNPay: create payment, get URL, and redirect
-        const res = await paymentApi.createVnpayPayment({
+        // Mock VNPay (demo / bài tập - không cần sandbox thật)
+        const res = await paymentApi.createMockVnpayPayment({
           appointmentId,
         });
         const { paymentUrl } = res.data?.data || res.data;
         if (paymentUrl) {
           window.location.href = paymentUrl;
         } else {
-          throw new Error('Không lấy được URL thanh toán VNPay');
+          throw new Error('Không lấy được URL thanh toán');
         }
       }
     } catch (err) {

@@ -46,6 +46,28 @@ const medicalController = {
       return successResponse(res, { data: record });
     } catch (error) { next(error); }
   },
+
+  // --- ĐƠN THUỐC ---
+  async getPrescription(req, res, next) {
+    try {
+      const data = await medicalService.getPrescription(req.params.recordId, req.user);
+      return successResponse(res, { data });
+    } catch (error) { next(error); }
+  },
+
+  async createPrescription(req, res, next) {
+    try {
+      const data = await medicalService.savePrescription(req.params.recordId, req.body, req.user);
+      return createdResponse(res, { message: 'Kê đƠn thuốc thành công', data });
+    } catch (error) { next(error); }
+  },
+
+  async updatePrescription(req, res, next) {
+    try {
+      const data = await medicalService.savePrescription(req.params.recordId, req.body, req.user);
+      return successResponse(res, { message: 'Cập nhật đƠn thuốc thành công', data });
+    } catch (error) { next(error); }
+  },
 };
 
 module.exports = medicalController;

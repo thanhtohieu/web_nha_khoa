@@ -133,6 +133,74 @@ const medicalService = {
     if (!record) throw new AppError('Chưa có hồ sơ bệnh án cho lịch hẹn này', 404);
     return this.getById(record.id, requestUser);
   },
+
+  // --------------------
+  // ĐƠN THUỐC
+  // --------------------
+  async getPrescription(recordId, requestUser) {
+    const record = await medicalRepository.findById(recordId);
+    if (!record) throw new AppError('Không tìm thấy hồ sơ bệnh án', 404);
+
+    if (requestUser.role === ROLES.PATIENT && record.patient_id !== requestUser.id) {
+      throw new AppError('Bạn không có quyền xem hồ sơ này', 403);
+    }
+
+    const items = record.prescriptions || [];
+    if (items.length === 0) throw new AppError('Chưa có đơn thuốc', 404);
+
+    return {
+      id: record.id,
+      medical_record_id: record.id,
+      items,
+      notes: record.notes,
+      updated_at: record.updated_at,
+      created_at: record.created_at,
+    };
+  },
+
+  async savePrescription(recordId, data, requestUser) {
+    const record = await medicalRepository.findById(recordId);
+    if (!record) throw new AppError('Không tìm thấy hồ sơ bệnh án', 404);
+
+    if (requestUser.role === ROLES.DOCTOR) {
+      const myDoctor = await doctorRepository.findByUserId(requestUser.id);
+      if (!myDoctor || myDoctor.id !== record.doctor_profile_id) {
+        throw new AppError('Bạn không có quyền kê đơn cho hồ sơ này', 403);
+      }
+    } else if (requestUser.role !== ROLES.ADMIN) {
+      throw new AppError('Chỉ bác sĩ hoặc admin mới được kê đơn thuốc', 403);
+    }
+
+    const { items = [], notes } = data;
+
+    const prescriptionRows = items.map((item, i) => ({
+      medicine_name: item.medicine_name || item.medicineName || '',
+      dosage: item.dosage || null,
+      frequency: item.frequency || null,
+      duration: item.duration || null,
+      quantity: item.quantity != null ? String(item.quantity) : null,
+      unit: item.unit || 'viên',
+      instructions: item.instruction || item.instructions || null,
+      sort_order: i,
+    }));
+
+    await medicalRepository.upsertPrescriptions(recordId, prescriptionRows);
+
+    // Lưu ghi chú vào notes của bệnh án nếu có
+    if (notes !== undefined) {
+      await medicalRepository.update(recordId, { notes });
+    }
+
+    const updated = await medicalRepository.findById(recordId);
+    return {
+      id: updated.id,
+      medical_record_id: updated.id,
+      items: updated.prescriptions || [],
+      notes: updated.notes,
+      updated_at: updated.updated_at,
+      created_at: updated.created_at,
+    };
+  },
 };
 
 module.exports = medicalService;

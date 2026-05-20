@@ -120,8 +120,12 @@ const Prescription = sequelize.define(
       allowNull: true,
     },
     quantity: {
-      type: DataTypes.STRING(50), // "21 viên"
+      type: DataTypes.STRING(50), // "21"
       allowNull: true,
+    },
+    unit: {
+      type: DataTypes.STRING(30), // "viên", "gói", "ống"
+      defaultValue: 'viên',
     },
     instructions: {
       type: DataTypes.TEXT, // Hướng dẫn sử dụng
