@@ -126,8 +126,7 @@ const paymentService = {
                    parseFloat(appointment.service?.price || 0);
 
     const txCode = `CASH${Date.now()}`;
-
-    const payment = await paymentRepository.create({
+    const paymentData = {
       appointment_id: appointmentId,
       user_id: appointment.patient_id,
       transaction_code: txCode,
@@ -136,7 +135,11 @@ const paymentService = {
       status: PAYMENT_STATUS.PAID,
       paid_at: new Date(),
       notes,
-    });
+    };
+
+    const payment = existing
+      ? await paymentRepository.update(existing.id, paymentData)
+      : await paymentRepository.create(paymentData);
 
     // Cập nhật payment_status của appointment
     await appointmentRepository.update(appointmentId, {
@@ -177,8 +180,7 @@ const paymentService = {
     const orderInfo = `Thanh toan lich kham ${appointment.booking_code}`;
     const paymentUrl = createVnpayUrl(txCode, amount, orderInfo, ipAddr);
 
-    // Lưu payment với status PENDING
-    const payment = await paymentRepository.create({
+    const paymentData = {
       appointment_id: appointmentId,
       user_id: userId,
       transaction_code: txCode,
@@ -186,7 +188,11 @@ const paymentService = {
       method: PAYMENT_METHOD.VNPAY,
       status: PAYMENT_STATUS.PENDING,
       payment_url: paymentUrl,
-    });
+    };
+
+    const payment = existing
+      ? await paymentRepository.update(existing.id, paymentData)
+      : await paymentRepository.create(paymentData);
 
     return { paymentUrl, transactionCode: txCode, amount, payment };
   },

@@ -6,6 +6,9 @@ const paymentApi = {
 
   getPaymentById: (id) => axiosClient.get(`/payments/${id}`),
 
+  getPaymentByAppointment: (appointmentId) =>
+    axiosClient.get(`/payments/appointment/${appointmentId}`),
+
   // ── Checkout ──────────────────────────────────────────────
   /**
    * Create a payment invoice for an appointment/record
@@ -14,8 +17,6 @@ const paymentApi = {
   createPayment: (data) => axiosClient.post('/payments', data),
   createCashPayment: (data) => axiosClient.post('/payments/cash', data),
   createVnpayPayment: (data) => axiosClient.post('/payments/vnpay', data),
-  // Mock VNPAY cho demo / bài tập (không cần sandbox thật)
-  createMockVnpayPayment: (data) => axiosClient.post('/payments/mock-vnpay', data),
 
   /**
    * Process cash payment (doctor/receptionist confirms)

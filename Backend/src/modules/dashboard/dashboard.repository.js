@@ -5,6 +5,8 @@ const DoctorProfile = require('../doctor/doctor.model');
 const Appointment = require('../appointment/appointment.model');
 const Payment = require('../payment/payment.model');
 const Review = require('../review/review.model');
+const Specialty = require('../service/specialty.model');
+const Service = require('../service/service.model');
 const { MedicalRecord } = require('../medical/medical.model');
 const { APPOINTMENT_STATUS, PAYMENT_STATUS, ROLES } = require('../../utils/constants');
 const dayjs = require('dayjs');
@@ -428,8 +430,12 @@ const dashboardRepository = {
             model: DoctorProfile,
             as: 'doctor',
             attributes: ['id', 'title', 'consultation_fee'],
-            include: [{ model: User, as: 'user', attributes: ['id', 'full_name', 'avatar'] }],
+            include: [
+              { model: User, as: 'user', attributes: ['id', 'full_name', 'avatar'] },
+              { model: Specialty, as: 'specialty', attributes: ['id', 'name'] },
+            ],
           },
+          { model: Service, as: 'service', attributes: ['id', 'name'] },
         ],
         order: [['appointment_date', 'ASC'], ['appointment_time', 'ASC']],
         limit: 5,

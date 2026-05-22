@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const Payment = require('./payment.model');
 const User = require('../user/user.model');
 const Appointment = require('../appointment/appointment.model');
+const { MedicalRecord } = require('../medical/medical.model');
 
 const defaultIncludes = [
   { model: User, as: 'user', attributes: ['id', 'full_name', 'email', 'phone'] },
@@ -9,6 +10,7 @@ const defaultIncludes = [
     model: Appointment,
     as: 'appointment',
     attributes: ['id', 'booking_code', 'appointment_date', 'appointment_time'],
+    include: [{ model: MedicalRecord, as: 'medicalRecord', attributes: ['id'] }],
   },
 ];
 
@@ -26,11 +28,17 @@ const paymentRepository = {
   },
 
   async findByAppointmentId(appointmentId) {
-    return Payment.findOne({ where: { appointment_id: appointmentId }, include: defaultIncludes });
+    return Payment.findOne({
+      where: { appointment_id: appointmentId },
+      include: defaultIncludes,
+      order: [['created_at', 'DESC']],
+    });
   },
 
   async findAll({ userId, status, method, startDate, endDate, offset, limit }) {
-    const where = {};
+    const where = {
+      transaction_code: { [Op.notLike]: 'MOCK%' },
+    };
     if (userId) where.user_id = userId;
     if (status) where.status = status;
     if (method) where.method = method;

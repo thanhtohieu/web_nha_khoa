@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import dashboardApi from '../../api/dashboard.api';
+import medicalApi from '../../api/medical.api';
 import StatCard from '../../components/common/StatCard';
 import DataTable from '../../components/common/DataTable';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -56,6 +57,57 @@ const PRESCRIPTION_COLUMNS = [
   },
 ];
 
+const formatDate = (value) => {
+  if (!value) return '---';
+  return new Date(value).toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+};
+
+const mapAppointment = (appt) => {
+  const doctorName =
+    appt.doctorName ||
+    appt.doctor?.user?.full_name ||
+    appt.doctor?.user?.fullName ||
+    appt.doctor?.full_name ||
+    appt.doctor?.fullName ||
+    '---';
+
+  return {
+    ...appt,
+    date: appt.date || formatDate(appt.appointment_date),
+    time: appt.time || appt.appointment_time || appt.slotTime || '---',
+    doctorName,
+    specialty:
+      appt.specialty ||
+      appt.doctor?.specialty?.name ||
+      appt.service?.name ||
+      appt.doctor?.title ||
+      '---',
+    location: appt.location || appt.clinic || 'Phong kham',
+    status: appt.status,
+  };
+};
+
+const getPayloadData = (res) => res?.data?.data || res?.data || res || {};
+
+const getPayloadItems = (res) => {
+  const payload = getPayloadData(res);
+  if (Array.isArray(payload)) return payload;
+  return payload.items || payload.records || [];
+};
+
+const mapPrescription = (item, record) => ({
+  id: item.id,
+  date: formatDate(record.created_at || record.createdAt),
+  medication: item.medicine_name || item.medicineName || '---',
+  dosage: [item.dosage, item.frequency].filter(Boolean).join(' - ') || '---',
+  duration: item.duration || '---',
+  status: 'active',
+});
+
 function DashboardPatient() {
   const [stats, setStats] = useState(null);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -69,18 +121,25 @@ function DashboardPatient() {
     setLoading(true);
     setError(null);
     try {
-      const res = await dashboardApi.getPatientDashboard();
-      const payload = res.data?.data || {};
+      const [dashboardRes, recordsRes] = await Promise.all([
+        dashboardApi.getPatientDashboard(),
+        medicalApi.getRecords({ page: 1, limit: 100 }),
+      ]);
+      const payload = getPayloadData(dashboardRes);
+      const recordItems = getPayloadItems(recordsRes);
+      const prescriptionItems = recordItems.flatMap((record) =>
+        (record.prescriptions || []).map((item) => mapPrescription(item, record))
+      );
 
       setStats({
         upcomingAppointments: payload.upcomingAppointments,
         totalVisits: payload.completedAppointments,
-        activePrescriptions: 0,
+        activePrescriptions: prescriptionItems.length,
         lastVisitDate: null,
       });
-      setUpcomingAppointments(payload.upcomingList ?? []);
+      setUpcomingAppointments((payload.upcomingList ?? []).map(mapAppointment));
       setMedicalHistory([]);
-      setPrescriptions([]);
+      setPrescriptions(prescriptionItems);
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || 'Lỗi tải dữ liệu');
     } finally {
