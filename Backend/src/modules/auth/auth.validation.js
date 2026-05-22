@@ -14,7 +14,7 @@ const registerValidation = [
 
   body('phone')
     .optional()
-    .matches(/^(0|\+84)[3-9][0-9]{8}$/).withMessage('Số điện thoại Việt Nam không hợp lệ'),
+    .matches(/^[0-9+\s()-]{8,20}$/).withMessage('Số điện thoại không hợp lệ (từ 8 đến 20 số)'),
 
   body('password')
     .notEmpty().withMessage('Mật khẩu không được để trống')

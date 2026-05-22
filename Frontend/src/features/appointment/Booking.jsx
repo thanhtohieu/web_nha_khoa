@@ -2,29 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import useAppointmentStore from '../../store/appointment.store';
+import useUserStore from '../../store/user.store';
 import './Booking.css';
-
-const STEPS = ['Chọn bác sĩ', 'Chọn ngày & giờ', 'Xác nhận'];
-
-const validate = {
-  step1: (form) => {
-    const errs = {};
-    if (!form.doctorId) errs.doctorId = 'Vui lòng chọn bác sĩ';
-    return errs;
-  },
-  step2: (form) => {
-    const errs = {};
-    if (!form.date) errs.date = 'Vui lòng chọn ngày';
-    if (!form.slotId) errs.slotId = 'Vui lòng chọn khung giờ';
-    return errs;
-  },
-  step3: (form) => {
-    const errs = {};
-    if (!form.reason?.trim()) errs.reason = 'Vui lòng nhập lý do khám';
-    if (form.reason?.trim().length < 5) errs.reason = 'Lý do tối thiểu 5 ký tự';
-    return errs;
-  },
-};
 
 const getTodayStr = () => new Date().toISOString().split('T')[0];
 const getMaxDateStr = () => {
@@ -35,24 +14,65 @@ const getMaxDateStr = () => {
 
 export default function Booking() {
   const navigate = useNavigate();
-  const { role } = useAuth();
+  const { role, isPatient } = useAuth();
+  const hasPatientStep = !isPatient;
+
   const { doctors, doctorsLoading, slots, slotsLoading, bookingLoading, bookingError,
     fetchDoctors, fetchSlots, createAppointment, clearBookingError } = useAppointmentStore();
 
+  const { users: patients, usersLoading: patientsLoading, fetchPatients, createPatient } = useUserStore();
+
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState({ doctorId: '', doctorName: '', date: '', slotId: '', slotTime: '', reason: '', notes: '' });
+  const [form, setForm] = useState({
+    patientId: '',
+    patientName: '',
+    doctorId: '',
+    doctorName: '',
+    date: '',
+    slotId: '',
+    slotTime: '',
+    reason: '',
+    notes: ''
+  });
   const [errors, setErrors] = useState({});
   const [successId, setSuccessId] = useState(null);
   const [doctorSearch, setDoctorSearch] = useState('');
+  const [patientSearch, setPatientSearch] = useState('');
+
+  // Quick Create Patient states
+  const [showQuickCreate, setShowQuickCreate] = useState(false);
+  const [quickForm, setQuickForm] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    password: 'Patient@123', // Default strong password
+    gender: 'male',
+    dob: '',
+    address: ''
+  });
+  const [quickError, setQuickError] = useState(null);
+  const [quickLoading, setQuickLoading] = useState(false);
+
+  const steps = hasPatientStep
+    ? ['Chọn bệnh nhân', 'Chọn bác sĩ', 'Chọn ngày & giờ', 'Xác nhận']
+    : ['Chọn bác sĩ', 'Chọn ngày & giờ', 'Xác nhận'];
 
   useEffect(() => {
     fetchDoctors();
     clearBookingError();
-  }, []);
+  }, [fetchDoctors, clearBookingError]);
 
   useEffect(() => {
-    if (form.doctorId && form.date) fetchSlots(form.doctorId, form.date);
-  }, [form.doctorId, form.date]);
+    if (hasPatientStep) {
+      fetchPatients({ page: 1, limit: 50, search: patientSearch });
+    }
+  }, [patientSearch, hasPatientStep, fetchPatients]);
+
+  useEffect(() => {
+    if (form.doctorId && form.date) {
+      fetchSlots(form.doctorId, form.date);
+    }
+  }, [form.doctorId, form.date, fetchSlots]);
 
   const setField = (key, val) => {
     setForm((f) => ({ ...f, [key]: val }));
@@ -65,26 +85,101 @@ export default function Booking() {
   );
 
   const goNext = useCallback(() => {
-    const stepKey = ['step1', 'step2', 'step3'][step];
-    const errs = validate[stepKey]?.(form) || {};
+    let errs = {};
+    if (hasPatientStep) {
+      if (step === 0) {
+        if (!form.patientId) errs.patientId = 'Vui lòng chọn bệnh nhân';
+      } else if (step === 1) {
+        if (!form.doctorId) errs.doctorId = 'Vui lòng chọn bác sĩ';
+      } else if (step === 2) {
+        if (!form.date) errs.date = 'Vui lòng chọn ngày';
+        if (!form.slotId) errs.slotId = 'Vui lòng chọn khung giờ';
+      }
+    } else {
+      if (step === 0) {
+        if (!form.doctorId) errs.doctorId = 'Vui lòng chọn bác sĩ';
+      } else if (step === 1) {
+        if (!form.date) errs.date = 'Vui lòng chọn ngày';
+        if (!form.slotId) errs.slotId = 'Vui lòng chọn khung giờ';
+      }
+    }
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setErrors({});
     setStep((s) => s + 1);
-  }, [step, form]);
+  }, [step, form, hasPatientStep]);
 
-  const goBack = () => { setErrors({}); setStep((s) => s - 1); };
+  const goBack = () => {
+    setErrors({});
+    setStep((s) => s - 1);
+  };
+
+  const handleQuickCreateSubmit = async (e) => {
+    e.preventDefault();
+    setQuickError(null);
+    if (!quickForm.fullName?.trim()) {
+      setQuickError('Họ tên không được để trống');
+      return;
+    }
+    if (!quickForm.email?.trim()) {
+      setQuickError('Email không được để trống');
+      return;
+    }
+    if (!quickForm.password?.trim()) {
+      setQuickError('Mật khẩu không được để trống');
+      return;
+    }
+
+    setQuickLoading(true);
+    const res = await createPatient({
+      fullName: quickForm.fullName.trim(),
+      email: quickForm.email.trim(),
+      phone: quickForm.phone.trim() || undefined,
+      password: quickForm.password,
+      gender: quickForm.gender,
+      dateOfBirth: quickForm.dob || undefined,
+      address: quickForm.address.trim() || undefined
+    });
+    setQuickLoading(false);
+
+    if (res.success) {
+      // Auto-select new patient
+      const newPatient = res.data;
+      setField('patientId', newPatient.id || newPatient._id);
+      setField('patientName', newPatient.fullName || newPatient.full_name);
+      setShowQuickCreate(false);
+      // Reset form
+      setQuickForm({
+        fullName: '',
+        email: '',
+        phone: '',
+        password: 'Patient@123',
+        gender: 'male',
+        dob: '',
+        address: ''
+      });
+    } else {
+      setQuickError(res.message || 'Tạo tài khoản thất bại');
+    }
+  };
 
   const handleSubmit = async () => {
-    const errs = validate.step3(form);
+    const errs = {};
+    if (!form.reason?.trim()) errs.reason = 'Vui lòng nhập lý do khám';
+    if (form.reason?.trim().length < 5) errs.reason = 'Lý do tối thiểu 5 ký tự';
+
     if (Object.keys(errs).length) { setErrors(errs); return; }
+    
     const result = await createAppointment({
       doctorId: form.doctorId,
       slotId: form.slotId,
       date: form.date,
       reason: form.reason.trim(),
-      notes: form.notes.trim(),
+      notes: form.notes?.trim() || '',
+      patientId: hasPatientStep ? form.patientId : undefined,
     });
-    if (result.success) setSuccessId(result.data?.id || result.data?._id || 'new');
+    if (result.success) {
+      setSuccessId(result.data?.id || result.data?._id || 'new');
+    }
   };
 
   if (successId) return (
@@ -92,10 +187,15 @@ export default function Booking() {
       <div className="success-icon">✓</div>
       <h2>Đặt lịch thành công!</h2>
       <p>Lịch hẹn với <strong>{form.doctorName}</strong> vào <strong>{form.slotTime}</strong> ngày <strong>{form.date}</strong> đã được ghi nhận.</p>
+      {hasPatientStep && <p style={{ marginTop: 8 }}>Đặt cho bệnh nhân: <strong>{form.patientName}</strong></p>}
       <p className="success-note">Chúng tôi sẽ xác nhận lịch hẹn trong thời gian sớm nhất.</p>
       <div className="success-actions">
         <button className="btn-primary" onClick={() => navigate(`/${role}/appointments`)}>Xem lịch hẹn</button>
-        <button className="btn-ghost" onClick={() => { setStep(0); setForm({ doctorId: '', doctorName: '', date: '', slotId: '', slotTime: '', reason: '', notes: '' }); setSuccessId(null); }}>Đặt lịch khác</button>
+        <button className="btn-ghost" onClick={() => {
+          setStep(0);
+          setForm({ patientId: '', patientName: '', doctorId: '', doctorName: '', date: '', slotId: '', slotTime: '', reason: '', notes: '' });
+          setSuccessId(null);
+        }}>Đặt lịch khác</button>
       </div>
     </div>
   );
@@ -103,20 +203,64 @@ export default function Booking() {
   return (
     <div className="booking-container">
       <div className="booking-header">
-        <h1>Đặt lịch khám</h1>
+        <h1>Đặt lịch khám {hasPatientStep && '(Lễ tân)'}</h1>
         <div className="stepper">
-          {STEPS.map((label, i) => (
+          {steps.map((label, i) => (
             <div key={i} className={`step ${i === step ? 'active' : i < step ? 'done' : ''}`}>
               <div className="step-dot">{i < step ? '✓' : i + 1}</div>
               <span className="step-label">{label}</span>
-              {i < STEPS.length - 1 && <div className="step-line" />}
+              {i < steps.length - 1 && <div className="step-line" />}
             </div>
           ))}
         </div>
       </div>
 
       <div className="booking-body">
-        {step === 0 && (
+        {/* STEP 0 FOR RECEPTIONIST: SELECT PATIENT */}
+        {hasPatientStep && step === 0 && (
+          <div className="step-panel">
+            <div className="patient-step-header">
+              <h2>Chọn bệnh nhân</h2>
+              <button className="btn-quick-create" onClick={() => setShowQuickCreate(true)}>
+                + Tạo nhanh bệnh nhân
+              </button>
+            </div>
+            <input
+              className="search-input"
+              placeholder="Tìm bệnh nhân theo tên, số điện thoại hoặc email..."
+              value={patientSearch}
+              onChange={(e) => setPatientSearch(e.target.value)}
+            />
+            {errors.patientId && <p className="field-error">{errors.patientId}</p>}
+            {patientsLoading ? <div className="loading-spinner" /> : (
+              <div className="patient-grid">
+                {patients.length === 0 && <p className="empty-text">Không tìm thấy bệnh nhân nào</p>}
+                {patients.map((p) => {
+                  const pId = p.id || p._id;
+                  const pName = p.fullName || p.full_name || 'Không có tên';
+                  return (
+                    <div
+                      key={pId}
+                      className={`patient-card ${form.patientId === pId ? 'selected' : ''}`}
+                      onClick={() => {
+                        setField('patientId', pId);
+                        setField('patientName', pName);
+                      }}
+                    >
+                      <div className="patient-card-name">{pName}</div>
+                      <div className="patient-card-detail">SĐT: {p.phone || '—'}</div>
+                      <div className="patient-card-detail">Email: {p.email || '—'}</div>
+                      {form.patientId === pId && <div className="check-mark">✓</div>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* SELECT DOCTOR STEP */}
+        {((hasPatientStep && step === 1) || (!hasPatientStep && step === 0)) && (
           <div className="step-panel">
             <h2>Chọn bác sĩ</h2>
             <input
@@ -129,27 +273,34 @@ export default function Booking() {
             {doctorsLoading ? <div className="loading-spinner" /> : (
               <div className="doctor-grid">
                 {filteredDoctors.length === 0 && <p className="empty-text">Không tìm thấy bác sĩ</p>}
-                {filteredDoctors.map((doc) => (
-                  <div
-                    key={doc.id || doc._id}
-                    className={`doctor-card ${form.doctorId === (doc.id || doc._id) ? 'selected' : ''}`}
-                    onClick={() => { setField('doctorId', doc.id || doc._id); setField('doctorName', doc.fullName); }}
-                  >
-                    <div className="doctor-avatar">{doc.fullName?.[0] || 'D'}</div>
-                    <div className="doctor-info">
-                      <h3>{doc.fullName}</h3>
-                      <p className="doctor-spec">{doc.specialization}</p>
-                      {doc.experience && <p className="doctor-exp">{doc.experience} năm kinh nghiệm</p>}
+                {filteredDoctors.map((doc) => {
+                  const docId = doc.id || doc._id;
+                  return (
+                    <div
+                      key={docId}
+                      className={`doctor-card ${form.doctorId === docId ? 'selected' : ''}`}
+                      onClick={() => {
+                        setField('doctorId', docId);
+                        setField('doctorName', doc.fullName);
+                      }}
+                    >
+                      <div className="doctor-avatar">{doc.fullName?.[0] || 'D'}</div>
+                      <div className="doctor-info">
+                        <h3>{doc.fullName}</h3>
+                        <p className="doctor-spec">{doc.specialization}</p>
+                        {doc.experience && <p className="doctor-exp">{doc.experience} năm kinh nghiệm</p>}
+                      </div>
+                      {form.doctorId === docId && <div className="check-mark">✓</div>}
                     </div>
-                    {form.doctorId === (doc.id || doc._id) && <div className="check-mark">✓</div>}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
         )}
 
-        {step === 1 && (
+        {/* SELECT DATE AND TIME STEP */}
+        {((hasPatientStep && step === 2) || (!hasPatientStep && step === 1)) && (
           <div className="step-panel">
             <h2>Chọn ngày & giờ khám</h2>
             <div className="field-group">
@@ -173,16 +324,19 @@ export default function Booking() {
                   {errors.slotId && <p className="field-error">{errors.slotId}</p>}
                   <div className="slots-grid">
                     {slots.length === 0 && <p className="empty-text">Không có khung giờ trống trong ngày này</p>}
-                    {slots.map((slot) => (
-                      <button
-                        key={slot.id || slot._id}
-                        disabled={!slot.available}
-                        className={`slot-btn ${!slot.available ? 'unavailable' : ''} ${form.slotId === (slot.id || slot._id) ? 'selected' : ''}`}
-                        onClick={() => { setField('slotId', slot.id || slot._id); setField('slotTime', slot.time); }}
-                      >
-                        {slot.time}
-                      </button>
-                    ))}
+                    {slots.map((slot) => {
+                      const slotKey = slot.id || slot._id || slot.time;
+                      return (
+                        <button
+                          key={slotKey}
+                          disabled={!slot.available}
+                          className={`slot-btn ${!slot.available ? 'unavailable' : ''} ${form.slotId === slotKey ? 'selected' : ''}`}
+                          onClick={() => { setField('slotId', slotKey); setField('slotTime', slot.time); }}
+                        >
+                          {slot.time}
+                        </button>
+                      );
+                    })}
                   </div>
                 </>
               )}
@@ -190,10 +344,14 @@ export default function Booking() {
           </div>
         )}
 
-        {step === 2 && (
+        {/* CONFIRMATION STEP */}
+        {((hasPatientStep && step === 3) || (!hasPatientStep && step === 2)) && (
           <div className="step-panel">
             <h2>Xác nhận thông tin</h2>
             <div className="confirm-card">
+              {hasPatientStep && (
+                <div className="confirm-row"><span>Bệnh nhân</span><strong>{form.patientName}</strong></div>
+              )}
               <div className="confirm-row"><span>Bác sĩ</span><strong>{form.doctorName}</strong></div>
               <div className="confirm-row"><span>Ngày</span><strong>{form.date}</strong></div>
               <div className="confirm-row"><span>Giờ</span><strong>{form.slotTime}</strong></div>
@@ -227,7 +385,7 @@ export default function Booking() {
       <div className="booking-footer">
         {step > 0 && <button className="btn-secondary" onClick={goBack} disabled={bookingLoading}>Quay lại</button>}
         <div className="footer-right">
-          {step < 2
+          {step < steps.length - 1
             ? <button className="btn-primary" onClick={goNext}>Tiếp theo</button>
             : <button className="btn-primary" onClick={handleSubmit} disabled={bookingLoading}>
                 {bookingLoading ? 'Đang đặt lịch...' : 'Xác nhận đặt lịch'}
@@ -235,6 +393,106 @@ export default function Booking() {
           }
         </div>
       </div>
+
+      {/* QUICK CREATE PATIENT MODAL */}
+      {showQuickCreate && (
+        <div className="quick-modal-overlay">
+          <div className="quick-modal">
+            <div className="quick-modal-header">
+              <h3>Tạo nhanh tài khoản bệnh nhân</h3>
+              <button className="btn-close-modal" onClick={() => setShowQuickCreate(false)}>×</button>
+            </div>
+            <form onSubmit={handleQuickCreateSubmit}>
+              {quickError && <div className="api-error" style={{ marginBottom: 16 }}>{quickError}</div>}
+              <div className="quick-form-grid">
+                <div className="field-group">
+                  <label>Họ tên <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    required
+                    className="field-input"
+                    placeholder="Nguyễn Văn A"
+                    value={quickForm.fullName}
+                    onChange={(e) => setQuickForm({ ...quickForm, fullName: e.target.value })}
+                  />
+                </div>
+                <div className="field-group">
+                  <label>Email <span className="required">*</span></label>
+                  <input
+                    type="email"
+                    required
+                    className="field-input"
+                    placeholder="email@example.com"
+                    value={quickForm.email}
+                    onChange={(e) => setQuickForm({ ...quickForm, email: e.target.value })}
+                  />
+                </div>
+                <div className="field-group">
+                  <label>Số điện thoại</label>
+                  <input
+                    type="tel"
+                    className="field-input"
+                    placeholder="0912345678"
+                    value={quickForm.phone}
+                    onChange={(e) => setQuickForm({ ...quickForm, phone: e.target.value })}
+                  />
+                </div>
+                <div className="field-group">
+                  <label>Giới tính</label>
+                  <select
+                    className="field-input"
+                    value={quickForm.gender}
+                    onChange={(e) => setQuickForm({ ...quickForm, gender: e.target.value })}
+                  >
+                    <option value="male">Nam</option>
+                    <option value="female">Nữ</option>
+                    <option value="other">Khác</option>
+                  </select>
+                </div>
+                <div className="field-group">
+                  <label>Ngày sinh</label>
+                  <input
+                    type="date"
+                    className="field-input"
+                    value={quickForm.dob}
+                    onChange={(e) => setQuickForm({ ...quickForm, dob: e.target.value })}
+                  />
+                </div>
+                <div className="field-group">
+                  <label>Mật khẩu <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    required
+                    className="field-input"
+                    placeholder="Patient@123"
+                    value={quickForm.password}
+                    onChange={(e) => setQuickForm({ ...quickForm, password: e.target.value })}
+                  />
+                  <p className="hint-text" style={{ marginTop: 4 }}>Mặc định: Patient@123</p>
+                </div>
+              </div>
+              <div className="field-group" style={{ marginTop: 12 }}>
+                <label>Địa chỉ</label>
+                <input
+                  type="text"
+                  className="field-input"
+                  placeholder="Địa chỉ liên hệ..."
+                  value={quickForm.address}
+                  onChange={(e) => setQuickForm({ ...quickForm, address: e.target.value })}
+                />
+              </div>
+              <div className="quick-modal-footer">
+                <button type="button" className="btn-secondary" onClick={() => setShowQuickCreate(false)} disabled={quickLoading}>
+                  Hủy
+                </button>
+                <button type="submit" className="btn-primary" disabled={quickLoading}>
+                  {quickLoading ? 'Đang tạo...' : 'Tạo & Chọn'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

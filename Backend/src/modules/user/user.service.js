@@ -99,10 +99,12 @@ const userService = {
   },
 
   // --------------------
-  // ADMIN: TẠO USER
+  // TẠO USER (Lễ tân / Admin)
   // --------------------
-  async createUser(data) {
-    const { fullName, email, phone, password, role, gender, dateOfBirth } = data;
+  async createUser(data, callerRole) {
+    const { fullName, email, phone, password, gender, dateOfBirth } = data;
+    // Lễ tân chỉ được tạo tài khoản bệnh nhân
+    const role = callerRole === ROLES.RECEPTIONIST ? ROLES.PATIENT : (data.role || ROLES.PATIENT);
 
     const existingEmail = await userRepository.findByEmail(email);
     if (existingEmail) throw new AppError('Email đã tồn tại', 409);
@@ -115,11 +117,11 @@ const userService = {
       email: email.toLowerCase(),
       phone,
       password_hash: passwordHash,
-      role: role || ROLES.PATIENT,
+      role,
       gender,
       date_of_birth: dateOfBirth,
       is_active: true,
-      is_verified: true, // Admin tạo thì tự động verified
+      is_verified: true, // Nhân viên tạo thì tự động verified
     });
   },
 

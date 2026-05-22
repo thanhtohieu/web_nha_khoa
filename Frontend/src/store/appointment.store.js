@@ -99,7 +99,8 @@ const useAppointmentStore = create((set, get) => ({
         appointmentDate: payload.date,
         appointmentTime: payload.slotId || payload.time || payload.slotTime,
         reason: payload.reason,
-        notes: payload.notes
+        notes: payload.notes,
+        patientId: payload.patientId,
       };
       const res = await appointmentApi.createAppointment(mappedPayload);
       set({ bookingLoading: false });

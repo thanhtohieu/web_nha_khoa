@@ -9,7 +9,7 @@ const { authLimiter } = require('../../middlewares/rateLimiter.middleware');
 const submitValidation = [
   body('fullName').trim().notEmpty().withMessage('Họ tên không được để trống').isLength({ max: 100 }),
   body('email').trim().isEmail().withMessage('Email không hợp lệ').normalizeEmail(),
-  body('phone').optional().matches(/^(0|\+84)[3-9][0-9]{8}$/).withMessage('Số điện thoại không hợp lệ'),
+  body('phone').optional().matches(/^[0-9+\s()-]{8,20}$/).withMessage('Số điện thoại không hợp lệ (từ 8 đến 20 số)'),
   body('subject').trim().notEmpty().withMessage('Chủ đề không được để trống').isLength({ max: 200 }),
   body('message').trim().notEmpty().withMessage('Nội dung không được để trống').isLength({ min: 10, max: 2000 }),
 ];

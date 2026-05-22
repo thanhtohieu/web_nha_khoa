@@ -124,6 +124,7 @@ function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<ReceptionistDashboard />} />
           <Route path="appointments" element={<AppointmentList />} />
+          <Route path="appointments/booking" element={<Booking />} />
           <Route path="appointments/:id" element={<AppointmentDetail />} />
           <Route path="patients" element={<UserList />} />
           <Route path="checkin" element={<UnderConstructionPage />} />

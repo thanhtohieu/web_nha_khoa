@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import paymentApi from '../../api/payment.api';
 import useAuthStore from '../../store/auth.store';
-import Spinner from '../../components/common/Spinner';
+import Spinner from '../../components/Spinner';
 import { formatCurrency, formatDateTime } from '../../utils/helpers';
 import './PaymentResult.css';
 

@@ -9,6 +9,7 @@ const useAuth = () => {
     isDoctor: user?.role === 'doctor',
     isAdmin: user?.role === 'admin',
     isPatient: user?.role === 'patient',
+    isReceptionist: user?.role === 'receptionist',
   }
 }
 

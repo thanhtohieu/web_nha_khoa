@@ -17,7 +17,7 @@ router.put('/profile/avatar', upload.single('avatar'), userController.updateAvat
 
 // Admin: quản lý users
 router.get('/', isAdmin, userController.getAllUsers);
-router.post('/', isAdmin, createUserValidation, validate, userController.createUser);
+router.post('/', isAdminOrReceptionist, createUserValidation, validate, userController.createUser);
 router.get('/patients', isAdminOrReceptionist, userController.getPatients);
 router.get('/:id', isAdmin, userIdValidation, validate, userController.getUserById);
 router.put('/:id', isAdmin, userIdValidation, validate, userController.updateUser);

@@ -56,7 +56,7 @@ const useUserStore = create((set, get) => ({
       const res = await userApi.getUsers({ page, limit, search, role, status });
       set({
         users: res.data.items ?? res.data.data ?? res.data,
-        userTotal: res.data.total ?? 0,
+        userTotal: res.data.total ?? res.data.meta?.total ?? 0,
         userPage: page,
         userLimit: limit,
         usersLoading: false,
@@ -64,6 +64,26 @@ const useUserStore = create((set, get) => ({
     } catch (err) {
       set({
         usersError: err.response?.data?.message ?? 'Không thể tải danh sách người dùng.',
+        usersLoading: false,
+      });
+    }
+  },
+
+  fetchPatients: async (params = {}) => {
+    set({ usersLoading: true, usersError: null });
+    try {
+      const { page = 1, limit = 10, search = '' } = params;
+      const res = await userApi.getPatients({ page, limit, search });
+      set({
+        users: res.data.items ?? res.data.data ?? res.data,
+        userTotal: res.data.total ?? res.data.meta?.total ?? 0,
+        userPage: page,
+        userLimit: limit,
+        usersLoading: false,
+      });
+    } catch (err) {
+      set({
+        usersError: err.response?.data?.message ?? 'Không thể tải danh sách bệnh nhân.',
         usersLoading: false,
       });
     }
@@ -95,6 +115,22 @@ const useUserStore = create((set, get) => ({
       return { success: true };
     } catch (err) {
       return { success: false, message: err.response?.data?.message ?? 'Xoá thất bại.' };
+    }
+  },
+
+  createPatient: async (data) => {
+    try {
+      const res = await userApi.createPatient(data);
+      // Refresh danh sách sau khi tạo
+      const state = get();
+      state.fetchPatients({ page: state.userPage, limit: state.userLimit });
+      return { success: true, data: res.data.data ?? res.data };
+    } catch (err) {
+      const apiErrors = err.response?.data?.errors;
+      const message = apiErrors && Array.isArray(apiErrors)
+        ? apiErrors.map(e => e.message).join(', ')
+        : (err.response?.data?.message ?? 'Tạo tài khoản thất bại.');
+      return { success: false, message };
     }
   },
 

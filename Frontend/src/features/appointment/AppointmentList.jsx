@@ -63,8 +63,8 @@ export default function AppointmentList() {
             {role === 'admin' && 'Tổng quan lịch hẹn hệ thống'}
           </p>
         </div>
-        {isPatient && (
-          <button className="btn-primary" onClick={() => navigate('/patient/appointments/booking')}>
+        {(isPatient || role === 'receptionist') && (
+          <button className="btn-primary" onClick={() => navigate(`/${role}/appointments/booking`)}>
             + Đặt lịch mới
           </button>
         )}
@@ -102,7 +102,7 @@ export default function AppointmentList() {
               <div className="list-empty">
                 <div className="empty-icon">📅</div>
                 <p>Chưa có lịch hẹn nào</p>
-                {isPatient && <button className="btn-primary" onClick={() => navigate('/patient/appointments/booking')}>Đặt lịch ngay</button>}
+                {(isPatient || role === 'receptionist') && <button className="btn-primary" onClick={() => navigate(`/${role}/appointments/booking`)}>Đặt lịch ngay</button>}
               </div>
             )
             : (

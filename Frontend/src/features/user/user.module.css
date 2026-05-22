@@ -153,6 +153,7 @@
 
 /* ── Form ── */
 .form-group { margin-bottom: 20px; }
+.confirm-box .form-group { margin-bottom: 14px; }
 .form-label {
   display: block;
   font-size: 0.8rem;

@@ -49,7 +49,7 @@ const userController = {
 
   async createUser(req, res, next) {
     try {
-      const user = await userService.createUser(req.body);
+      const user = await userService.createUser(req.body, req.user.role);
       return createdResponse(res, { message: 'Tạo tài khoản thành công', data: user });
     } catch (error) { next(error); }
   },

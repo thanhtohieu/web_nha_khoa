@@ -21,6 +21,10 @@ const userApi = {
     axiosClient.get('/users', { params }),
   // params: { page, limit, search, role, status }
 
+  // ── Receptionist – Patient list ────────────────────────────────────────────
+  getPatients: (params) =>
+    axiosClient.get('/users/patients', { params }),
+
   // ── Admin – User detail ───────────────────────────────────────────────────
   getUserById: (id) =>
     axiosClient.get(`/users/${id}`),
@@ -33,6 +37,10 @@ const userApi = {
 
   toggleUserStatus: (id) =>
     axiosClient.patch(`/users/${id}/toggle-status`),
+
+  // ── Receptionist – Create patient ──────────────────────────────────────────
+  createPatient: (data) =>
+    axiosClient.post('/users', data),
 };
 
 export default userApi;
