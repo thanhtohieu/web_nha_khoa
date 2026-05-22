@@ -41,6 +41,10 @@ const userApi = {
   // ── Receptionist – Create patient ──────────────────────────────────────────
   createPatient: (data) =>
     axiosClient.post('/users', data),
+
+  // ── Admin / Receptionist – Generic User Creation ───────────────────────────
+  createUser: (data) =>
+    axiosClient.post('/users', data),
 };
 
 export default userApi;

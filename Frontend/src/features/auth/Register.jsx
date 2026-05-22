@@ -13,8 +13,8 @@ function validate(f) {
   if (!f.email.trim()) errors.email = 'Email là bắt buộc';
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) errors.email = 'Email không hợp lệ';
 
-  if (f.phone && !/^(0|\+84)[3-9][0-9]{8}$/.test(f.phone))
-    errors.phone = 'Số điện thoại không hợp lệ';
+  if (f.phone && !/^[0-9+\s()-]{8,20}$/.test(f.phone))
+    errors.phone = 'Số điện thoại không hợp lệ (từ 8 đến 20 số)';
 
   if (!f.password) errors.password = 'Mật khẩu là bắt buộc';
   else if (f.password.length < 8) errors.password = 'Mật khẩu tối thiểu 8 ký tự';
@@ -107,9 +107,10 @@ export default function Register() {
       });
       setSuccess(true);
     } catch (err) {
-      const msg = err.response?.data?.message
-        || err.response?.data?.errors?.[0]?.msg
-        || 'Đăng ký thất bại. Vui lòng thử lại.';
+      const apiErrors = err.response?.data?.errors;
+      const msg = apiErrors && Array.isArray(apiErrors)
+        ? apiErrors.map(e => e.message).join(', ')
+        : (err.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.');
       setServerError(msg);
     } finally {
       setLoading(false);

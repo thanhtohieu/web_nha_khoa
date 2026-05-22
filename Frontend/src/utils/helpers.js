@@ -16,8 +16,13 @@ export const removeTokens = () => {
 
 // ─── Error Helpers ─────────────────────────────────────────────────────────────
 
-export const extractErrorMessage = (err, fallback = 'Có lỗi xảy ra.') =>
-  err?.response?.data?.message || err?.message || fallback;
+export const extractErrorMessage = (err, fallback = 'Có lỗi xảy ra.') => {
+  const apiErrors = err?.response?.data?.errors;
+  if (apiErrors && Array.isArray(apiErrors) && apiErrors.length > 0) {
+    return apiErrors.map(e => e.message || e.msg).join(', ');
+  }
+  return err?.response?.data?.message || err?.message || fallback;
+};
 
 // ─── Currency ─────────────────────────────────────────────────────────────────
 

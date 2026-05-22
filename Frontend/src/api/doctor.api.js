@@ -12,8 +12,8 @@ const doctorApi = {
   getDoctorSlots: (id, date) =>
     axiosClient.get(`/doctors/${id}/slots`, { params: { date } }),
 
-  /** GET /doctors/specialties  – for filter dropdown */
-  getSpecialties: () => axiosClient.get('/doctors/specialties'),
+  /** GET /specialties  – for filter dropdown */
+  getSpecialties: () => axiosClient.get('/specialties'),
 
   // ── Doctor (own profile) ──────────────────────────────────────────────────
   /** GET /doctors/me */
@@ -40,6 +40,9 @@ const doctorApi = {
   deleteSlot: (slotId) => axiosClient.delete(`/doctors/me/schedule/${slotId}`),
 
   // ── Admin ─────────────────────────────────────────────────────────────────
+  /** POST /doctors */
+  createDoctorProfile: (data) => axiosClient.post('/doctors', data),
+
   /** GET /admin/doctors/:id/schedule?from&to */
   getScheduleByDoctorId: (id, from, to) =>
     axiosClient.get(`/admin/doctors/${id}/schedule`, { params: { from, to } }),

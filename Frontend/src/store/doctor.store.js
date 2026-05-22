@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import doctorApi from '../api/doctor.api';
+import userApi from '../api/user.api';
 
 const useDoctorStore = create((set, get) => ({
   // ── Public list ───────────────────────────────────────────────────────────
@@ -14,11 +15,23 @@ const useDoctorStore = create((set, get) => ({
   fetchDoctors: async (params = {}) => {
     set({ listLoading: true, listError: null });
     try {
-      const { page = 1, limit = 12, search = '', specialty = '', status = '' } = params;
-      const res = await doctorApi.getDoctors({ page, limit, search, specialty, status });
+      const { page = 1, limit = 12, search = '', specialtyId = '', specialty = '', status = '' } = params;
+      const res = await doctorApi.getDoctors({
+        page,
+        limit,
+        search,
+        specialtyId: specialtyId || specialty,
+        status,
+      });
       set({
-        doctors: res.data.items ?? res.data.data ?? res.data,
-        doctorTotal: res.data.total ?? 0,
+        doctors: Array.isArray(res.data.items)
+          ? res.data.items
+          : Array.isArray(res.data.data)
+            ? res.data.data
+            : Array.isArray(res.data)
+              ? res.data
+              : [],
+        doctorTotal: res.data.meta?.total ?? res.data.total ?? 0,
         doctorPage: page,
         doctorLimit: limit,
         listLoading: false,
@@ -31,7 +44,13 @@ const useDoctorStore = create((set, get) => ({
   fetchSpecialties: async () => {
     try {
       const res = await doctorApi.getSpecialties();
-      set({ specialties: res.data ?? [] });
+      set({
+        specialties: Array.isArray(res.data.data)
+          ? res.data.data
+          : Array.isArray(res.data)
+            ? res.data
+            : [],
+      });
     } catch (_) {}
   },
 
@@ -160,6 +179,52 @@ const useDoctorStore = create((set, get) => ({
   },
 
   clearScheduleError: () => set({ scheduleError: null }),
+
+  createDoctor: async (data) => {
+    try {
+      // 1. Tạo tài khoản người dùng với vai trò là doctor
+      const userRes = await userApi.createUser({
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone || undefined,
+        password: data.password,
+        gender: data.gender || undefined,
+        dateOfBirth: data.dateOfBirth || undefined,
+        role: 'doctor',
+      });
+      
+      const createdUser = userRes.data.data ?? userRes.data;
+      const userId = createdUser.id;
+      
+      // 2. Tạo hồ sơ bác sĩ (doctor profile) liên kết với userId mới tạo
+      const doctorRes = await doctorApi.createDoctorProfile({
+        userId,
+        specialtyId: data.specialtyId || undefined,
+        title: data.title || undefined,
+        experienceYears: data.experienceYears ? parseInt(data.experienceYears) : 0,
+        education: data.education || undefined,
+        certificate: data.certificate || undefined,
+        consultationFee: data.consultationFee ? parseFloat(data.consultationFee) : 0,
+        workingDays: data.workingDays || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+        workingStart: data.workingStart || '08:00',
+        workingEnd: data.workingEnd || '17:00',
+        slotDurationMinutes: data.slotDurationMinutes ? parseInt(data.slotDurationMinutes) : 30,
+        maxPatientsPerDay: data.maxPatientsPerDay ? parseInt(data.maxPatientsPerDay) : 20,
+      });
+
+      // Refresh danh sách bác sĩ sau khi tạo
+      const state = get();
+      state.fetchDoctors({ page: state.doctorPage, limit: state.doctorLimit });
+      
+      return { success: true, data: doctorRes.data.data ?? doctorRes.data };
+    } catch (err) {
+      const apiErrors = err.response?.data?.errors;
+      const message = apiErrors && Array.isArray(apiErrors)
+        ? apiErrors.map(e => e.message || e.msg).join(', ')
+        : (err.response?.data?.message ?? err.message ?? 'Tạo hồ sơ bác sĩ thất bại.');
+      return { success: false, message };
+    }
+  },
 }));
 
 export default useDoctorStore;

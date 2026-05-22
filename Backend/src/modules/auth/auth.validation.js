@@ -34,8 +34,8 @@ const registerValidation = [
       const minAge = new Date();
       minAge.setFullYear(minAge.getFullYear() - 120);
       const maxAge = new Date();
-      maxAge.setFullYear(maxAge.getFullYear() - 1);
-      if (dob < minAge || dob > maxAge) throw new Error('Ngày sinh không hợp lệ');
+      if (dob < minAge) throw new Error('Ngày sinh không hợp lệ (không quá 120 tuổi)');
+      if (dob > maxAge) throw new Error('Ngày sinh không được ở tương lai');
       return true;
     }),
 ];
