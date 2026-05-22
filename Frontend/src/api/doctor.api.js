@@ -16,17 +16,11 @@ const doctorApi = {
   getSpecialties: () => axiosClient.get('/specialties'),
 
   // ── Doctor (own profile) ──────────────────────────────────────────────────
-  /** GET /doctors/me */
-  getMyProfile: () => axiosClient.get('/doctors/me'),
+  /** GET /doctors/me/profile */
+  getMyProfile: () => axiosClient.get('/doctors/me/profile'),
 
-  /** PUT /doctors/me */
-  updateMyProfile: (data) => axiosClient.put('/doctors/me', data),
-
-  /** PUT /doctors/me/avatar */
-  updateAvatar: (formData) =>
-    axiosClient.put('/doctors/me/avatar', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+  /** PUT /doctors/me/profile */
+  updateMyProfile: (data) => axiosClient.put('/doctors/me/profile', data),
 
   // ── Schedule ──────────────────────────────────────────────────────────────
   /** GET /doctors/me/schedule?from=YYYY-MM-DD&to=YYYY-MM-DD */

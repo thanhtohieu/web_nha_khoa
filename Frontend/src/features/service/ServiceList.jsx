@@ -6,7 +6,7 @@ import {
   Spinner, Alert, PageHeader, Pagination,
   EmptyState, Icon, ConfirmDialog, fmtCurrency,
 } from './DoctorUI';
-import '../doctor/doctor.module.css';
+import '../doctor/doctor.css';
 
 /* ── Debounce ── */
 function useDebounce(val, ms = 400) {

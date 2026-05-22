@@ -5,7 +5,7 @@ import {
   Card, CardHeader, CardBody, Icon, FormGroup,
   getWeekDates, toISODate, VN_DAYS,
 } from './DoctorUI';
-import './doctor.module.css';
+import './doctor.css';
 
 /* ── Validate slot times ── */
 function validateSlot(v) {

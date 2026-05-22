@@ -5,7 +5,7 @@ import {
   Spinner, Alert, BackBtn, PageHeader, Card, CardHeader, CardBody,
   AvatarPlaceholder, Btn, Icon, fmtCurrency, fmtDate,
 } from './DoctorUI';
-import '../doctor/doctor.module.css';
+import '../doctor/doctor.css';
 
 /* ── Detail field ── */
 function DetailField({ label, children }) {

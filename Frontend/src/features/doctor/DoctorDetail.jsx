@@ -7,7 +7,7 @@ import {
   BackBtn, Card, CardHeader, CardBody, Icon,
   fmtDate, getWeekDates, toISODate, VN_DAYS,
 } from './DoctorUI';
-import './doctor.module.css';
+import './doctor.css';
 
 /* ── Week day strip ── */
 function WeekStrip({ selectedDate, onSelect }) {

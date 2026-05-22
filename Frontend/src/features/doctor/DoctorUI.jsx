@@ -3,7 +3,7 @@
  * Shared primitives for doctor + service features.
  * Uses CSS from doctor.module.css + layout.css tokens.
  */
-import './doctor.module.css';
+import './doctor.css';
 
 /* ── Spinner ── */
 export function Spinner({ label, small }) {

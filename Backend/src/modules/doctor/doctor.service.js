@@ -1,5 +1,7 @@
 const doctorRepository = require('./doctor.repository');
 const userRepository = require('../user/user.repository');
+const DoctorSlot = require('./slot.model');
+const { Op } = require('sequelize');
 const { AppError } = require('../../middlewares/error.middleware');
 const { getPagination } = require('../../utils/helpers');
 const { ROLES } = require('../../utils/constants');
@@ -128,11 +130,185 @@ const doctorService = {
       throw new AppError('Không thể xem lịch trong quá khứ', 400);
     }
 
+    // 1. Kiểm tra custom slots trước
+    const customSlots = await DoctorSlot.findAll({
+      where: { doctor_profile_id: doctorProfileId, date },
+      order: [['start_time', 'ASC']]
+    });
+
+    if (customSlots.length > 0) {
+      const Appointment = require('../appointment/appointment.model');
+      const { APPOINTMENT_STATUS } = require('../../utils/constants');
+      const booked = await Appointment.findAll({
+        where: {
+          doctor_profile_id: doctorProfileId,
+          appointment_date: date,
+          status: {
+            [Op.notIn]: [
+              APPOINTMENT_STATUS.CANCELLED,
+              APPOINTMENT_STATUS.NO_SHOW,
+            ],
+          },
+        },
+        attributes: ['appointment_time'],
+        raw: true,
+      });
+      const bookedTimes = new Set(booked.map((a) => a.appointment_time));
+
+      const { parseTime } = require('../../utils/helpers');
+      const doctor = await doctorRepository.findById(doctorProfileId);
+      const slotDuration = doctor.slot_duration_minutes || 30;
+
+      const generatedSlots = [];
+      for (const shift of customSlots) {
+        if (!shift.end_time) {
+          generatedSlots.push({
+            time: shift.start_time,
+            isBooked: shift.status === 'booked' || bookedTimes.has(shift.start_time)
+          });
+          continue;
+        }
+
+        const { hours: startH, minutes: startM } = parseTime(shift.start_time);
+        const { hours: endH, minutes: endM } = parseTime(shift.end_time);
+        let current = startH * 60 + startM;
+        const end = endH * 60 + endM;
+
+        while (current + slotDuration <= end) {
+          const h = String(Math.floor(current / 60)).padStart(2, '0');
+          const m = String(current % 60).padStart(2, '0');
+          const timeStr = `${h}:${m}`;
+          
+          generatedSlots.push({
+            time: timeStr,
+            isBooked: shift.status === 'booked' || bookedTimes.has(timeStr)
+          });
+          current += slotDuration;
+        }
+      }
+      return generatedSlots;
+    }
+
+    // 2. Không có custom slots -> dùng lịch mặc định động
     const slots = await doctorRepository.getAvailableSlots(doctorProfileId, date);
     if (slots === null) throw new AppError('Không tìm thấy bác sĩ', 404);
 
     return slots;
   },
+
+  async getMySchedule(userId, from, to) {
+    const doctor = await doctorRepository.findByUserId(userId);
+    if (!doctor) throw new AppError('Không tìm thấy hồ sơ bác sĩ', 404);
+
+    const slots = await DoctorSlot.findAll({
+      where: {
+        doctor_profile_id: doctor.id,
+        date: { [Op.between]: [from, to] }
+      },
+      order: [['date', 'ASC'], ['start_time', 'ASC']]
+    });
+
+    const scheduleMap = {};
+    slots.forEach(slot => {
+      const d = slot.date;
+      if (!scheduleMap[d]) {
+        scheduleMap[d] = [];
+      }
+      scheduleMap[d].push({
+        id: slot.id,
+        startTime: slot.start_time,
+        endTime: slot.end_time,
+        maxPatients: slot.max_patients,
+        status: slot.status
+      });
+    });
+
+    const dayjs = require('dayjs');
+    const result = [];
+    let curr = dayjs(from);
+    const end = dayjs(to);
+    while (curr.isBefore(end) || curr.isSame(end)) {
+      const dateStr = curr.format('YYYY-MM-DD');
+      result.push({
+        date: dateStr,
+        slots: scheduleMap[dateStr] || []
+      });
+      curr = curr.add(1, 'day');
+    }
+
+    return result;
+  },
+
+  async upsertSchedule(userId, data) {
+    const doctor = await doctorRepository.findByUserId(userId);
+    if (!doctor) throw new AppError('Không tìm thấy hồ sơ bác sĩ', 404);
+
+    const { date, slots } = data; // slots is [{ startTime, endTime, maxPatients }]
+    if (!date) throw new AppError('Vui lòng cung cấp ngày', 400);
+    
+    const dayjs = require('dayjs');
+    if (dayjs(date).format('dddd').toLowerCase() === 'sunday') {
+      throw new AppError('Không thể đăng ký lịch làm việc vào Chủ Nhật vì phòng khám nghỉ', 400);
+    }
+
+    if (!Array.isArray(slots)) throw new AppError('slots phải là mảng', 400);
+
+    for (const slot of slots) {
+      const [record, created] = await DoctorSlot.findOrCreate({
+        where: {
+          doctor_profile_id: doctor.id,
+          date,
+          start_time: slot.startTime
+        },
+        defaults: {
+          end_time: slot.endTime,
+          max_patients: slot.maxPatients || 1,
+          status: 'available'
+        }
+      });
+      
+      if (!created) {
+        if (record.status !== 'booked') {
+          record.end_time = slot.endTime;
+          record.max_patients = slot.maxPatients || 1;
+          await record.save();
+        }
+      }
+    }
+
+    const allSlots = await DoctorSlot.findAll({
+      where: { doctor_profile_id: doctor.id, date },
+      order: [['start_time', 'ASC']]
+    });
+
+    return {
+      date,
+      slots: allSlots.map(s => ({
+        id: s.id,
+        startTime: s.start_time,
+        endTime: s.end_time,
+        maxPatients: s.max_patients,
+        status: s.status
+      }))
+    };
+  },
+
+  async deleteSlot(userId, slotId) {
+    const doctor = await doctorRepository.findByUserId(userId);
+    if (!doctor) throw new AppError('Không tìm thấy hồ sơ bác sĩ', 404);
+
+    const slot = await DoctorSlot.findOne({
+      where: { id: slotId, doctor_profile_id: doctor.id }
+    });
+    if (!slot) throw new AppError('Không tìm thấy slot', 404);
+    if (slot.status === 'booked') {
+      throw new AppError('Không thể xoá slot đã được đặt hẹn', 400);
+    }
+
+    await slot.destroy();
+    return true;
+  },
 };
 
 module.exports = doctorService;
+

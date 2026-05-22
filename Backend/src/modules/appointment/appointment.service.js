@@ -32,16 +32,19 @@ const appointmentService = {
       throw new AppError('Không thể đặt lịch trong quá khứ', 400);
     }
 
-    // 3. Kiểm tra ngày làm việc của bác sĩ
+    // 3. Kiểm tra ngày làm việc của bác sĩ (Bỏ qua để hỗ trợ ca làm việc tuỳ chỉnh)
     const dayOfWeek = targetDate.format('dddd').toLowerCase();
-    if (!doctor.working_days.includes(dayOfWeek)) {
-      throw new AppError(`Bác sĩ không làm việc vào ${dayOfWeek}`, 400);
+    if (dayOfWeek === 'sunday') {
+      throw new AppError('Phòng khám không làm việc vào Chủ Nhật', 400);
     }
+    // if (!doctor.working_days.includes(dayOfWeek)) {
+    //   throw new AppError(`Bác sĩ không làm việc vào ${dayOfWeek}`, 400);
+    // }
 
-    // 4. Kiểm tra giờ làm việc
-    if (!isInWorkingHours(appointmentTime, doctor.working_start, doctor.working_end)) {
-      throw new AppError(`Giờ khám phải trong khoảng ${doctor.working_start} - ${doctor.working_end}`, 400);
-    }
+    // 4. Kiểm tra giờ làm việc (Bỏ qua để hỗ trợ ca làm việc tuỳ chỉnh)
+    // if (!isInWorkingHours(appointmentTime, doctor.working_start, doctor.working_end)) {
+    //   throw new AppError(`Giờ khám phải trong khoảng ${doctor.working_start} - ${doctor.working_end}`, 400);
+    // }
 
     // 5. Kiểm tra slot chưa bị đặt
     const conflict = await appointmentRepository.checkSlotConflict(doctorProfileId, appointmentDate, appointmentTime);

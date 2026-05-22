@@ -4,6 +4,7 @@
 const User = require('../modules/user/user.model');
 const RefreshToken = require('../modules/auth/auth.model');
 const DoctorProfile = require('../modules/doctor/doctor.model');
+const DoctorSlot = require('../modules/doctor/slot.model');
 const Specialty = require('../modules/service/specialty.model');
 const Service = require('../modules/service/service.model');
 const Appointment = require('../modules/appointment/appointment.model');
@@ -36,13 +37,15 @@ const setupAssociations = () => {
   RefreshToken.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
   // ========================
-  // DOCTOR PROFILE
+  // DOCTOR PROFILE & SLOTS
   // ========================
   DoctorProfile.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
   DoctorProfile.belongsTo(Specialty, { foreignKey: 'specialty_id', as: 'specialty' });
   DoctorProfile.hasMany(Appointment, { foreignKey: 'doctor_profile_id', as: 'appointments' });
   DoctorProfile.hasMany(MedicalRecord, { foreignKey: 'doctor_profile_id', as: 'medicalRecords' });
   DoctorProfile.hasMany(Review, { foreignKey: 'doctor_profile_id', as: 'reviews' });
+  DoctorProfile.hasMany(DoctorSlot, { foreignKey: 'doctor_profile_id', as: 'slots' });
+  DoctorSlot.belongsTo(DoctorProfile, { foreignKey: 'doctor_profile_id', as: 'doctorProfile' });
 
   // ========================
   // SPECIALTY & SERVICE

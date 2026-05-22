@@ -4,7 +4,7 @@ import {
   Spinner, Alert, AvatarPlaceholder, PageHeader,
   Card, CardHeader, CardBody, Icon, FormGroup, Btn,
 } from './DoctorUI';
-import './doctor.module.css';
+import './doctor.css';
 
 /* ── Validation ── */
 function validate(v) {
@@ -35,10 +35,10 @@ function AvatarUpload({ profile, onUploaded }) {
     setErr(null);
     setUploading(true);
     try {
-      const { default: doctorApi } = await import('../../api/doctor.api');
+      const { default: userApi } = await import('../../api/user.api');
       const fd = new FormData();
       fd.append('avatar', file);
-      await doctorApi.updateAvatar(fd);
+      await userApi.updateAvatar(fd);
       onUploaded?.();
     } catch (ex) {
       setErr(ex.response?.data?.message ?? 'Upload thất bại.');

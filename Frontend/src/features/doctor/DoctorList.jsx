@@ -6,7 +6,7 @@ import {
   Spinner, Alert, AvatarPlaceholder, Stars, Pagination,
   PageHeader, EmptyState, Icon, Badge,
 } from './DoctorUI';
-import './doctor.module.css';
+import './doctor.css';
 
 /* ── Debounce ── */
 function useDebounce(val, ms = 400) {

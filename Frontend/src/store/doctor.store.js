@@ -69,7 +69,7 @@ const useDoctorStore = create((set, get) => ({
     set({ selectedDoctorLoading: true, selectedDoctorError: null, selectedDoctor: null });
     try {
       const res = await doctorApi.getDoctorById(id);
-      set({ selectedDoctor: res.data, selectedDoctorLoading: false });
+      set({ selectedDoctor: res.data.data ?? res.data, selectedDoctorLoading: false });
     } catch (err) {
       set({
         selectedDoctorError: err.response?.data?.message ?? 'Không thể tải thông tin bác sĩ.',
@@ -100,7 +100,7 @@ const useDoctorStore = create((set, get) => ({
     set({ myProfileLoading: true, myProfileError: null });
     try {
       const res = await doctorApi.getMyProfile();
-      set({ myProfile: res.data, myProfileLoading: false });
+      set({ myProfile: res.data.data ?? res.data, myProfileLoading: false });
     } catch (err) {
       set({
         myProfileError: err.response?.data?.message ?? 'Không thể tải hồ sơ.',
@@ -113,7 +113,7 @@ const useDoctorStore = create((set, get) => ({
     set({ myProfileLoading: true, myProfileError: null });
     try {
       const res = await doctorApi.updateMyProfile(data);
-      set({ myProfile: res.data, myProfileLoading: false });
+      set({ myProfile: res.data.data ?? res.data, myProfileLoading: false });
       return { success: true };
     } catch (err) {
       const message = err.response?.data?.message ?? 'Cập nhật thất bại.';
@@ -134,7 +134,8 @@ const useDoctorStore = create((set, get) => ({
     set({ scheduleLoading: true, scheduleError: null, scheduleRange: { from, to } });
     try {
       const res = await doctorApi.getMySchedule(from, to);
-      set({ schedule: res.data ?? [], scheduleLoading: false });
+      const data = res.data?.data ?? res.data ?? [];
+      set({ schedule: Array.isArray(data) ? data : [], scheduleLoading: false });
     } catch (err) {
       set({
         scheduleError: err.response?.data?.message ?? 'Không thể tải lịch làm việc.',
@@ -147,8 +148,8 @@ const useDoctorStore = create((set, get) => ({
     try {
       const res = await doctorApi.upsertSchedule(data);
       // Merge returned slots into local schedule
+      const updated = res.data?.data ?? res.data; // { date, slots }
       set((state) => {
-        const updated = res.data; // { date, slots }
         const exists = state.schedule.find((s) => s.date === updated.date);
         return {
           schedule: exists

@@ -62,6 +62,28 @@ const doctorController = {
       return successResponse(res, { data: slots });
     } catch (error) { next(error); }
   },
+
+  async getMySchedule(req, res, next) {
+    try {
+      const { from, to } = req.query;
+      const schedule = await doctorService.getMySchedule(req.user.id, from, to);
+      return successResponse(res, { data: schedule });
+    } catch (error) { next(error); }
+  },
+
+  async upsertSchedule(req, res, next) {
+    try {
+      const result = await doctorService.upsertSchedule(req.user.id, req.body);
+      return successResponse(res, { data: result });
+    } catch (error) { next(error); }
+  },
+
+  async deleteSlot(req, res, next) {
+    try {
+      await doctorService.deleteSlot(req.user.id, req.params.slotId);
+      return successResponse(res, { message: 'Xoá slot thành công' });
+    } catch (error) { next(error); }
+  },
 };
 
 module.exports = doctorController;
