@@ -247,11 +247,70 @@ const doctorService = {
     if (!date) throw new AppError('Vui lòng cung cấp ngày', 400);
     
     const dayjs = require('dayjs');
+    const isoWeek = require('dayjs/plugin/isoWeek');
+    dayjs.extend(isoWeek);
+
     if (dayjs(date).format('dddd').toLowerCase() === 'sunday') {
       throw new AppError('Không thể đăng ký lịch làm việc vào Chủ Nhật vì phòng khám nghỉ', 400);
     }
 
-    if (!Array.isArray(slots)) throw new AppError('slots phải là mảng', 400);
+    if (!Array.isArray(slots) || slots.length === 0) throw new AppError('slots phải là mảng và không được rỗng', 400);
+
+    // 1. Kiểm tra giới hạn 56 giờ/tuần
+    const startOfWeek = dayjs(date).startOf('isoWeek').format('YYYY-MM-DD');
+    const endOfWeek = dayjs(date).endOf('isoWeek').format('YYYY-MM-DD');
+
+    const weekSlots = await DoctorSlot.findAll({
+      where: {
+        doctor_profile_id: doctor.id,
+        date: { [Op.between]: [startOfWeek, endOfWeek] }
+      }
+    });
+
+    let currentHours = 0;
+    for (const s of weekSlots) {
+      // Nếu slot này đang được update (trùng startTime và date), bỏ qua để tính lại
+      const isBeingUpdated = slots.some(newSlot => newSlot.startTime === s.start_time && date === s.date);
+      if (!isBeingUpdated) {
+        const start = dayjs(`2000-01-01 ${s.start_time}`);
+        const end = dayjs(`2000-01-01 ${s.end_time}`);
+        currentHours += end.diff(start, 'hour', true);
+      }
+    }
+
+    let newHours = 0;
+    for (const slot of slots) {
+      const start = dayjs(`2000-01-01 ${slot.startTime}`);
+      const end = dayjs(`2000-01-01 ${slot.endTime}`);
+      newHours += end.diff(start, 'hour', true);
+    }
+
+    if (currentHours + newHours > 56) {
+      throw new AppError(`Bạn đã vượt quá giới hạn 56 giờ làm việc/tuần. Tổng số giờ nếu thêm ca này sẽ là ${currentHours + newHours} giờ.`, 400);
+    }
+
+    // 2. Kiểm tra số lượng tối đa 3 bác sĩ trong 1 ca
+    for (const slot of slots) {
+      const overlappingDoctorsCount = await DoctorSlot.count({
+        where: {
+          date,
+          doctor_profile_id: { [Op.ne]: doctor.id },
+          start_time: { [Op.lt]: slot.endTime },
+          end_time: { [Op.gt]: slot.startTime }
+        },
+        distinct: true,
+        col: 'doctor_profile_id'
+      });
+
+      if (overlappingDoctorsCount >= 3) {
+        let ca = 'Ca này';
+        if (slot.startTime === '08:00' && slot.endTime === '14:00') ca = 'Ca Sáng';
+        else if (slot.startTime === '14:00' && slot.endTime === '20:00') ca = 'Ca Chiều';
+        else if (slot.startTime === '08:00' && slot.endTime === '20:00') ca = 'Ca Full ngày';
+
+        throw new AppError(`${ca} ngày ${dayjs(date).format('DD/MM/YYYY')} đã đạt giới hạn tối đa 3 bác sĩ. Vui lòng chọn ca khác.`, 400);
+      }
+    }
 
     for (const slot of slots) {
       const [record, created] = await DoctorSlot.findOrCreate({

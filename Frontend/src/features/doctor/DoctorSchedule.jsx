@@ -10,28 +10,14 @@ import './doctor.css';
 /* ── Validate slot times ── */
 function validateSlot(v) {
   const e = {};
-  if (!v.startTime) e.startTime = 'Vui lòng chọn giờ bắt đầu.';
-  if (!v.endTime)   e.endTime   = 'Vui lòng chọn giờ kết thúc.';
-  if (v.startTime && v.endTime && v.startTime >= v.endTime)
-    e.endTime = 'Giờ kết thúc phải sau giờ bắt đầu.';
+  if (!v.shiftType) e.shiftType = 'Vui lòng chọn ca làm việc.';
   return e;
 }
-
-/* ── Time options (every 15 min from 06:00 to 21:00) ── */
-const TIME_OPTIONS = (() => {
-  const opts = [];
-  for (let h = 6; h <= 21; h++) {
-    for (let m = 0; m < 60; m += 15) {
-      opts.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
-    }
-  }
-  return opts;
-})();
 
 /* ── Add-slot modal ── */
 function AddSlotModal({ date, onClose, onSaved }) {
   const { upsertSchedule } = useDoctorStore();
-  const [values, setValues] = useState({ startTime: '', endTime: '', maxPatients: 1 });
+  const [values, setValues] = useState({ shiftType: '', maxPatients: 5 });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [serverErr, setServerErr] = useState(null);
@@ -47,10 +33,16 @@ function AddSlotModal({ date, onClose, onSaved }) {
     e.preventDefault();
     const errs = validateSlot(values);
     if (Object.keys(errs).length) { setErrors(errs); return; }
+    
+    let startTime, endTime;
+    if (values.shiftType === 'morning') { startTime = '08:00'; endTime = '14:00'; }
+    else if (values.shiftType === 'afternoon') { startTime = '14:00'; endTime = '20:00'; }
+    else if (values.shiftType === 'full') { startTime = '08:00'; endTime = '20:00'; }
+
     setLoading(true);
     const result = await upsertSchedule({
       date,
-      slots: [{ startTime: values.startTime, endTime: values.endTime, maxPatients: Number(values.maxPatients) }],
+      slots: [{ startTime, endTime, maxPatients: Number(values.maxPatients) }],
     });
     setLoading(false);
     if (result.success) { onSaved(); onClose(); }
@@ -63,7 +55,7 @@ function AddSlotModal({ date, onClose, onSaved }) {
 
   return (
     <Modal
-      title={`Thêm slot – ${displayDate}`}
+      title={`Thêm ca làm việc – ${displayDate}`}
       onClose={onClose}
       footer={
         <>
@@ -71,7 +63,7 @@ function AddSlotModal({ date, onClose, onSaved }) {
           <Btn type="submit" form="add-slot-form" disabled={loading}>
             {loading
               ? <><div className="spinner spinner-sm" style={{ borderTopColor: 'white' }} /> Đang lưu…</>
-              : <><Icon name="plus" size={14} /> Thêm slot</>
+              : <><Icon name="plus" size={14} /> Thêm ca</>
             }
           </Btn>
         </>
@@ -80,24 +72,17 @@ function AddSlotModal({ date, onClose, onSaved }) {
       {serverErr && <div className="alert alert-error" style={{ marginBottom: 16 }}>{serverErr}</div>}
       <form id="add-slot-form" onSubmit={handleSubmit} noValidate>
         <div style={{ marginBottom: 16 }}>
-          <label className="form-label">Khung giờ *</label>
-          <div className="time-range">
-            <select name="startTime" className="form-control form-select"
-              value={values.startTime} onChange={handleChange}
-              style={errors.startTime ? { borderColor: 'var(--color-error)' } : undefined}>
-              <option value="">Từ giờ</option>
-              {TIME_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
-            <span className="time-range-sep">→</span>
-            <select name="endTime" className="form-control form-select"
-              value={values.endTime} onChange={handleChange}
-              style={errors.endTime ? { borderColor: 'var(--color-error)' } : undefined}>
-              <option value="">Đến giờ</option>
-              {TIME_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
-          </div>
-          {(errors.startTime || errors.endTime) && (
-            <div className="form-error">⚠ {errors.startTime || errors.endTime}</div>
+          <label className="form-label">Ca làm việc *</label>
+          <select name="shiftType" className="form-control form-select"
+            value={values.shiftType} onChange={handleChange}
+            style={{ width: '100%', ...(errors.shiftType ? { borderColor: 'var(--color-error)' } : {}) }}>
+            <option value="">— Chọn ca làm việc —</option>
+            <option value="morning">Ca sáng (08:00 - 14:00)</option>
+            <option value="afternoon">Ca chiều (14:00 - 20:00)</option>
+            <option value="full">Full ngày (08:00 - 20:00)</option>
+          </select>
+          {errors.shiftType && (
+            <div className="form-error">⚠ {errors.shiftType}</div>
           )}
         </div>
 
@@ -107,7 +92,7 @@ function AddSlotModal({ date, onClose, onSaved }) {
             className="form-control"
             value={values.maxPatients}
             onChange={handleChange}
-            min={1} max={20}
+            min={1} max={50}
           />
         </FormGroup>
       </form>
