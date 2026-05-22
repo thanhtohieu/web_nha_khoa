@@ -135,9 +135,25 @@ export default function AppointmentList() {
                           <td><span className={`status-badge ${statusMeta.color}`}>{statusMeta.label}</span></td>
                           <td className="td-reason">{appt.reason || '—'}</td>
                           <td>
-                            <button className="btn-link" onClick={() => navigate(`/${role}/appointments/${appt.id}`)}>
-                              Chi tiết →
-                            </button>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                              <button className="btn-link" onClick={() => navigate(`/${role}/appointments/${appt.id}`)}>
+                                Chi tiết →
+                              </button>
+                              {(role === 'receptionist' || role === 'admin') && appt.status === 'confirmed' && (
+                                <button 
+                                  className="btn-primary" 
+                                  style={{ padding: '4px 8px', fontSize: '0.75rem', borderRadius: '4px' }}
+                                  onClick={async () => {
+                                    if (!window.confirm('Xác nhận bệnh nhân đã có mặt?')) return;
+                                    const { performAction, fetchAppointments } = useAppointmentStore.getState();
+                                    await performAction('checkin', appt.id);
+                                    fetchAppointments();
+                                  }}
+                                >
+                                  Check-in
+                                </button>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       );

@@ -25,7 +25,7 @@ const appointmentApi = {
     axiosClient.patch(`/appointments/${id}/cancel`, { reason }),
 
   checkInAppointment: (id) =>
-    axiosClient.patch(`/appointments/${id}/checkin`),
+    axiosClient.patch(`/appointments/${id}/check-in`),
 
   completeAppointment: (id, notes) =>
     axiosClient.patch(`/appointments/${id}/complete`, { notes }),

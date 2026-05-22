@@ -35,6 +35,7 @@ const DoctorSchedule = lazy(() => import('./features/doctor/DoctorSchedule'));
 const AppointmentList = lazy(() => import('./features/appointment/AppointmentList'));
 const AppointmentDetail = lazy(() => import('./features/appointment/AppointmentDetail'));
 const Booking = lazy(() => import('./features/appointment/Booking'));
+const ReceptionistCheckin = lazy(() => import('./features/appointment/ReceptionistCheckin'));
 const MedicalRecordList = lazy(() => import('./features/medical/MedicalRecordList'));
 const MedicalRecordDetail = lazy(() => import('./features/medical/MedicalRecordDetail'));
 const Prescription = lazy(() => import('./features/medical/Prescription'));
@@ -127,7 +128,7 @@ function App() {
           <Route path="appointments/booking" element={<Booking />} />
           <Route path="appointments/:id" element={<AppointmentDetail />} />
           <Route path="patients" element={<UserList />} />
-          <Route path="checkin" element={<UnderConstructionPage />} />
+          <Route path="checkin" element={<ReceptionistCheckin />} />
           <Route path="billing" element={<PaymentList />} />
           <Route path="billing/:id" element={<PaymentCheckout />} />
           <Route path="profile" element={<Profile />} />

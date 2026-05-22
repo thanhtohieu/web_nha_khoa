@@ -126,7 +126,7 @@ const useAppointmentStore = create((set, get) => ({
       return { success: true };
     } catch (err) {
       set({ detailLoading: false });
-      return { success: false, error: err.message };
+      return { success: false, error: err.response?.data?.message || err.message };
     }
   },
 
