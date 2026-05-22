@@ -45,8 +45,9 @@ export function PageHeader({ title, subtitle, actions }) {
 
 /* ── Avatar placeholder ── */
 export function AvatarPlaceholder({ name = '', size = 'md', src }) {
-  const initials = name.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
-  if (src) return <img src={src} alt={name} className={`avatar avatar-${size}`} />;
+  const safeName = typeof name === 'string' ? name : (name ? String(name) : '');
+  const initials = safeName.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+  if (src) return <img src={src} alt={safeName} className={`avatar avatar-${size}`} />;
   return <span className={`avatar-placeholder avatar-${size}`}>{initials || '?'}</span>;
 }
 

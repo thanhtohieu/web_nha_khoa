@@ -51,7 +51,7 @@ function AvatarUpload({ profile, onUploaded }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '24px 24px 0' }}>
       <div style={{ position: 'relative' }}>
-        <AvatarPlaceholder name={profile?.fullName} size="lg" src={profile?.avatarUrl} />
+        <AvatarPlaceholder name={profile?.user?.full_name || profile?.fullName} size="lg" src={profile?.user?.avatar || profile?.avatarUrl} />
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
@@ -72,10 +72,10 @@ function AvatarUpload({ profile, onUploaded }) {
       {err && <div className="form-error">⚠ {err}</div>}
       <div style={{ textAlign: 'center', lineHeight: 1.3 }}>
         <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '1.05rem' }}>
-          {profile?.fullName}
+          {profile?.user?.full_name || profile?.fullName}
         </div>
         <div style={{ fontSize: '0.8rem', color: 'var(--color-accent)', fontWeight: 500 }}>
-          {profile?.specialty}
+          {profile?.specialty?.name || (typeof profile?.specialty === 'string' ? profile.specialty : '')}
         </div>
       </div>
     </div>
@@ -96,17 +96,22 @@ export default function DoctorProfile() {
   // Populate form once profile loads
   useEffect(() => {
     if (profile && !values) {
+      // Handle array or string for education/certifications defensively
+      const parseField = (val) => Array.isArray(val) ? val.join('\n') : (val || '');
+      
+      const specialtyName = profile.specialty?.name || (typeof profile.specialty === 'string' ? profile.specialty : '');
+
       setValues({
-        fullName:      profile.fullName      ?? '',
-        phone:         profile.phone         ?? '',
-        email:         profile.email         ?? '',
-        specialty:     profile.specialty     ?? '',
-        qualification: profile.qualification ?? '',
-        room:          profile.room          ?? '',
-        yearsExp:      profile.yearsExp      ?? '',
-        bio:           profile.bio           ?? '',
-        education:     (profile.education ?? []).join('\n'),
-        certifications:(profile.certifications ?? []).join('\n'),
+        fullName:      profile.user?.full_name ?? profile.fullName ?? '',
+        phone:         profile.user?.phone ?? profile.phone ?? '',
+        email:         profile.user?.email ?? profile.email ?? '',
+        specialty:     specialtyName,
+        qualification: profile.title ?? profile.qualification ?? '',
+        room:          profile.room ?? '',
+        yearsExp:      profile.experience_years ?? profile.yearsExp ?? '',
+        bio:           profile.bio ?? '',
+        education:     parseField(profile.education),
+        certifications:parseField(profile.certificate ?? profile.certifications),
       });
     }
   }, [profile]);
@@ -126,9 +131,10 @@ export default function DoctorProfile() {
 
     const payload = {
       ...values,
-      yearsExp:       values.yearsExp ? Number(values.yearsExp) : undefined,
-      education:      values.education.split('\n').map(s => s.trim()).filter(Boolean),
-      certifications: values.certifications.split('\n').map(s => s.trim()).filter(Boolean),
+      experienceYears: values.yearsExp ? Number(values.yearsExp) : undefined,
+      title:           values.qualification,
+      education:       values.education.split('\n').map(s => s.trim()).filter(Boolean).join('\n'),
+      certificate:     values.certifications.split('\n').map(s => s.trim()).filter(Boolean).join('\n'),
     };
 
     const result = await updateMyProfile(payload);

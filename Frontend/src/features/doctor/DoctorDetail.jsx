@@ -172,24 +172,24 @@ export default function DoctorDetail() {
       <div className="doctor-detail-layout">
         {/* ── Left panel ── */}
         <div className="doctor-info-card">
-          <AvatarPlaceholder name={doctor.fullName} size="lg" src={doctor.avatarUrl} />
-          <div className="doctor-info-name">{doctor.fullName}</div>
-          <div className="doctor-info-specialty">{doctor.specialty}</div>
+          <AvatarPlaceholder name={doctor.user?.full_name || doctor.fullName} size="lg" src={doctor.user?.avatar || doctor.avatarUrl} />
+          <div className="doctor-info-name">{doctor.user?.full_name || doctor.fullName}</div>
+          <div className="doctor-info-specialty">{doctor.specialty?.name || (typeof doctor.specialty === 'string' ? doctor.specialty : '')}</div>
 
-          {doctor.rating != null && (
+          {doctor.rating_avg != null && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Stars value={doctor.rating} />
+              <Stars value={Number(doctor.rating_avg)} />
               <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                {doctor.rating?.toFixed(1)} ({doctor.reviewCount ?? 0} đánh giá)
+                {Number(doctor.rating_avg).toFixed(1)} ({doctor.rating_count ?? 0} đánh giá)
               </span>
             </div>
           )}
 
-          {(doctor.yearsExp || doctor.patientCount || doctor.reviewCount) && (
+          {(doctor.experience_years != null || doctor.patientCount != null || doctor.rating_count != null) && (
             <div className="doctor-stats">
-              {doctor.yearsExp != null && (
+              {doctor.experience_years != null && (
                 <div className="doctor-stat">
-                  <span className="doctor-stat-value">{doctor.yearsExp}</span>
+                  <span className="doctor-stat-value">{doctor.experience_years}</span>
                   <span className="doctor-stat-label">Năm KN</span>
                 </div>
               )}
@@ -199,9 +199,9 @@ export default function DoctorDetail() {
                   <span className="doctor-stat-label">Bệnh nhân</span>
                 </div>
               )}
-              {doctor.reviewCount != null && (
+              {doctor.rating_count != null && (
                 <div className="doctor-stat">
-                  <span className="doctor-stat-value">{doctor.reviewCount}</span>
+                  <span className="doctor-stat-value">{doctor.rating_count}</span>
                   <span className="doctor-stat-label">Đánh giá</span>
                 </div>
               )}
@@ -210,11 +210,12 @@ export default function DoctorDetail() {
 
           <hr style={{ width: '100%', border: 'none', borderTop: '1px solid var(--color-border-soft)', margin: '4px 0' }} />
 
-          <div style={{ width: '100%', textAlign: 'left' }}>
-            <InfoRow icon="stethoscope" label="Chuyên khoa"   value={doctor.specialty} />
-            <InfoRow icon="info"        label="Bằng cấp"       value={doctor.qualification} />
-            <InfoRow icon="calendar"    label="Phòng khám"     value={doctor.room ? `Phòng ${doctor.room}` : null} />
-            <InfoRow icon="user"        label="Email"           value={doctor.email} />
+          <div style={{ width: '100%', textAlign: 'left', marginTop: 12 }}>
+            <InfoRow icon="info" label="Bằng cấp / Học vị" value={doctor.title || doctor.qualification} />
+            <InfoRow icon="calendar" label="Phòng khám" value={doctor.room ? `Phòng ${doctor.room}` : null} />
+            <InfoRow icon="user" label="Email" value={doctor.user?.email || doctor.email} />
+            <InfoRow icon="creditCard" label="Phí khám" value={doctor.consultation_fee ? `${Number(doctor.consultation_fee).toLocaleString()}đ` : 'Theo dịch vụ'} />
+            <InfoRow icon="calendar" label="Lịch khám" value={(doctor.working_days || []).map(d => VN_DAYS[['sunday','monday','tuesday','wednesday','thursday','friday','saturday'].indexOf(d)] || d).join(', ')} />
           </div>
         </div>
 

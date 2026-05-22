@@ -17,16 +17,12 @@ function useDebounce(val, ms = 400) {
 
 /* ── Service emoji map (fallback icons) ── */
 const CATEGORY_EMOJI = {
-  'Nội khoa':     '🫀',
-  'Ngoại khoa':   '🔬',
-  'Nhi khoa':     '👶',
-  'Sản phụ khoa': '🌸',
-  'Mắt':          '👁️',
-  'Tai Mũi Họng': '👂',
-  'Da liễu':      '🧴',
-  'Răng hàm mặt':'🦷',
-  'Thần kinh':    '🧠',
-  'default':      '🏥',
+  'Nha khoa tổng quát': '🪥',
+  'Nha khoa trẻ em': '👶',
+  'Chỉnh nha - Niềng răng': '😁',
+  'Cấy ghép Implant': '🔩',
+  'Nhổ răng - Tiểu phẫu': '💉',
+  'default': '🦷',
 };
 
 /* ── Service card ── */

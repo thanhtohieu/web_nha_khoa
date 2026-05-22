@@ -129,35 +129,36 @@ const seed = async () => {
     // ========================
     const specialties = await Promise.all([
       Specialty.findOrCreate({
-        where: { slug: 'noi-khoa' },
-        defaults: { name: 'Nội khoa', slug: 'noi-khoa', description: 'Khám và điều trị các bệnh nội tạng', icon: '🫁', is_active: true },
+        where: { slug: 'nha-khoa-tong-quat' },
+        defaults: { name: 'Nha khoa tổng quát', slug: 'nha-khoa-tong-quat', description: 'Khám, tư vấn và điều trị răng miệng cơ bản', icon: '🪥', is_active: true },
         transaction: t,
       }),
       Specialty.findOrCreate({
-        where: { slug: 'nhi-khoa' },
-        defaults: { name: 'Nhi khoa', slug: 'nhi-khoa', description: 'Chăm sóc sức khỏe trẻ em', icon: '👶', is_active: true },
+        where: { slug: 'nha-khoa-tre-em' },
+        defaults: { name: 'Nha khoa trẻ em', slug: 'nha-khoa-tre-em', description: 'Chăm sóc và điều trị răng miệng cho trẻ nhỏ', icon: '👶', is_active: true },
         transaction: t,
       }),
       Specialty.findOrCreate({
-        where: { slug: 'san-phu-khoa' },
-        defaults: { name: 'Sản - Phụ khoa', slug: 'san-phu-khoa', description: 'Chăm sóc sức khỏe phụ nữ và thai sản', icon: '🤰', is_active: true },
+        where: { slug: 'chinh-nha' },
+        defaults: { name: 'Chỉnh nha - Niềng răng', slug: 'chinh-nha', description: 'Chỉnh nha, niềng răng thẩm mỹ', icon: '😁', is_active: true },
         transaction: t,
       }),
       Specialty.findOrCreate({
-        where: { slug: 'rang-ham-mat' },
-        defaults: { name: 'Răng hàm mặt', slug: 'rang-ham-mat', description: 'Khám và điều trị bệnh về răng miệng', icon: '🦷', is_active: true },
+        where: { slug: 'cay-ghep-implant' },
+        defaults: { name: 'Cấy ghép Implant', slug: 'cay-ghep-implant', description: 'Phục hình răng đã mất bằng Implant', icon: '🔩', is_active: true },
         transaction: t,
       }),
       Specialty.findOrCreate({
-        where: { slug: 'da-lieu' },
-        defaults: { name: 'Da liễu', slug: 'da-lieu', description: 'Khám và điều trị bệnh ngoài da', icon: '🩺', is_active: true },
+        where: { slug: 'nho-rang-tieu-phau' },
+        defaults: { name: 'Nhổ răng - Tiểu phẫu', slug: 'nho-rang-tieu-phau', description: 'Nhổ răng khôn, tiểu phẫu trong miệng', icon: '💉', is_active: true },
         transaction: t,
       }),
     ]);
 
-    const [noikhoaSpec] = specialties[0];
-    const [nhiSpec] = specialties[1];
-    const [sanphuSpec] = specialties[2];
+    const [tongquatSpec] = specialties[0];
+    const [treemSpec] = specialties[1];
+    const [chinhnhaSpec] = specialties[2];
+    const [implantSpec] = specialties[3];
     logger.info('✅ Seeded: Specialties');
 
     // ========================
@@ -165,53 +166,66 @@ const seed = async () => {
     // ========================
     await Promise.all([
       Service.findOrCreate({
-        where: { name: 'Khám tổng quát' },
+        where: { name: 'Khám và tư vấn răng miệng' },
         defaults: {
-          name: 'Khám tổng quát',
-          slug: 'kham-tong-quat',
-          specialty_id: noikhoaSpec.id,
-          price: 200000,
+          name: 'Khám và tư vấn răng miệng',
+          slug: 'kham-tu-van-rang-mieng',
+          specialty_id: tongquatSpec.id,
+          price: 150000,
           duration_minutes: 30,
-          description: 'Kiểm tra sức khỏe toàn diện',
+          description: 'Khám tổng quát, chụp X-quang và tư vấn phác đồ điều trị',
           is_active: true,
         },
         transaction: t,
       }),
       Service.findOrCreate({
-        where: { name: 'Khám nội khoa' },
+        where: { name: 'Cạo vôi răng - Đánh bóng' },
         defaults: {
-          name: 'Khám nội khoa',
-          slug: 'kham-noi-khoa',
-          specialty_id: noikhoaSpec.id,
+          name: 'Cạo vôi răng - Đánh bóng',
+          slug: 'cao-voi-rang',
+          specialty_id: tongquatSpec.id,
           price: 250000,
           duration_minutes: 30,
-          description: 'Tư vấn và điều trị bệnh nội khoa',
+          description: 'Làm sạch mảng bám, vôi răng và đánh bóng',
           is_active: true,
         },
         transaction: t,
       }),
       Service.findOrCreate({
-        where: { name: 'Khám nhi' },
+        where: { name: 'Nhổ răng sữa' },
         defaults: {
-          name: 'Khám nhi',
-          slug: 'kham-nhi',
-          specialty_id: nhiSpec.id,
-          price: 220000,
-          duration_minutes: 30,
-          description: 'Khám và tư vấn sức khỏe cho trẻ em',
+          name: 'Nhổ răng sữa',
+          slug: 'nho-rang-sua',
+          specialty_id: treemSpec.id,
+          price: 100000,
+          duration_minutes: 15,
+          description: 'Nhổ răng sữa an toàn, không đau cho bé',
           is_active: true,
         },
         transaction: t,
       }),
       Service.findOrCreate({
-        where: { name: 'Khám thai định kỳ' },
+        where: { name: 'Nhổ răng khôn (Răng số 8)' },
         defaults: {
-          name: 'Khám thai định kỳ',
-          slug: 'kham-thai-dinh-ky',
-          specialty_id: sanphuSpec.id,
-          price: 300000,
-          duration_minutes: 45,
-          description: 'Theo dõi thai kỳ và sức khỏe mẹ bầu',
+          name: 'Nhổ răng khôn (Răng số 8)',
+          slug: 'nho-rang-khon',
+          specialty_id: implantSpec.id, // using implant/surgery
+          price: 1500000,
+          duration_minutes: 60,
+          description: 'Tiểu phẫu nhổ răng khôn mọc lệch, mọc ngầm',
+          is_active: true,
+        },
+        transaction: t,
+      }),
+      Service.findOrCreate({
+        where: { name: 'Niềng răng mắc cài kim loại' },
+        defaults: {
+          name: 'Niềng răng mắc cài kim loại',
+          slug: 'nieng-rang-mac-cai-kim-loai',
+          specialty_id: chinhnhaSpec.id,
+          price: 35000000,
+          duration_minutes: 60,
+          description: 'Chỉnh nha bằng mắc cài kim loại chuẩn',
           is_active: true,
         },
         transaction: t,
