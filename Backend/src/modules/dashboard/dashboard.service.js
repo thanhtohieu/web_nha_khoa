@@ -4,10 +4,28 @@ const { AppError } = require('../../middlewares/error.middleware');
 const { ROLES } = require('../../utils/constants');
 const dayjs = require('dayjs');
 
-const getDefaultDateRange = (query) => {
-  const endDate = query.endDate || dayjs().format('YYYY-MM-DD');
-  const startDate = query.startDate || dayjs().subtract(30, 'day').format('YYYY-MM-DD');
+const getDefaultDateRange = (query = {}) => {
+  let startDate = query.startDate;
+  let endDate = query.endDate;
   const groupBy = query.groupBy || 'day';
+
+  if (!startDate || !endDate) {
+    if (query.period === 'month') {
+      startDate = dayjs().startOf('month').format('YYYY-MM-DD');
+      endDate = dayjs().endOf('month').format('YYYY-MM-DD');
+    } else if (query.period === 'week') {
+      startDate = dayjs().startOf('week').format('YYYY-MM-DD');
+      endDate = dayjs().endOf('week').format('YYYY-MM-DD');
+    } else if (query.period === 'year') {
+      startDate = dayjs().startOf('year').format('YYYY-MM-DD');
+      endDate = dayjs().endOf('year').format('YYYY-MM-DD');
+    } else {
+      // Default to last 30 days up to today if nothing specified
+      endDate = dayjs().format('YYYY-MM-DD');
+      startDate = dayjs().subtract(30, 'day').format('YYYY-MM-DD');
+    }
+  }
+
   return { startDate, endDate, groupBy };
 };
 
@@ -68,8 +86,9 @@ const dashboardService = {
   // --------------------
   // RECEPTIONIST DASHBOARD
   // --------------------
-  async getReceptionistDashboard() {
-    return dashboardRepository.getReceptionistStats();
+  async getReceptionistDashboard(query) {
+    const { startDate, endDate } = getDefaultDateRange(query);
+    return dashboardRepository.getReceptionistStats({ startDate, endDate });
   },
 
   // --------------------
@@ -89,7 +108,7 @@ const dashboardService = {
       case ROLES.DOCTOR:
         return this.getDoctorDashboard(requestUser.id, query);
       case ROLES.RECEPTIONIST:
-        return this.getReceptionistDashboard();
+        return this.getReceptionistDashboard(query);
       case ROLES.PATIENT:
         return this.getPatientDashboard(requestUser.id);
       default:

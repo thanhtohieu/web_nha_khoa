@@ -17,7 +17,6 @@ const PERIOD_OPTIONS = [
 const TOP_DOCTOR_COLUMNS = [
   { key: 'rank', label: '#' },
   { key: 'name', label: 'Bác sĩ' },
-  { key: 'specialty', label: 'Chuyên khoa' },
   { key: 'totalAppointments', label: 'Lịch hẹn' },
   {
     key: 'rating',
@@ -26,18 +25,51 @@ const TOP_DOCTOR_COLUMNS = [
   },
 ];
 
-const ACTIVITY_COLUMNS = [
+const RECENT_COLUMNS = [
   { key: 'time', label: 'Thời gian' },
-  { key: 'action', label: 'Hành động' },
-  { key: 'user', label: 'Người dùng' },
+  { key: 'patientName', label: 'Bệnh nhân' },
+  { key: 'doctorName', label: 'Bác sĩ' },
   {
-    key: 'type',
-    label: 'Loại',
-    render: (val) => (
-      <span className={`badge badge--${val?.toLowerCase()}`}>{val}</span>
-    ),
+    key: 'status',
+    label: 'Trạng thái',
+    render: (val) => {
+      const map = {
+        pending: { label: 'Chờ xác nhận', color: '#d97706' },
+        confirmed: { label: 'Đã xác nhận', color: '#2563eb' },
+        checked_in: { label: 'Đã check-in', color: '#0891b2' },
+        in_progress: { label: 'Đang khám', color: '#7c3aed' },
+        completed: { label: 'Hoàn thành', color: '#059669' },
+        cancelled: { label: 'Đã hủy', color: '#dc2626' },
+        no_show: { label: 'Không đến', color: '#6b7280' },
+      };
+      const s = map[val] ?? { label: val, color: '#6b7280' };
+      return <span style={{ color: s.color, fontWeight: 600 }}>{s.label}</span>;
+    },
   },
 ];
+
+// Helper: convert period string to startDate/endDate query
+function periodToDateRange(period) {
+  const now = new Date();
+  const endDate = now.toISOString().split('T')[0];
+  let startDate;
+  switch (period) {
+    case 'week':
+      startDate = new Date(now - 7 * 86400000).toISOString().split('T')[0];
+      break;
+    case 'quarter':
+      startDate = new Date(now - 90 * 86400000).toISOString().split('T')[0];
+      break;
+    case 'year':
+      startDate = new Date(now - 365 * 86400000).toISOString().split('T')[0];
+      break;
+    case 'month':
+    default:
+      startDate = new Date(now - 30 * 86400000).toISOString().split('T')[0];
+      break;
+  }
+  return { startDate, endDate };
+}
 
 function DashboardAdmin() {
   const [period, setPeriod] = useState('month');
@@ -45,7 +77,7 @@ function DashboardAdmin() {
   const [revenueData, setRevenueData] = useState([]);
   const [appointmentData, setAppointmentData] = useState([]);
   const [topDoctors, setTopDoctors] = useState([]);
-  const [recentActivities, setRecentActivities] = useState([]);
+  const [recentAppointments, setRecentAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [chartLoading, setChartLoading] = useState(false);
@@ -55,15 +87,79 @@ function DashboardAdmin() {
     setChartLoading(true);
     setError(null);
     try {
-      const res = await dashboardApi.getAdminDashboard({ period });
+      const dateRange = periodToDateRange(period);
+      const res = await dashboardApi.getAdminDashboard(dateRange);
       const payload = res.data?.data || {};
-      
-      setStats(payload.overview);
-      setTopDoctors(payload.topDoctors ?? []);
-      setRecentActivities(payload.recentAppointments ?? []);
-      
-      setRevenueData(payload.charts?.revenue ?? []);
-      setAppointmentData(payload.charts?.appointments ?? []);
+
+      // Map overview data — backend returns: totalUsers, newPatients, totalDoctors,
+      // totalAppointments, completedAppointments, cancelledAppointments,
+      // pendingAppointments, totalRevenue, completionRate, avgRating
+      const ov = payload.overview || {};
+      setStats({
+        totalUsers: ov.totalUsers ?? 0,
+        newPatients: ov.newPatients ?? 0,
+        totalDoctors: ov.totalDoctors ?? 0,
+        totalAppointments: ov.totalAppointments ?? 0,
+        completedAppointments: ov.completedAppointments ?? 0,
+        cancelledAppointments: ov.cancelledAppointments ?? 0,
+        pendingAppointments: ov.pendingAppointments ?? 0,
+        totalRevenue: ov.totalRevenue ?? 0,
+        completionRate: ov.completionRate ?? 0,
+        avgRating: ov.avgRating ?? 0,
+      });
+
+      // Map top doctors — backend returns Sequelize model with nested includes
+      const rawDoctors = payload.topDoctors ?? [];
+      setTopDoctors(
+        rawDoctors.map((d, i) => {
+          const raw = d.dataValues || d;
+          const doc = raw.doctor?.dataValues || raw.doctor || {};
+          const user = doc.user?.dataValues || doc.user || {};
+          return {
+            rank: i + 1,
+            name: user.full_name || doc.title || '—',
+            totalAppointments: parseInt(raw.total_appointments || raw.totalAppointments || 0),
+            rating: doc.rating_avg ? parseFloat(doc.rating_avg).toFixed(1) : null,
+          };
+        })
+      );
+
+      // Map recent appointments — backend returns Sequelize model with patient/doctor includes
+      const rawRecent = payload.recentAppointments ?? [];
+      setRecentAppointments(
+        rawRecent.map((a) => {
+          const raw = a.dataValues || a;
+          const patient = raw.patient?.dataValues || raw.patient || {};
+          const doc = raw.doctor?.dataValues || raw.doctor || {};
+          const docUser = doc.user?.dataValues || doc.user || {};
+          return {
+            time: `${raw.appointment_date || ''} ${raw.appointment_time || ''}`.trim(),
+            patientName: patient.full_name || '—',
+            doctorName: docUser.full_name || doc.title || '—',
+            status: raw.status,
+          };
+        })
+      );
+
+      // Charts
+      setRevenueData(
+        (payload.charts?.revenue ?? []).map((r) => ({
+          label: r.period,
+          value: parseFloat(r.revenue || 0),
+        }))
+      );
+
+      // Group appointment chart by date (aggregate counts across statuses)
+      const apptRaw = payload.charts?.appointments ?? [];
+      const apptMap = {};
+      apptRaw.forEach((r) => {
+        const date = r.date || r.appointment_date;
+        if (!apptMap[date]) apptMap[date] = 0;
+        apptMap[date] += parseInt(r.count || 0);
+      });
+      setAppointmentData(
+        Object.entries(apptMap).map(([label, value]) => ({ label, value }))
+      );
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || 'Lỗi tải dữ liệu');
     } finally {
@@ -99,38 +195,34 @@ function DashboardAdmin() {
       {/* Stats */}
       <div className="stat-grid">
         <StatCard
-          label="Tổng bệnh nhân"
-          value={stats?.totalPatients?.toLocaleString()}
-          subtext={`+${stats?.newPatientsThisMonth ?? 0} tháng này`}
+          label="Tổng người dùng"
+          value={stats?.totalUsers?.toLocaleString()}
+          subtext={`+${stats?.newPatients ?? 0} bệnh nhân mới`}
           color="#2563eb"
           icon="👥"
         />
         <StatCard
           label="Tổng bác sĩ"
           value={stats?.totalDoctors}
-          subtext={`${stats?.activeDoctors ?? 0} đang hoạt động`}
+          subtext="Đang hoạt động"
           color="#7c3aed"
           icon="🩺"
         />
         <StatCard
-          label="Lịch hẹn hôm nay"
-          value={stats?.todayAppointments}
+          label="Tổng lịch hẹn"
+          value={stats?.totalAppointments}
           subtext={`${stats?.pendingAppointments ?? 0} chờ xác nhận`}
           color="#059669"
           icon="📅"
         />
         <StatCard
-          label="Doanh thu tháng"
+          label="Doanh thu"
           value={
-            stats?.monthlyRevenue != null
-              ? `${(stats.monthlyRevenue / 1_000_000).toFixed(1)}M₫`
-              : null
+            stats?.totalRevenue != null
+              ? `${(stats.totalRevenue / 1_000_000).toFixed(1)}M₫`
+              : '0₫'
           }
-          subtext={`Tháng trước: ${
-            stats?.lastMonthRevenue != null
-              ? `${(stats.lastMonthRevenue / 1_000_000).toFixed(1)}M₫`
-              : '—'
-          }`}
+          subtext="Trong khoảng thời gian"
           color="#d97706"
           icon="💰"
         />
@@ -142,11 +234,11 @@ function DashboardAdmin() {
           icon="✅"
         />
         <StatCard
-          label="Bệnh nhân mới"
-          value={stats?.newPatientsThisMonth}
-          subtext="Tháng hiện tại"
+          label="Đánh giá trung bình"
+          value={stats?.avgRating ? `${stats.avgRating}/5` : '—'}
+          subtext="Tất cả bác sĩ"
           color="#be185d"
-          icon="🆕"
+          icon="⭐"
         />
       </div>
 
@@ -182,18 +274,18 @@ function DashboardAdmin() {
         <h2 className="section-title">Bác sĩ nổi bật</h2>
         <DataTable
           columns={TOP_DOCTOR_COLUMNS}
-          rows={topDoctors.map((d, i) => ({ ...d, rank: i + 1 }))}
+          rows={topDoctors}
           emptyText="Chưa có dữ liệu bác sĩ"
         />
       </section>
 
-      {/* Recent Activities */}
+      {/* Recent Appointments */}
       <section className="dashboard__section">
-        <h2 className="section-title">Hoạt động gần đây</h2>
+        <h2 className="section-title">Lịch hẹn gần đây</h2>
         <DataTable
-          columns={ACTIVITY_COLUMNS}
-          rows={recentActivities}
-          emptyText="Chưa có hoạt động"
+          columns={RECENT_COLUMNS}
+          rows={recentAppointments}
+          emptyText="Chưa có lịch hẹn"
         />
       </section>
     </div>

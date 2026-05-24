@@ -1,58 +1,110 @@
 import { useCallback, useEffect, useState } from 'react';
 import dashboardApi from '../../api/dashboard.api';
 import StatCard from '../../components/common/StatCard';
-import { BarChart } from '../../components/common/SimpleChart';
 import DataTable from '../../components/common/DataTable';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorAlert from '../../components/common/ErrorAlert';
 import './Dashboard.css';
 
-const APPT_COLUMNS = [
+const STATUS_LABEL = {
+  pending: 'Chờ xác nhận',
+  confirmed: 'Đã xác nhận',
+  checked_in: 'Đã check-in',
+  in_progress: 'Đang khám',
+  completed: 'Hoàn thành',
+  cancelled: 'Đã hủy',
+  no_show: 'Không đến',
+};
+
+const STATUS_COLOR = {
+  pending: '#d97706',
+  confirmed: '#2563eb',
+  checked_in: '#0891b2',
+  in_progress: '#7c3aed',
+  completed: '#059669',
+  cancelled: '#dc2626',
+  no_show: '#6b7280',
+};
+
+const TODAY_COLUMNS = [
   { key: 'time', label: 'Giờ' },
   { key: 'patientName', label: 'Bệnh nhân' },
+  { key: 'phone', label: 'SĐT' },
   { key: 'doctorName', label: 'Bác sĩ' },
-  { key: 'room', label: 'Phòng' },
   {
-    key: 'checkedIn',
-    label: 'Check-in',
+    key: 'status',
+    label: 'Trạng thái',
     render: (val) => (
-      <span className={`badge badge--${val ? 'done' : 'waiting'}`}>
-        {val ? 'Đã đến' : 'Chưa đến'}
+      <span
+        className="badge"
+        style={{
+          background: (STATUS_COLOR[val] || '#6b7280') + '18',
+          color: STATUS_COLOR[val] || '#6b7280',
+          border: `1px solid ${(STATUS_COLOR[val] || '#6b7280')}44`,
+          padding: '4px 10px',
+          borderRadius: 6,
+          fontSize: 13,
+          fontWeight: 600,
+        }}
+      >
+        {STATUS_LABEL[val] ?? val}
       </span>
     ),
   },
 ];
 
-const TASK_COLUMNS = [
-  { key: 'task', label: 'Công việc' },
-  { key: 'dueTime', label: 'Thời hạn' },
+const UPCOMING_COLUMNS = [
+  { key: 'date', label: 'Ngày' },
+  { key: 'time', label: 'Giờ' },
+  { key: 'patientName', label: 'Bệnh nhân' },
+  { key: 'phone', label: 'SĐT' },
+  { key: 'doctorName', label: 'Bác sĩ' },
   {
-    key: 'priority',
-    label: 'Ưu tiên',
-    render: (val) => {
-      const map = { high: '#dc2626', medium: '#d97706', low: '#059669' };
-      const label = { high: 'Cao', medium: 'Vừa', low: 'Thấp' };
-      return (
-        <span style={{ color: map[val] ?? '#6b7280', fontWeight: 600 }}>
-          {label[val] ?? val}
-        </span>
-      );
-    },
+    key: 'status',
+    label: 'Trạng thái',
+    render: (val) => (
+      <span
+        className="badge"
+        style={{
+          background: (STATUS_COLOR[val] || '#6b7280') + '18',
+          color: STATUS_COLOR[val] || '#6b7280',
+          border: `1px solid ${(STATUS_COLOR[val] || '#6b7280')}44`,
+          padding: '4px 10px',
+          borderRadius: 6,
+          fontSize: 13,
+          fontWeight: 600,
+        }}
+      >
+        {STATUS_LABEL[val] ?? val}
+      </span>
+    ),
   },
 ];
 
-const QUEUE_COLUMNS = [
-  { key: 'number', label: 'STT' },
-  { key: 'patientName', label: 'Bệnh nhân' },
-  { key: 'department', label: 'Khoa' },
-  { key: 'waitTime', label: 'Chờ (phút)' },
-];
+// Helper to map Sequelize appointment to table row
+function mapAppt(a, includeDate = false) {
+  const raw = a.dataValues || a;
+  const patient = raw.patient?.dataValues || raw.patient || {};
+  const doc = raw.doctor?.dataValues || raw.doctor || {};
+  const docUser = doc.user?.dataValues || doc.user || {};
+  const row = {
+    id: raw.id,
+    time: raw.appointment_time || '—',
+    patientName: patient.full_name || '—',
+    phone: patient.phone || '—',
+    doctorName: docUser.full_name || '—',
+    status: raw.status,
+  };
+  if (includeDate) {
+    row.date = raw.appointment_date || '—';
+  }
+  return row;
+}
 
 function DashboardReceptionist() {
   const [stats, setStats] = useState(null);
-  const [appointments, setAppointments] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [queue, setQueue] = useState([]);
+  const [todayAppts, setTodayAppts] = useState([]);
+  const [upcomingAppts, setUpcomingAppts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -60,20 +112,28 @@ function DashboardReceptionist() {
     setLoading(true);
     setError(null);
     try {
-      const res = await dashboardApi.getReceptionistDashboard();
-      const payload = res.data?.data || {};
+      const res = await dashboardApi.getReceptionistDashboard({ period: 'month' });
+      const payload = res.data?.data || res.data || res || {};
 
+      const period = payload.period || payload.today || {}; // Fallback to today for backwards compatibility
       setStats({
-        totalToday: payload.today?.total,
-        checkedIn: payload.today?.checkedIn,
-        pendingCheckin: payload.today?.confirmed, // Assuming confirmed are pending checkin
-        currentQueueSize: payload.today?.checkedIn, // Rough estimation for now
-        avgWaitTime: 0,
-        completedToday: payload.today?.completed,
+        totalPeriod: period.total ?? 0,
+        pending: period.pending ?? 0,
+        confirmed: period.confirmed ?? 0,
+        checkedIn: period.checkedIn ?? 0,
+        completed: period.completed ?? 0,
+        cancelled: period.cancelled ?? 0,
+        pendingTotal: payload.pendingTotal ?? 0,
+        totalAllTime: payload.totalAllTime ?? 0,
       });
-      setAppointments(payload.recentAppointments ?? []);
-      setTasks([]);
-      setQueue([]);
+
+      // Map today's appointments
+      const rawToday = payload.recentAppointments ?? [];
+      setTodayAppts(rawToday.map((a) => mapAppt(a, false)));
+
+      // Map upcoming appointments (next 7 days)
+      const rawUpcoming = payload.upcomingAppointments ?? [];
+      setUpcomingAppts(rawUpcoming.map((a) => mapAppt(a, true)));
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || 'Lỗi tải dữ liệu');
     } finally {
@@ -84,14 +144,9 @@ function DashboardReceptionist() {
   useEffect(() => {
     fetchAll();
 
-    // Auto-refresh queue every 60 seconds
-    const interval = setInterval(async () => {
-      try {
-        const queueRes = await dashboardApi.getReceptionistDashboard();
-        // setQueue(queueRes.data?.data?.queue ?? []); // uncomment when queue is implemented
-      } catch {
-        // silent fail for auto-refresh
-      }
+    // Auto-refresh every 60 seconds
+    const interval = setInterval(() => {
+      fetchAll();
     }, 60_000);
 
     return () => clearInterval(interval);
@@ -117,66 +172,55 @@ function DashboardReceptionist() {
       {/* Stats */}
       <div className="stat-grid">
         <StatCard
-          label="Tổng lịch hẹn hôm nay"
-          value={stats?.totalToday}
+          label="Tổng lịch hẹn tháng này"
+          value={stats?.totalPeriod}
           subtext={`${stats?.checkedIn ?? 0} đã check-in`}
           color="#2563eb"
           icon="📋"
         />
         <StatCard
-          label="Chờ check-in"
-          value={stats?.pendingCheckin}
-          subtext="Cần xử lý"
+          label="Chờ xác nhận"
+          value={stats?.pending}
+          subtext={`Tổng chờ: ${stats?.pendingTotal ?? 0}`}
           color="#d97706"
           icon="⏳"
         />
         <StatCard
-          label="Hàng đợi hiện tại"
-          value={stats?.currentQueueSize}
-          subtext={`Chờ TB ${stats?.avgWaitTime ?? 0} phút`}
-          color="#dc2626"
-          icon="🔢"
+          label="Đã xác nhận (chờ check-in)"
+          value={stats?.confirmed}
+          subtext="Cần check-in"
+          color="#0891b2"
+          icon="✋"
         />
         <StatCard
           label="Đã hoàn thành"
-          value={stats?.completedToday}
-          subtext="Hôm nay"
+          value={stats?.completed}
+          subtext={`Tổng tất cả: ${stats?.totalAllTime ?? 0}`}
           color="#059669"
           icon="✅"
         />
       </div>
 
-      {/* Today appointments + tasks */}
-      <div className="dashboard__two-col">
-        <section className="dashboard__section dashboard__section--flex2">
-          <h2 className="section-title">Lịch hẹn hôm nay</h2>
-          <DataTable
-            columns={APPT_COLUMNS}
-            rows={appointments}
-            emptyText="Không có lịch hẹn hôm nay"
-          />
-        </section>
-
-        <section className="dashboard__section dashboard__section--flex1">
-          <h2 className="section-title">Việc cần làm</h2>
-          <DataTable
-            columns={TASK_COLUMNS}
-            rows={tasks}
-            emptyText="Không có việc cần làm"
-          />
-        </section>
-      </div>
-
-      {/* Queue */}
+      {/* Today appointments */}
       <section className="dashboard__section">
         <div className="section-header-row">
-          <h2 className="section-title" style={{ margin: 0 }}>Hàng đợi hiện tại</h2>
+          <h2 className="section-title" style={{ margin: 0 }}>Lịch hẹn hôm nay</h2>
           <span className="section-hint">Tự động cập nhật mỗi 60 giây</span>
         </div>
         <DataTable
-          columns={QUEUE_COLUMNS}
-          rows={queue}
-          emptyText="Hàng đợi trống"
+          columns={TODAY_COLUMNS}
+          rows={todayAppts}
+          emptyText="Không có lịch hẹn hôm nay"
+        />
+      </section>
+
+      {/* Upcoming appointments */}
+      <section className="dashboard__section">
+        <h2 className="section-title">Lịch hẹn sắp tới (7 ngày tới)</h2>
+        <DataTable
+          columns={UPCOMING_COLUMNS}
+          rows={upcomingAppts}
+          emptyText="Không có lịch hẹn sắp tới"
         />
       </section>
     </div>

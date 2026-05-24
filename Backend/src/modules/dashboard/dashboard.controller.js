@@ -26,7 +26,7 @@ const dashboardController = {
 
   async getReceptionistDashboard(req, res, next) {
     try {
-      const data = await dashboardService.getReceptionistDashboard();
+      const data = await dashboardService.getReceptionistDashboard(req.query);
       return successResponse(res, { data });
     } catch (error) { next(error); }
   },

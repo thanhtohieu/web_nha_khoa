@@ -177,8 +177,6 @@ const dashboardRepository = {
 
   // Phân bổ bệnh nhân theo chuyên khoa
   async getSpecialtyDistribution({ startDate, endDate }) {
-    const Specialty = require('../service/specialty.model');
-
     const results = await Appointment.findAll({
       where: {
         appointment_date: { [Op.between]: [startDate, endDate] },
@@ -222,6 +220,8 @@ const dashboardRepository = {
   // ========================
   async getDoctorStats(doctorProfileId, { startDate, endDate }) {
     const dateFilter = { [Op.between]: [startDate, endDate] };
+    const today = dayjs().format('YYYY-MM-DD');
+    const nextWeek = dayjs().add(7, 'day').format('YYYY-MM-DD');
 
     const [
       totalAppointments,
@@ -232,6 +232,7 @@ const dashboardRepository = {
       totalRevenue,
       avgRating,
       todayAppointments,
+      upcomingAppointments,
     ] = await Promise.all([
       Appointment.count({
         where: { doctor_profile_id: doctorProfileId, appointment_date: dateFilter },
@@ -264,7 +265,9 @@ const dashboardRepository = {
         where: {
           doctor_profile_id: doctorProfileId,
           appointment_date: dateFilter,
-          status: APPOINTMENT_STATUS.COMPLETED,
+          status: {
+            [Op.notIn]: [APPOINTMENT_STATUS.CANCELLED, APPOINTMENT_STATUS.NO_SHOW],
+          },
         },
         distinct: true,
         col: 'patient_id',
@@ -292,10 +295,11 @@ const dashboardRepository = {
         raw: true,
       }),
 
+      // Today's appointments
       Appointment.findAll({
         where: {
           doctor_profile_id: doctorProfileId,
-          appointment_date: dayjs().format('YYYY-MM-DD'),
+          appointment_date: today,
           status: {
             [Op.notIn]: [APPOINTMENT_STATUS.CANCELLED, APPOINTMENT_STATUS.NO_SHOW],
           },
@@ -304,6 +308,22 @@ const dashboardRepository = {
           { model: User, as: 'patient', attributes: ['id', 'full_name', 'phone', 'avatar'] },
         ],
         order: [['appointment_time', 'ASC']],
+      }),
+
+      // Upcoming appointments (next 7 days including today)
+      Appointment.findAll({
+        where: {
+          doctor_profile_id: doctorProfileId,
+          appointment_date: { [Op.between]: [today, nextWeek] },
+          status: {
+            [Op.notIn]: [APPOINTMENT_STATUS.CANCELLED, APPOINTMENT_STATUS.NO_SHOW],
+          },
+        },
+        include: [
+          { model: User, as: 'patient', attributes: ['id', 'full_name', 'phone', 'avatar'] },
+        ],
+        order: [['appointment_date', 'ASC'], ['appointment_time', 'ASC']],
+        limit: 20,
       }),
     ]);
 
@@ -320,33 +340,39 @@ const dashboardRepository = {
         ? parseFloat(((completedAppointments / totalAppointments) * 100).toFixed(1))
         : 0,
       todayAppointments,
+      upcomingAppointments,
     };
   },
 
   // ========================
   // RECEPTIONIST STATS
   // ========================
-  async getReceptionistStats() {
+  async getReceptionistStats({ startDate, endDate }) {
     const today = dayjs().format('YYYY-MM-DD');
+    const nextWeek = dayjs().add(7, 'day').format('YYYY-MM-DD');
+    const dateFilter = { [Op.between]: [startDate, endDate] };
 
     const [
-      todayTotal,
-      todayPending,
-      todayConfirmed,
-      todayCheckedIn,
-      todayCompleted,
-      todayCancelled,
+      periodTotal,
+      periodPending,
+      periodConfirmed,
+      periodCheckedIn,
+      periodCompleted,
+      periodCancelled,
       pendingTotal,
       recentAppointments,
+      upcomingAppointments,
+      totalAllTime,
     ] = await Promise.all([
-      Appointment.count({ where: { appointment_date: today } }),
-      Appointment.count({ where: { appointment_date: today, status: APPOINTMENT_STATUS.PENDING } }),
-      Appointment.count({ where: { appointment_date: today, status: APPOINTMENT_STATUS.CONFIRMED } }),
-      Appointment.count({ where: { appointment_date: today, status: APPOINTMENT_STATUS.CHECKED_IN } }),
-      Appointment.count({ where: { appointment_date: today, status: APPOINTMENT_STATUS.COMPLETED } }),
-      Appointment.count({ where: { appointment_date: today, status: APPOINTMENT_STATUS.CANCELLED } }),
+      Appointment.count({ where: { appointment_date: dateFilter } }),
+      Appointment.count({ where: { appointment_date: dateFilter, status: APPOINTMENT_STATUS.PENDING } }),
+      Appointment.count({ where: { appointment_date: dateFilter, status: APPOINTMENT_STATUS.CONFIRMED } }),
+      Appointment.count({ where: { appointment_date: dateFilter, status: APPOINTMENT_STATUS.CHECKED_IN } }),
+      Appointment.count({ where: { appointment_date: dateFilter, status: APPOINTMENT_STATUS.COMPLETED } }),
+      Appointment.count({ where: { appointment_date: dateFilter, status: APPOINTMENT_STATUS.CANCELLED } }),
       Appointment.count({ where: { status: APPOINTMENT_STATUS.PENDING } }),
 
+      // Today's appointments
       Appointment.findAll({
         where: {
           appointment_date: today,
@@ -370,19 +396,50 @@ const dashboardRepository = {
         order: [['appointment_time', 'ASC']],
         limit: 20,
       }),
+
+      // Upcoming appointments (next 7 days including today)
+      Appointment.findAll({
+        where: {
+          appointment_date: { [Op.between]: [today, nextWeek] },
+          status: {
+            [Op.in]: [
+              APPOINTMENT_STATUS.PENDING,
+              APPOINTMENT_STATUS.CONFIRMED,
+              APPOINTMENT_STATUS.CHECKED_IN,
+              APPOINTMENT_STATUS.IN_PROGRESS,
+            ],
+          },
+        },
+        include: [
+          { model: User, as: 'patient', attributes: ['id', 'full_name', 'phone', 'avatar'] },
+          {
+            model: DoctorProfile,
+            as: 'doctor',
+            attributes: ['id'],
+            include: [{ model: User, as: 'user', attributes: ['id', 'full_name'] }],
+          },
+        ],
+        order: [['appointment_date', 'ASC'], ['appointment_time', 'ASC']],
+        limit: 20,
+      }),
+
+      // Total appointments all time
+      Appointment.count(),
     ]);
 
     return {
-      today: {
-        total: todayTotal,
-        pending: todayPending,
-        confirmed: todayConfirmed,
-        checkedIn: todayCheckedIn,
-        completed: todayCompleted,
-        cancelled: todayCancelled,
+      period: {
+        total: periodTotal,
+        pending: periodPending,
+        confirmed: periodConfirmed,
+        checkedIn: periodCheckedIn,
+        completed: periodCompleted,
+        cancelled: periodCancelled,
       },
       pendingTotal,
+      totalAllTime,
       recentAppointments,
+      upcomingAppointments,
     };
   },
 
