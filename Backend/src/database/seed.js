@@ -299,6 +299,76 @@ const seed = async () => {
     ]);
     logger.info('✅ Seeded: Blog categories');
 
+    // ========================
+    // 6. SHIFTS & ROSTERS
+    // ========================
+    try {
+      const Shift = require('../modules/shift/shift.model');
+      const Roster = require('../modules/roster/roster.model');
+
+      const [shiftMorning] = await Shift.findOrCreate({
+        where: { name: 'Ca Sáng' },
+        defaults: {
+          name: 'Ca Sáng',
+          start_time: '08:00',
+          end_time: '12:00',
+          description: 'Ca làm việc buổi sáng',
+          is_active: true
+        },
+        transaction: t
+      });
+
+      const [shiftAfternoon] = await Shift.findOrCreate({
+        where: { name: 'Ca Chiều' },
+        defaults: {
+          name: 'Ca Chiều',
+          start_time: '13:00',
+          end_time: '17:00',
+          description: 'Ca làm việc buổi chiều',
+          is_active: true
+        },
+        transaction: t
+      });
+
+      // Tạo lịch trực cho bác sĩ Minh vào ngày mai (Ca sáng)
+      const dayjs = require('dayjs');
+      const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
+      
+      const doctor1 = await DoctorProfile.findOne({ where: { user_id: doctorUser1.id } });
+      const doctor2 = await DoctorProfile.findOne({ where: { user_id: doctorUser2.id } });
+
+      if (doctor1) {
+        await Roster.findOrCreate({
+          where: { doctor_profile_id: doctor1.id, shift_id: shiftMorning.id, roster_date: tomorrow },
+          defaults: {
+            doctor_profile_id: doctor1.id,
+            shift_id: shiftMorning.id,
+            roster_date: tomorrow,
+            status: 'approved',
+            notes: 'Lịch tự động seed'
+          },
+          transaction: t
+        });
+      }
+
+      if (doctor2) {
+        await Roster.findOrCreate({
+          where: { doctor_profile_id: doctor2.id, shift_id: shiftAfternoon.id, roster_date: tomorrow },
+          defaults: {
+            doctor_profile_id: doctor2.id,
+            shift_id: shiftAfternoon.id,
+            roster_date: tomorrow,
+            status: 'approved',
+            notes: 'Lịch tự động seed'
+          },
+          transaction: t
+        });
+      }
+      logger.info('✅ Seeded: Shifts & Rosters');
+    } catch (err) {
+      logger.warn('⚠️ Bỏ qua seeding Shifts & Rosters vì module chưa sẵn sàng hoặc lỗi: ' + err.message);
+    }
+
     await t.commit();
     logger.info('🎉 Seeding hoàn thành!');
     logger.info('');
