@@ -3,6 +3,7 @@
  * Shared primitives for doctor + service features.
  * Uses CSS from doctor.module.css + layout.css tokens.
  */
+import '../user/user.css';
 import './doctor.css';
 
 /* ── Spinner ── */
@@ -164,12 +165,14 @@ export function Pagination({ page, limit, total, onPageChange }) {
 /* ── Confirm dialog ── */
 export function ConfirmDialog({ title, desc, onConfirm, onCancel, loading }) {
   return (
-    <div className="confirm-overlay">
-      <div className="confirm-box">
-        <div className="confirm-title">{title}</div>
-        <div className="confirm-desc">{desc}</div>
-        <div className="confirm-actions">
-          <button className="btn btn-secondary" onClick={onCancel} disabled={loading}>Huỷ</button>
+    <div className="modal-overlay">
+      <div className="modal-box">
+        <div className="modal-title">{title}</div>
+        <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginBottom: 24 }}>{desc}</div>
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={onCancel} disabled={loading}>
+            Huỷ
+          </button>
           <button className="btn btn-danger" onClick={onConfirm} disabled={loading}>
             {loading ? 'Đang xử lý…' : 'Xác nhận'}
           </button>

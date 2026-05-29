@@ -5,7 +5,7 @@ import {
   Spinner, Alert, AvatarPlaceholder,
   RoleBadge, StatusBadge, Icon,
 } from './UserUI';
-import './user.module.css';
+import './user.css';
 
 /* ── Field display row ── */
 function DetailField({ label, value, children }) {

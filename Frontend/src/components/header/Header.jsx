@@ -87,12 +87,14 @@ function Header({ collapsed, pageTitle }) {
                 <span className="header__dropdown-email">{user?.email}</span>
               </div>
               <div className="header__dropdown-body">
-                <button className="header__dropdown-item" onClick={handleProfile}>
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                  </svg>
-                  Hồ sơ cá nhân
-                </button>
+                {role !== 'admin' && (
+                  <button className="header__dropdown-item" onClick={handleProfile}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Hồ sơ cá nhân
+                  </button>
+                )}
                 <div className="header__dropdown-divider" />
                 <button
                   className="header__dropdown-item header__dropdown-item--danger"

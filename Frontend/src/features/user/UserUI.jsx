@@ -1,4 +1,4 @@
-import './user.module.css';
+import './user.css';
 
 /* ── Spinner ── */
 export function Spinner({ small, label }) {

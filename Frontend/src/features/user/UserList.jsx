@@ -7,7 +7,7 @@ import {
   RoleBadge, StatusBadge, Pagination,
   ConfirmDialog, Icon,
 } from './UserUI';
-import './user.module.css';
+import './user.css';
 
 /* ── Debounce hook ── */
 function useDebounce(value, delay = 400) {

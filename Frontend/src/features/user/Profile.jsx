@@ -3,7 +3,7 @@ import useUserStore from '../../store/user.store';
 import useAuthStore from '../../store/auth.store';
 import userApi from '../../api/user.api';
 import { Spinner, Alert, AvatarPlaceholder, RoleBadge, Icon } from './UserUI';
-import './user.module.css';
+import './user.css';
 
 /* ────────────────────────────────────────────────────
    Validation helpers

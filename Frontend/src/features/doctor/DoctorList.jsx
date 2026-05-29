@@ -107,9 +107,9 @@ function CreateDoctorModal({ onClose, onCreated, specialties }) {
   };
 
   return (
-    <div className="confirm-overlay" style={{ zIndex: 1000 }}>
-      <div className="confirm-box" style={{ maxWidth: 640, width: '95vw', padding: 24, textAlign: 'left' }}>
-        <div className="confirm-title" style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: 12, marginBottom: 16, fontSize: '1.25rem', fontWeight: 600 }}>
+    <div className="modal-overlay" style={{ zIndex: 1000 }}>
+      <div className="modal-box" style={{ maxWidth: 640, width: '95vw', padding: 24, textAlign: 'left' }}>
+        <div className="modal-title" style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: 12, marginBottom: 16, fontSize: '1.25rem', fontWeight: 600 }}>
           Thêm bác sĩ mới
         </div>
         
@@ -272,7 +272,7 @@ function CreateDoctorModal({ onClose, onCreated, specialties }) {
             </div>
           </div>
 
-          <div className="confirm-actions" style={{ marginTop: 24, borderTop: '1px solid var(--color-border)', paddingTop: 16 }}>
+          <div className="modal-footer" style={{ marginTop: 24, borderTop: '1px solid var(--color-border)', paddingTop: 16 }}>
             <button type="button" className="btn btn-secondary" onClick={onClose} disabled={loading}>
               Huỷ
             </button>
