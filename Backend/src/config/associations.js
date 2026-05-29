@@ -16,6 +16,9 @@ const Media = require('../modules/media/media.model');
 const { ChatRoom, ChatMember, ChatMessage } = require('../modules/chat/chat.model');
 const { Blog, BlogCategory } = require('../modules/blog/blog.model');
 const Contact = require('../modules/contact/contact.model');
+const Holiday = require('../modules/holiday/holiday.model');
+const Shift = require('../modules/shift/shift.model');
+const Roster = require('../modules/roster/roster.model');
 
 const setupAssociations = () => {
 
@@ -126,6 +129,14 @@ const setupAssociations = () => {
   // CONTACT
   // ========================
   Contact.belongsTo(User, { foreignKey: 'assigned_to', as: 'assignee' });
+
+  // ========================
+  // CLINIC MANAGEMENT (ROSTER)
+  // ========================
+  Roster.belongsTo(DoctorProfile, { foreignKey: 'doctor_profile_id', as: 'doctor' });
+  Roster.belongsTo(Shift, { foreignKey: 'shift_id', as: 'shift' });
+  DoctorProfile.hasMany(Roster, { foreignKey: 'doctor_profile_id', as: 'rosters' });
+  Shift.hasMany(Roster, { foreignKey: 'shift_id', as: 'rosters' });
 };
 
 module.exports = setupAssociations;

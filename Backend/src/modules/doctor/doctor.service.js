@@ -130,70 +130,74 @@ const doctorService = {
       throw new AppError('Không thể xem lịch trong quá khứ', 400);
     }
 
-    // 1. Kiểm tra custom slots trước
-    const customSlots = await DoctorSlot.findAll({
-      where: { doctor_profile_id: doctorProfileId, date },
-      order: [['start_time', 'ASC']]
+    const Roster = require('../roster/roster.model');
+    const Shift = require('../shift/shift.model');
+    const Appointment = require('../appointment/appointment.model');
+    const { APPOINTMENT_STATUS } = require('../../utils/constants');
+
+    // 1. Get approved rosters for this doctor on this date
+    const rosters = await Roster.findAll({
+      where: {
+        doctor_profile_id: doctorProfileId,
+        roster_date: date,
+        status: 'approved'
+      },
+      include: [{ model: Shift, as: 'shift' }]
     });
 
-    if (customSlots.length > 0) {
-      const Appointment = require('../appointment/appointment.model');
-      const { APPOINTMENT_STATUS } = require('../../utils/constants');
-      const booked = await Appointment.findAll({
-        where: {
-          doctor_profile_id: doctorProfileId,
-          appointment_date: date,
-          status: {
-            [Op.notIn]: [
-              APPOINTMENT_STATUS.CANCELLED,
-              APPOINTMENT_STATUS.NO_SHOW,
-            ],
-          },
-        },
-        attributes: ['appointment_time'],
-        raw: true,
-      });
-      const bookedTimes = new Set(booked.map((a) => a.appointment_time));
-
-      const { parseTime } = require('../../utils/helpers');
-      const doctor = await doctorRepository.findById(doctorProfileId);
-      const slotDuration = doctor.slot_duration_minutes || 30;
-
-      const generatedSlots = [];
-      for (const shift of customSlots) {
-        if (!shift.end_time) {
-          generatedSlots.push({
-            time: shift.start_time,
-            isBooked: shift.status === 'booked' || bookedTimes.has(shift.start_time)
-          });
-          continue;
-        }
-
-        const { hours: startH, minutes: startM } = parseTime(shift.start_time);
-        const { hours: endH, minutes: endM } = parseTime(shift.end_time);
-        let current = startH * 60 + startM;
-        const end = endH * 60 + endM;
-
-        while (current + slotDuration <= end) {
-          const h = String(Math.floor(current / 60)).padStart(2, '0');
-          const m = String(current % 60).padStart(2, '0');
-          const timeStr = `${h}:${m}`;
-          
-          generatedSlots.push({
-            time: timeStr,
-            isBooked: shift.status === 'booked' || bookedTimes.has(timeStr)
-          });
-          current += slotDuration;
-        }
-      }
-      return generatedSlots;
+    if (rosters.length === 0) {
+      return []; // No shift registered for this day
     }
 
-    // 2. Không có custom slots -> dùng lịch mặc định động
-    const slots = await doctorRepository.getAvailableSlots(doctorProfileId, date);
-    if (slots === null) throw new AppError('Không tìm thấy bác sĩ', 404);
+    // 2. Find booked appointments
+    const booked = await Appointment.findAll({
+      where: {
+        doctor_profile_id: doctorProfileId,
+        appointment_date: date,
+        status: {
+          [Op.notIn]: [
+            APPOINTMENT_STATUS.CANCELLED,
+            APPOINTMENT_STATUS.NO_SHOW,
+          ],
+        },
+      },
+      attributes: ['appointment_time'],
+      raw: true,
+    });
+    const bookedTimes = new Set(booked.map((a) => a.appointment_time));
 
-    return slots;
+    // 3. Generate slots
+    const doctor = await doctorRepository.findById(doctorProfileId);
+    const slotDuration = doctor.slot_duration_minutes || 30;
+    const { parseTime } = require('../../utils/helpers');
+
+    const generatedSlots = [];
+    for (const roster of rosters) {
+      const shift = roster.shift;
+      if (!shift || !shift.start_time || !shift.end_time) continue;
+
+      const { hours: startH, minutes: startM } = parseTime(shift.start_time);
+      const { hours: endH, minutes: endM } = parseTime(shift.end_time);
+      let current = startH * 60 + startM;
+      const end = endH * 60 + endM;
+
+      while (current + slotDuration <= end) {
+        const h = String(Math.floor(current / 60)).padStart(2, '0');
+        const m = String(current % 60).padStart(2, '0');
+        const timeStr = `${h}:${m}`;
+        
+        generatedSlots.push({
+          time: timeStr,
+          isBooked: bookedTimes.has(timeStr)
+        });
+        current += slotDuration;
+      }
+    }
+
+    // Sort slots by time
+    generatedSlots.sort((a, b) => a.time.localeCompare(b.time));
+
+    return generatedSlots;
   },
 
   async getMySchedule(userId, from, to) {

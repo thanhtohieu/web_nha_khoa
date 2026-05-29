@@ -23,12 +23,17 @@ export const ROUTES = {
   ADMIN_REPORTS:    '/admin/reports',
   ADMIN_AUDIT:      '/admin/audit',
   ADMIN_SETTINGS:   '/admin/settings',
+  ADMIN_HOLIDAYS:   '/admin/holidays',
+  ADMIN_SHIFTS:     '/admin/shifts',
+  ADMIN_ROSTERS:    '/admin/rosters',
+  ADMIN_MONITOR:    '/admin/monitor',
 
   // ── Doctor ─────────────────────────────────────────────────────────────────
   DOCTOR_DASHBOARD:     '/doctor/dashboard',
   DOCTOR_APPOINTMENTS:  '/doctor/appointments',
   DOCTOR_PATIENTS:      '/doctor/patients',
   DOCTOR_SCHEDULE:      '/doctor/schedule',
+  DOCTOR_ROSTER:        '/doctor/roster',
   DOCTOR_RECORDS:       '/doctor/records',
   DOCTOR_PROFILE:       '/doctor/profile',
 
@@ -39,6 +44,7 @@ export const ROUTES = {
   RECEPTIONIST_CHECKIN:      '/receptionist/checkin',
   RECEPTIONIST_BILLING:      '/receptionist/billing',
   RECEPTIONIST_PROFILE:      '/receptionist/profile',
+  RECEPTIONIST_MONITOR:      '/receptionist/monitor',
 
   // ── Patient ────────────────────────────────────────────────────────────────
   PATIENT_DASHBOARD:      '/patient/dashboard',

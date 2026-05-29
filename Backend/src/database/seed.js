@@ -240,7 +240,7 @@ const seed = async () => {
       where: { user_id: doctorUser1.id },
       defaults: {
         user_id: doctorUser1.id,
-        specialty_id: noikhoaSpec.id,
+        specialty_id: tongquatSpec.id,
         title: 'Thạc sĩ, Bác sĩ',
         bio: 'Bác sĩ Trần Văn Minh có hơn 10 năm kinh nghiệm trong lĩnh vực nội khoa.',
         experience_years: 10,
@@ -260,7 +260,7 @@ const seed = async () => {
       where: { user_id: doctorUser2.id },
       defaults: {
         user_id: doctorUser2.id,
-        specialty_id: nhiSpec.id,
+        specialty_id: treemSpec.id,
         title: 'Bác sĩ chuyên khoa I',
         bio: 'Bác sĩ Lê Thị Hoa có kinh nghiệm 8 năm trong chuyên khoa nhi.',
         experience_years: 8,

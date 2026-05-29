@@ -1,147 +1,13 @@
-import { useEffect, useState, useCallback } from 'react';
-import useDoctorStore from '../../store/doctor.store';
-import {
-  Spinner, Alert, PageHeader, Modal, Btn,
-  Card, CardHeader, CardBody, Icon, FormGroup,
-  getWeekDates, toISODate, VN_DAYS,
-} from './DoctorUI';
-import './doctor.css';
+import { useEffect, useState } from 'react';
+import useAuth from '../../hooks/useAuth';
+import useClinicStore from '../../store/clinic.store';
+import { getWeekDates, toISODate, VN_DAYS } from './DoctorUI';
+import { Icon } from './DoctorUI';
+import '../clinic/ClinicManagement.css'; // Reuse the new clinic CSS
 
-/* ── Validate slot times ── */
-function validateSlot(v) {
-  const e = {};
-  if (!v.shiftType) e.shiftType = 'Vui lòng chọn ca làm việc.';
-  return e;
-}
-
-/* ── Add-slot modal ── */
-function AddSlotModal({ date, onClose, onSaved }) {
-  const { upsertSchedule } = useDoctorStore();
-  const [values, setValues] = useState({ shiftType: '', maxPatients: 5 });
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [serverErr, setServerErr] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setValues((v) => ({ ...v, [name]: value }));
-    setErrors((e) => ({ ...e, [name]: undefined }));
-    setServerErr(null);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const errs = validateSlot(values);
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-    
-    let startTime, endTime;
-    if (values.shiftType === 'morning') { startTime = '08:00'; endTime = '14:00'; }
-    else if (values.shiftType === 'afternoon') { startTime = '14:00'; endTime = '20:00'; }
-    else if (values.shiftType === 'full') { startTime = '08:00'; endTime = '20:00'; }
-
-    setLoading(true);
-    const result = await upsertSchedule({
-      date,
-      slots: [{ startTime, endTime, maxPatients: Number(values.maxPatients) }],
-    });
-    setLoading(false);
-    if (result.success) { onSaved(); onClose(); }
-    else setServerErr(result.message);
-  };
-
-  const displayDate = new Date(date + 'T00:00:00').toLocaleDateString('vi-VN', {
-    weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric',
-  });
-
-  return (
-    <Modal
-      title={`Thêm ca làm việc – ${displayDate}`}
-      onClose={onClose}
-      footer={
-        <>
-          <button className="btn btn-secondary" onClick={onClose} disabled={loading}>Huỷ</button>
-          <Btn type="submit" form="add-slot-form" disabled={loading}>
-            {loading
-              ? <><div className="spinner spinner-sm" style={{ borderTopColor: 'white' }} /> Đang lưu…</>
-              : <><Icon name="plus" size={14} /> Thêm ca</>
-            }
-          </Btn>
-        </>
-      }
-    >
-      {serverErr && <div className="alert alert-error" style={{ marginBottom: 16 }}>{serverErr}</div>}
-      <form id="add-slot-form" onSubmit={handleSubmit} noValidate>
-        <div style={{ marginBottom: 16 }}>
-          <label className="form-label">Ca làm việc *</label>
-          <select name="shiftType" className="form-control form-select"
-            value={values.shiftType} onChange={handleChange}
-            style={{ width: '100%', ...(errors.shiftType ? { borderColor: 'var(--color-error)' } : {}) }}>
-            <option value="">— Chọn ca làm việc —</option>
-            <option value="morning">Ca sáng (08:00 - 14:00)</option>
-            <option value="afternoon">Ca chiều (14:00 - 20:00)</option>
-            <option value="full">Full ngày (08:00 - 20:00)</option>
-          </select>
-          {errors.shiftType && (
-            <div className="form-error">⚠ {errors.shiftType}</div>
-          )}
-        </div>
-
-        <FormGroup label="Số bệnh nhân tối đa" htmlFor="maxPatients">
-          <input
-            id="maxPatients" name="maxPatients" type="number"
-            className="form-control"
-            value={values.maxPatients}
-            onChange={handleChange}
-            min={1} max={50}
-          />
-        </FormGroup>
-      </form>
-    </Modal>
-  );
-}
-
-/* ── Day column ── */
-function DayColumn({ date, dayLabel, slots = [], isToday, onAddSlot, onDeleteSlot }) {
-  const displayDate = new Date(date + 'T00:00:00');
-  return (
-    <div className="schedule-day-col">
-      <div className="schedule-day-header">
-        <div className="schedule-day-name">{dayLabel}</div>
-        <div className={`schedule-day-date${isToday ? ' today' : ''}`}>
-          {String(displayDate.getDate()).padStart(2, '0')}/{String(displayDate.getMonth() + 1).padStart(2, '0')}
-        </div>
-      </div>
-      <div className="schedule-slots-list">
-        {slots.length === 0 && (
-          <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', textAlign: 'center', padding: '8px 0' }}>
-            Chưa có slot
-          </div>
-        )}
-        {slots.map((slot) => (
-          <div key={slot.id} className={`schedule-slot-tag${slot.status === 'booked' ? ' booked' : ''}`}>
-            <span>{slot.startTime}{slot.endTime ? `–${slot.endTime}` : ''}</span>
-            {slot.status !== 'booked' && (
-              <button
-                className="schedule-slot-del"
-                onClick={() => onDeleteSlot(slot.id, date)}
-                title="Xoá slot"
-                aria-label="Xoá slot"
-              >×</button>
-            )}
-          </div>
-        ))}
-      </div>
-      <button className="schedule-add-btn" onClick={() => onAddSlot(date)}>
-        + Thêm slot
-      </button>
-    </div>
-  );
-}
-
-/* ── DoctorSchedule ── */
 export default function DoctorSchedule() {
-  const { schedule, scheduleLoading, scheduleError,
-    fetchMySchedule, deleteSlot, clearScheduleError } = useDoctorStore();
+  const { user } = useAuth();
+  const { shifts, fetchShifts, rosters, setRosterFilters, createRoster, rosterLoading } = useClinicStore();
 
   const [weekStart, setWeekStart] = useState(() => {
     const today = new Date();
@@ -151,19 +17,18 @@ export default function DoctorSchedule() {
     return d;
   });
 
-  const [addModal, setAddModal] = useState(null); // date string
-  const [deleteError, setDeleteError] = useState(null);
-
   const weekDates = getWeekDates(weekStart);
-  const today     = toISODate(new Date());
+  const from = toISODate(weekDates[0]);
+  const to = toISODate(weekDates[6]);
 
-  const load = useCallback(() => {
-    const from = toISODate(weekDates[0]);
-    const to   = toISODate(weekDates[6]);
-    fetchMySchedule(from, to);
+  useEffect(() => {
+    fetchShifts();
+  }, []);
+
+  useEffect(() => {
+    // Fetch rosters for the whole week
+    setRosterFilters({ startDate: from, endDate: to, page: 1, limit: 500 });
   }, [weekStart]);
-
-  useEffect(() => { load(); }, [weekStart]);
 
   const prevWeek = () => {
     const d = new Date(weekStart);
@@ -176,101 +41,123 @@ export default function DoctorSchedule() {
     setWeekStart(d);
   };
 
-  // Find slots for a given date from schedule array
-  const getSlotsForDate = (date) => {
-    const entry = schedule.find((s) => s.date === date);
-    return entry?.slots ?? [];
+  const handleRegister = async (date, shiftId) => {
+    if (!window.confirm('Bạn muốn đăng ký trực ca này?')) return;
+    const res = await createRoster({ roster_date: date, shift_id: shiftId });
+    if (!res.success) {
+      alert(res.message);
+    }
   };
 
-  const handleDeleteSlot = async (slotId, date) => {
-    setDeleteError(null);
-    const result = await deleteSlot(slotId, date);
-    if (!result.success) setDeleteError(result.message);
+  const getRostersForSlot = (date, shiftId) => {
+    return rosters.filter(r => r.roster_date === date && r.shift_id === shiftId);
   };
 
   return (
-    <div>
-      <PageHeader
-        title="Lịch làm việc"
-        subtitle="Quản lý slot khám theo ngày trong tuần"
-      />
-
-      {scheduleError && <Alert type="error" onClose={clearScheduleError}>{scheduleError}</Alert>}
-      {deleteError   && <Alert type="error" onClose={() => setDeleteError(null)}>{deleteError}</Alert>}
-
-      {/* Week navigation */}
-      <Card style={{ marginBottom: 20 }}>
-        <CardBody style={{ padding: '14px 20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <button className="btn btn-secondary btn-sm" onClick={prevWeek}>
-              <Icon name="chevLeft" size={14} /> Tuần trước
-            </button>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '0.95rem' }}>
-                Tuần {weekDates[0].toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })}
-                {' – '}
-                {weekDates[6].toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
-              </div>
-              {scheduleLoading && (
-                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
-                  Đang tải…
-                </div>
-              )}
-            </div>
-            <button className="btn btn-secondary btn-sm" onClick={nextWeek}>
-              Tuần sau <Icon name="chevRight" size={14} />
-            </button>
-          </div>
-        </CardBody>
-      </Card>
-
-      {/* Weekly grid */}
-      {scheduleLoading && schedule.length === 0
-        ? <Spinner label="Đang tải lịch…" />
-        : (
-          <div className="schedule-manage-grid">
-            {weekDates.map((d, i) => {
-              const iso = toISODate(d);
-              return (
-                <DayColumn
-                  key={iso}
-                  date={iso}
-                  dayLabel={VN_DAYS[i]}
-                  slots={getSlotsForDate(iso)}
-                  isToday={iso === today}
-                  onAddSlot={setAddModal}
-                  onDeleteSlot={handleDeleteSlot}
-                />
-              );
-            })}
-          </div>
-        )
-      }
-
-      {/* Legend */}
-      <div style={{ display: 'flex', gap: 16, marginTop: 16, fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 12, height: 12, borderRadius: 3, background: 'var(--color-accent-light)', display: 'inline-block' }} />
-          Slot trống
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 12, height: 12, borderRadius: 3, background: '#f3f4f6', display: 'inline-block' }} />
-          Đã đặt (không thể xoá)
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ color: 'var(--color-accent)', fontWeight: 700 }}>•</span>
-          Ngày hôm nay
-        </div>
+    <div className="clinic-page" style={{ padding: '24px', maxWidth: '100%', margin: '0 auto', background: '#f4f7f9', minHeight: '100vh' }}>
+      <div className="clinic-header" style={{ marginBottom: '24px' }}>
+        <h1 className="clinic-title" style={{ fontSize: '1.5rem', margin: 0, color: '#0f172a' }}>Lịch làm việc (Phân ca trực)</h1>
       </div>
 
-      {/* Add slot modal */}
-      {addModal && (
-        <AddSlotModal
-          date={addModal}
-          onClose={() => setAddModal(null)}
-          onSaved={load}
-        />
-      )}
+      <div className="clinic-card" style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px', borderRadius: '8px', border: '1px solid #e2e8f0', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+        <button className="btn-secondary" style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={prevWeek}>
+          <Icon name="chevLeft" size={14} /> Tuần trước
+        </button>
+        <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#1e293b' }}>
+          Tuần {weekDates[0].toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })} – {weekDates[6].toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+        </div>
+        <button className="btn-secondary" style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={nextWeek}>
+          Tuần sau <Icon name="chevRight" size={14} />
+        </button>
+      </div>
+
+      <div className="clinic-card" style={{ padding: 0, overflowX: 'auto', borderRadius: '8px', border: '1px solid #e2e8f0', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
+          <thead>
+            <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+              <th style={{ padding: '16px', borderRight: '1px solid #e2e8f0', width: '120px', color: '#475569', fontWeight: 600 }}>Ngày</th>
+              {shifts.map(shift => (
+                <th key={shift.id} style={{ padding: '16px', borderRight: '1px solid #e2e8f0', color: '#0f172a' }}>
+                  <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '4px' }}>{shift.name}</div>
+                  <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>{shift.start_time} - {shift.end_time}</span>
+                </th>
+              ))}
+              {shifts.length === 0 && <th style={{ padding: '16px', color: '#64748b' }}>Chưa có ca làm việc nào được tạo</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {weekDates.map((dateObj, index) => {
+              const dateStr = toISODate(dateObj);
+              const isToday = dateStr === toISODate(new Date());
+              return (
+                <tr key={dateStr} style={{ borderBottom: '1px solid #e2e8f0', background: isToday ? '#f0fdf4' : 'white' }}>
+                  <td style={{ padding: '16px', borderRight: '1px solid #e2e8f0' }}>
+                    <div style={{ fontWeight: 700, color: isToday ? '#16a34a' : '#334155', fontSize: '0.95rem' }}>{VN_DAYS[index]}</div>
+                    <div style={{ fontSize: '0.8rem', color: isToday ? '#22c55e' : '#64748b', marginTop: '4px' }}>{dateObj.toLocaleDateString('vi-VN')}</div>
+                  </td>
+                  {shifts.map(shift => {
+                    const slotRosters = getRostersForSlot(dateStr, shift.id);
+                    const myRoster = slotRosters.find(r => r.doctor?.user?.id === user?.id);
+
+                    return (
+                      <td key={shift.id} style={{ padding: '12px', borderRight: '1px solid #e2e8f0', verticalAlign: 'top', width: `${100 / shifts.length}%` }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minHeight: '80px' }}>
+                          {slotRosters.map(r => {
+                            const isMe = r.doctor?.user?.id === user?.id;
+                            let badgeColor = '#94a3b8';
+                            let badgeBg = '#f1f5f9';
+                            let badgeText = 'Không rõ';
+                            
+                            if (r.status === 'approved') { badgeColor = '#166534'; badgeBg = '#dcfce7'; badgeText = 'Đã duyệt'; }
+                            if (r.status === 'pending') { badgeColor = '#b45309'; badgeBg = '#fef3c7'; badgeText = 'Chờ duyệt'; }
+                            if (r.status === 'rejected') { badgeColor = '#b91c1c'; badgeBg = '#fee2e2'; badgeText = 'Từ chối'; }
+
+                            return (
+                              <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px', background: isMe ? '#eff6ff' : '#f8fafc', borderRadius: '6px', border: isMe ? '1px solid #bfdbfe' : '1px solid #f1f5f9' }}>
+                                <img src={r.doctor?.user?.avatar || 'https://ui-avatars.com/api/?name=' + (r.doctor?.user?.full_name || 'BS') + '&background=e2e8f0&color=334155'} alt="avt" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+                                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                  <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '0.85rem' }}>{isMe ? 'Bạn (Tôi)' : `BS. ${r.doctor?.user?.full_name}`}</div>
+                                  <div style={{ fontSize: '0.7rem', color: badgeColor, background: badgeBg, padding: '2px 6px', borderRadius: '12px', display: 'inline-block', alignSelf: 'flex-start', fontWeight: 600 }}>
+                                    {badgeText}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                          
+                          {!myRoster && new Date(dateStr) >= new Date(toISODate(new Date())) && (
+                            <button 
+                              onClick={() => handleRegister(dateStr, shift.id)}
+                              disabled={rosterLoading}
+                              style={{ 
+                                marginTop: 'auto', 
+                                background: 'transparent', 
+                                border: '1px dashed #cbd5e1', 
+                                padding: '10px', 
+                                borderRadius: '6px', 
+                                color: '#3b82f6', 
+                                fontSize: '0.85rem', 
+                                fontWeight: 600,
+                                cursor: 'pointer', 
+                                textAlign: 'center',
+                                transition: 'all 0.2s'
+                              }}
+                              onMouseOver={(e) => { e.currentTarget.style.background = '#eff6ff'; e.currentTarget.style.borderColor = '#3b82f6'; }}
+                              onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
+                            >
+                              + Đăng ký ca này
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

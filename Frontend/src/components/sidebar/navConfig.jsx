@@ -46,6 +46,12 @@ export const Icons = {
   User: () => (
     <svg {...iconProps}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   ),
+  Clock: () => (
+    <svg {...iconProps}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+  ),
+  Monitor: () => (
+    <svg {...iconProps}><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+  ),
 };
 
 // ─── Nav configs per role ─────────────────────────────────────────────────────
@@ -80,6 +86,26 @@ export const NAV_CONFIG = {
       label: 'Cài đặt',
       path: ROUTES.ADMIN_SETTINGS,
       Icon: Icons.Settings,
+    },
+    {
+      label: 'Ngày nghỉ',
+      path: ROUTES.ADMIN_HOLIDAYS,
+      Icon: Icons.Calendar,
+    },
+    {
+      label: 'Ca làm việc',
+      path: ROUTES.ADMIN_SHIFTS,
+      Icon: Icons.Clock,
+    },
+    {
+      label: 'Lịch trực BS',
+      path: ROUTES.ADMIN_ROSTERS,
+      Icon: Icons.Clipboard,
+    },
+    {
+      label: 'Monitor',
+      path: ROUTES.ADMIN_MONITOR,
+      Icon: Icons.Monitor,
     },
   ],
 
@@ -141,6 +167,11 @@ export const NAV_CONFIG = {
       label: 'Hồ sơ cá nhân',
       path: ROUTES.RECEPTIONIST_PROFILE,
       Icon: Icons.User,
+    },
+    {
+      label: 'Monitor',
+      path: ROUTES.RECEPTIONIST_MONITOR,
+      Icon: Icons.Monitor,
     },
   ],
 

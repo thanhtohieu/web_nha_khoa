@@ -44,6 +44,12 @@ const PaymentCheckout = lazy(() => import('./features/payment/PaymentCheckout'))
 const PaymentResult = lazy(() => import('./features/payment/PaymentResult'));
 const Profile = lazy(() => import('./features/user/Profile'));
 
+// Clinic Management pages (lazy)
+const HolidayManagement = lazy(() => import('./features/clinic/HolidayManagement'));
+const ShiftManagement = lazy(() => import('./features/clinic/ShiftManagement'));
+const RosterManagement = lazy(() => import('./features/clinic/RosterManagement'));
+const AppointmentMonitor = lazy(() => import('./features/clinic/AppointmentMonitor'));
+
 // Root redirect — users are redirected based on role by auth store
 import useAuthStore from './store/auth.store';
 import { ROLE_HOME } from './routes/constants';
@@ -105,6 +111,10 @@ function App() {
           <Route path="reports" element={<AdminReports />} />
           <Route path="audit" element={<AdminAuditLog />} />
           <Route path="settings" element={<AdminSettings />} />
+          <Route path="holidays" element={<HolidayManagement />} />
+          <Route path="shifts" element={<ShiftManagement />} />
+          <Route path="rosters" element={<RosterManagement />} />
+          <Route path="monitor" element={<AppointmentMonitor />} />
         </Route>
 
         {/* ── Doctor routes ────────────────────────────────────── */}
@@ -114,6 +124,7 @@ function App() {
           <Route path="appointments" element={<AppointmentList />} />
           <Route path="appointments/:id" element={<AppointmentDetail />} />
           <Route path="schedule" element={<DoctorSchedule />} />
+          <Route path="roster" element={<RosterManagement />} />
           <Route path="records" element={<MedicalRecordList />} />
           <Route path="records/:id" element={<MedicalRecordDetail />} />
           <Route path="records/:id/prescription" element={<Prescription />} />
@@ -132,6 +143,7 @@ function App() {
           <Route path="billing" element={<PaymentList />} />
           <Route path="billing/:id" element={<PaymentCheckout />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="monitor" element={<AppointmentMonitor />} />
         </Route>
 
         {/* ── Patient routes ───────────────────────────────────── */}

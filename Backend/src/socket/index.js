@@ -2,6 +2,7 @@ const { Server } = require('socket.io');
 const socketAuthMiddleware = require('./socket.auth');
 const chatHandler = require('./chat.handler');
 const notificationHandler = require('./notification.handler');
+const appointmentHandler = require('./appointment.handler');
 const logger = require('../utils/logger');
 
 // Map lưu userId → Set<socketId> (1 user có thể nhiều tab)
@@ -48,6 +49,7 @@ const initSocket = (httpServer) => {
     // ========================
     notificationHandler(io, socket);
     chatHandler(io, socket);
+    appointmentHandler(io, socket);
 
     // ========================
     // ONLINE USERS LIST

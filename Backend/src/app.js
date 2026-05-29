@@ -27,6 +27,9 @@ const serviceRoutes = require('./modules/service/service.route');
 const specialtyRoutes = require('./modules/service/specialty.route');
 const contactRoutes = require('./modules/contact/contact.route');
 const dashboardRoutes = require('./modules/dashboard/dashboard.route');
+const holidayRoutes = require('./modules/holiday/holiday.route');
+const shiftRoutes = require('./modules/shift/shift.route');
+const rosterRoutes = require('./modules/roster/roster.route');
 
 const app = express();
 
@@ -94,6 +97,9 @@ app.use(`${API}/services`, serviceRoutes);
 app.use(`${API}/specialties`, specialtyRoutes);
 app.use(`${API}/contacts`, contactRoutes);
 app.use(`${API}/dashboard`, dashboardRoutes);
+app.use(`${API}/holidays`, holidayRoutes);
+app.use(`${API}/shifts`, shiftRoutes);
+app.use(`${API}/rosters`, rosterRoutes);
 
 // Error handlers
 app.use(notFoundHandler);

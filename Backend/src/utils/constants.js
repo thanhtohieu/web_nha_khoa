@@ -143,6 +143,24 @@ const QUEUE_NAMES = Object.freeze({
   EMAIL: 'email-queue',
 });
 
+// ========================
+// HOLIDAY TYPE
+// ========================
+const HOLIDAY_TYPE = Object.freeze({
+  NATIONAL: 'national',
+  CLINIC: 'clinic',
+  EMERGENCY: 'emergency',
+});
+
+// ========================
+// ROSTER STATUS
+// ========================
+const ROSTER_STATUS = Object.freeze({
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
+});
+
 module.exports = {
   ROLES,
   APPOINTMENT_STATUS,
@@ -163,4 +181,6 @@ module.exports = {
   MAX_LIMIT,
   CACHE_TTL,
   QUEUE_NAMES,
+  HOLIDAY_TYPE,
+  ROSTER_STATUS,
 };

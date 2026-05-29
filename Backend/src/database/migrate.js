@@ -17,6 +17,9 @@ require('../modules/media/media.model');
 require('../modules/chat/chat.model');
 require('../modules/blog/blog.model');
 require('../modules/contact/contact.model');
+require('../modules/holiday/holiday.model');
+require('../modules/shift/shift.model');
+require('../modules/roster/roster.model');
 
 // Load associations
 const setupAssociations = require('../config/associations');
