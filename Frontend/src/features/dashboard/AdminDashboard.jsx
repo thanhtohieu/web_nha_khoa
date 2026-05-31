@@ -65,10 +65,25 @@ function periodToDateRange(period) {
       break;
     case 'month':
     default:
-      startDate = new Date(now - 30 * 86400000).toISOString().split('T')[0];
+      startDate = new Date(now - 29 * 86400000).toISOString().split('T')[0];
       break;
   }
   return { startDate, endDate };
+}
+
+function fillDateGaps(dataMap, startDate, endDate) {
+  const result = [];
+  const curr = new Date(startDate);
+  const end = new Date(endDate);
+  while (curr <= end) {
+    const label = curr.toISOString().split('T')[0];
+    result.push({
+      label,
+      value: dataMap[label] || 0,
+    });
+    curr.setDate(curr.getDate() + 1);
+  }
+  return result;
 }
 
 function DashboardAdmin() {
@@ -142,12 +157,11 @@ function DashboardAdmin() {
       );
 
       // Charts
-      setRevenueData(
-        (payload.charts?.revenue ?? []).map((r) => ({
-          label: r.period,
-          value: parseFloat(r.revenue || 0),
-        }))
-      );
+      const revMap = {};
+      (payload.charts?.revenue ?? []).forEach(r => {
+        revMap[r.period] = parseFloat(r.revenue || 0) / 1000000;
+      });
+      setRevenueData(fillDateGaps(revMap, dateRange.startDate, dateRange.endDate));
 
       // Group appointment chart by date (aggregate counts across statuses)
       const apptRaw = payload.charts?.appointments ?? [];
@@ -157,9 +171,7 @@ function DashboardAdmin() {
         if (!apptMap[date]) apptMap[date] = 0;
         apptMap[date] += parseInt(r.count || 0);
       });
-      setAppointmentData(
-        Object.entries(apptMap).map(([label, value]) => ({ label, value }))
-      );
+      setAppointmentData(fillDateGaps(apptMap, dateRange.startDate, dateRange.endDate));
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || 'Lỗi tải dữ liệu');
     } finally {
@@ -252,7 +264,7 @@ function DashboardAdmin() {
               title="Doanh thu theo thời gian"
               data={revenueData}
               color="#2563eb"
-              unit="K₫"
+              unit="M₫"
             />
           )}
         </div>

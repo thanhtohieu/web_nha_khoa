@@ -39,7 +39,7 @@ export function BarChart({ data = [], title, color = '#2563eb', unit = '' }) {
                 strokeDasharray="3 3"
               />
               <text x={paddingLeft - 6} y={y + 4} textAnchor="end" fontSize="10" fill="#9ca3af">
-                {val}
+                {Number.isInteger(val) ? val : val.toFixed(1)}
               </text>
             </g>
           );
@@ -61,15 +61,17 @@ export function BarChart({ data = [], title, color = '#2563eb', unit = '' }) {
                 rx={3}
                 opacity={0.85}
               />
-              <text
-                x={x + barWidth / 2}
-                y={y - 4}
-                textAnchor="middle"
-                fontSize="9"
-                fill="#374151"
-              >
-                {d.value}{unit}
-              </text>
+              {d.value > 0 && (
+                <text
+                  x={x + barWidth / 2}
+                  y={y - 4}
+                  textAnchor="middle"
+                  fontSize="9"
+                  fill="#374151"
+                >
+                  {Number.isInteger(d.value) ? d.value : d.value.toFixed(1)}{unit}
+                </text>
+              )}
               <text
                 x={x + barWidth / 2}
                 y={height - 6}
@@ -77,7 +79,7 @@ export function BarChart({ data = [], title, color = '#2563eb', unit = '' }) {
                 fontSize="9"
                 fill="#6b7280"
               >
-                {d.label}
+                {data.length <= 7 || i % Math.ceil(data.length / 5) === 0 ? d.label : ''}
               </text>
             </g>
           );
@@ -134,7 +136,7 @@ export function LineChart({ data = [], title, color = '#10b981', unit = '' }) {
             <g key={frac}>
               <line x1={paddingLeft} x2={width - 16} y1={y} y2={y} stroke="#e5e7eb" strokeDasharray="3 3" />
               <text x={paddingLeft - 6} y={y + 4} textAnchor="end" fontSize="10" fill="#9ca3af">
-                {Math.round(max * frac)}
+                {Number.isInteger(max * frac) ? (max * frac) : (max * frac).toFixed(1)}
               </text>
             </g>
           );
@@ -161,17 +163,19 @@ export function LineChart({ data = [], title, color = '#10b981', unit = '' }) {
               fontSize="9"
               fill="#6b7280"
             >
-              {d.label}
+              {data.length <= 7 || i % Math.ceil(data.length / 5) === 0 ? d.label : ''}
             </text>
-            <text
-              x={getX(i)}
-              y={getY(d.value) - 8}
-              textAnchor="middle"
-              fontSize="9"
-              fill="#374151"
-            >
-              {d.value}{unit}
-            </text>
+            {d.value > 0 && (
+              <text
+                x={getX(i)}
+                y={getY(d.value) - 8}
+                textAnchor="middle"
+                fontSize="9"
+                fill="#374151"
+              >
+                {Number.isInteger(d.value) ? d.value : d.value.toFixed(1)}{unit}
+              </text>
+            )}
           </g>
         ))}
 

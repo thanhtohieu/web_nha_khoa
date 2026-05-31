@@ -17,7 +17,10 @@ const dashboardRepository = {
   // ========================
   async getAdminOverview({ startDate, endDate }) {
     const dateFilter = {
-      [Op.between]: [new Date(startDate), new Date(endDate)],
+      [Op.between]: [
+        dayjs(startDate).startOf('day').toDate(),
+        dayjs(endDate).endOf('day').toDate()
+      ],
     };
 
     const [
@@ -98,7 +101,12 @@ const dashboardRepository = {
     const results = await Payment.findAll({
       where: {
         status: PAYMENT_STATUS.PAID,
-        paid_at: { [Op.between]: [new Date(startDate), new Date(endDate)] },
+        paid_at: {
+          [Op.between]: [
+            dayjs(startDate).startOf('day').toDate(),
+            dayjs(endDate).endOf('day').toDate()
+          ]
+        },
       },
       attributes: [
         [fn('DATE_FORMAT', col('paid_at'), dateFormat), 'period'],
@@ -276,7 +284,12 @@ const dashboardRepository = {
       Payment.sum('amount', {
         where: {
           status: PAYMENT_STATUS.PAID,
-          paid_at: { [Op.between]: [new Date(startDate), new Date(endDate)] },
+          paid_at: {
+            [Op.between]: [
+              dayjs(startDate).startOf('day').toDate(),
+              dayjs(endDate).endOf('day').toDate()
+            ]
+          },
         },
         include: [{
           model: Appointment,

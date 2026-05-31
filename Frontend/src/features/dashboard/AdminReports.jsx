@@ -40,6 +40,34 @@ const getDateRange = (filter) => {
   };
 };
 
+function fillDateGaps(dataMap, startDate, endDate, groupBy = 'day') {
+  const result = [];
+  const curr = new Date(startDate);
+  const end = new Date(endDate);
+  
+  if (groupBy === 'month') {
+    curr.setDate(1); // Start at first day of month
+    while (curr <= end) {
+      const label = curr.toISOString().slice(0, 7); // YYYY-MM
+      result.push({
+        label: label.slice(5), // "MM"
+        value: dataMap[label] || 0,
+      });
+      curr.setMonth(curr.getMonth() + 1);
+    }
+  } else {
+    while (curr <= end) {
+      const label = curr.toISOString().split('T')[0];
+      result.push({
+        label: label.slice(5), // "MM-DD"
+        value: dataMap[label] || 0,
+      });
+      curr.setDate(curr.getDate() + 1);
+    }
+  }
+  return result;
+}
+
 // --- Formatters ---
 const formatCurrency = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val || 0);
 
@@ -98,21 +126,25 @@ export default function AdminReports() {
   const { overview, charts, topDoctors, specialtyDistribution } = data || {};
 
   // Parse chart data for SimpleChart format
-  const revenueChartData = charts?.revenue?.map(d => ({
-    label: d.period.slice(5), // e.g. "05-18"
-    value: parseFloat(d.revenue)
-  })) || [];
+  const range = getDateRange(filter);
 
-  const appointmentChartData = charts?.appointments?.reduce((acc, curr) => {
-    const label = curr.date.slice(5); // "05-18"
-    const existing = acc.find(item => item.label === label);
-    if (existing) {
-      existing.value += parseInt(curr.count);
-    } else {
-      acc.push({ label, value: parseInt(curr.count) });
-    }
-    return acc;
-  }, []) || [];
+  const revMap = {};
+  (charts?.revenue || []).forEach(d => {
+    revMap[d.period] = parseFloat(d.revenue) / 1000000;
+  });
+  const revenueChartData = fillDateGaps(revMap, range.startDate, range.endDate, range.groupBy);
+
+  const apptMap = {};
+  (charts?.appointments || []).forEach(curr => {
+    // API returns YYYY-MM-DD for appointments usually, but if grouped by month it might be YYYY-MM
+    // The backend getAppointmentChart doesn't support groupBy month currently!
+    // It groups by appointment_date strictly. So appointments are always by day.
+    const date = curr.date || curr.appointment_date;
+    const label = range.groupBy === 'month' ? date.slice(0, 7) : date; // "YYYY-MM" or "YYYY-MM-DD"
+    if (!apptMap[label]) apptMap[label] = 0;
+    apptMap[label] += parseInt(curr.count || 0);
+  });
+  const appointmentChartData = fillDateGaps(apptMap, range.startDate, range.endDate, range.groupBy);
 
   // Parse tables
   const specialtyRows = charts?.specialtyDistribution?.map(d => ({
@@ -190,7 +222,7 @@ export default function AdminReports() {
       <div className="dashboard__two-col" style={{ marginTop: 24 }}>
         <section className="dashboard__section dashboard__section--flex2">
           <h2 className="section-title">Doanh thu theo thời gian</h2>
-          <LineChart data={revenueChartData} color="#10b981" unit="đ" />
+          <LineChart data={revenueChartData} color="#10b981" unit="M₫" />
         </section>
 
         <section className="dashboard__section dashboard__section--flex2">
