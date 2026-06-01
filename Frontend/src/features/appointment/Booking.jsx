@@ -53,6 +53,13 @@ export default function Booking() {
   const [quickError, setQuickError] = useState(null);
   const [quickLoading, setQuickLoading] = useState(false);
 
+  // Verification states
+  const [showVerification, setShowVerification] = useState(false);
+  const [verifyMethod, setVerifyMethod] = useState('email');
+  const [verifyContact, setVerifyContact] = useState('');
+  const [verifyStep, setVerifyStep] = useState(1); // 1: choose method & send, 2: enter code
+  const [verifyCode, setVerifyCode] = useState('');
+
   const steps = hasPatientStep
     ? ['Chọn bệnh nhân', 'Chọn bác sĩ', 'Chọn ngày & giờ', 'Xác nhận']
     : ['Chọn bác sĩ', 'Chọn ngày & giờ', 'Xác nhận'];
@@ -162,12 +169,40 @@ export default function Booking() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmitClick = () => {
     const errs = {};
     if (!form.reason?.trim()) errs.reason = 'Vui lòng nhập lý do khám';
     if (form.reason?.trim().length < 5) errs.reason = 'Lý do tối thiểu 5 ký tự';
 
     if (Object.keys(errs).length) { setErrors(errs); return; }
+    
+    // Check if patient info is available to prefill verifyContact
+    if (hasPatientStep) {
+      const selectedPatient = patients.find(p => (p.id || p._id) === form.patientId);
+      if (selectedPatient?.email) setVerifyContact(selectedPatient.email);
+    } else {
+      // User is patient himself
+      const userStore = useUserStore.getState().user;
+      if (userStore?.email) setVerifyContact(userStore.email);
+    }
+    
+    // Instead of direct submit, show verification modal
+    setVerifyStep(1);
+    setShowVerification(true);
+  };
+
+  const handleSendCode = (e) => {
+    e.preventDefault();
+    if (!verifyContact.trim()) return alert('Vui lòng nhập thông tin liên hệ');
+    setVerifyStep(2);
+  };
+
+  const handleVerifySubmit = async (e) => {
+    e.preventDefault();
+    if (!verifyCode.trim()) return alert('Vui lòng nhập mã xác nhận');
+
+    // Simulate verification success
+    setShowVerification(false);
     
     const result = await createAppointment({
       doctorId: form.doctorId,
@@ -387,7 +422,7 @@ export default function Booking() {
         <div className="footer-right">
           {step < steps.length - 1
             ? <button className="btn-primary" onClick={goNext}>Tiếp theo</button>
-            : <button className="btn-primary" onClick={handleSubmit} disabled={bookingLoading}>
+            : <button className="btn-primary" onClick={handleSubmitClick} disabled={bookingLoading}>
                 {bookingLoading ? 'Đang đặt lịch...' : 'Xác nhận đặt lịch'}
               </button>
           }
@@ -490,6 +525,84 @@ export default function Booking() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* VERIFICATION MODAL */}
+      {showVerification && (
+        <div className="quick-modal-overlay">
+          <div className="quick-modal" style={{ maxWidth: '400px' }}>
+            <div className="quick-modal-header">
+              <h3>Xác minh lịch hẹn</h3>
+              <button className="btn-close-modal" onClick={() => setShowVerification(false)}>×</button>
+            </div>
+            
+            {verifyStep === 1 ? (
+              <form onSubmit={handleSendCode}>
+                <div style={{ marginBottom: '16px' }}>
+                  <p style={{ color: '#475569', fontSize: '0.9rem', marginBottom: '12px' }}>
+                    Để hoàn tất đặt lịch, vui lòng xác nhận thông tin liên hệ. Hệ thống sẽ gửi mã OTP qua phương thức bạn chọn.
+                  </p>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, color: '#334155' }}>Hình thức xác nhận</label>
+                  <select 
+                    className="field-input" 
+                    value={verifyMethod} 
+                    onChange={e => {
+                      setVerifyMethod(e.target.value);
+                      setVerifyContact('');
+                    }}
+                  >
+                    <option value="email">Qua Email</option>
+                    <option value="sms">Qua SMS</option>
+                  </select>
+                </div>
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, color: '#334155' }}>
+                    {verifyMethod === 'email' ? 'Nhập Email của bạn' : 'Nhập số điện thoại'}
+                  </label>
+                  <input 
+                    type={verifyMethod === 'email' ? 'email' : 'tel'} 
+                    required 
+                    className="field-input" 
+                    placeholder={verifyMethod === 'email' ? 'email@example.com' : '0912345678'}
+                    value={verifyContact}
+                    onChange={e => setVerifyContact(e.target.value)}
+                  />
+                </div>
+                <div className="quick-modal-footer">
+                  <button type="button" className="btn-secondary" onClick={() => setShowVerification(false)}>Hủy</button>
+                  <button type="submit" className="btn-primary">Gửi mã xác nhận</button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifySubmit}>
+                <div style={{ marginBottom: '20px' }}>
+                  <p style={{ color: '#475569', fontSize: '0.9rem', marginBottom: '12px' }}>
+                    Mã xác nhận đã được gửi đến <strong>{verifyContact}</strong>.
+                  </p>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, color: '#334155' }}>Mã xác nhận OTP</label>
+                  <input 
+                    type="text" 
+                    required 
+                    className="field-input" 
+                    placeholder="Nhập mã 6 số..."
+                    value={verifyCode}
+                    onChange={e => setVerifyCode(e.target.value)}
+                    style={{ textAlign: 'center', fontSize: '1.2rem', letterSpacing: '4px' }}
+                  />
+                  <p className="hint-text" style={{ marginTop: 8, color: '#10b981', textAlign: 'center' }}>
+                    (Mô phỏng: Vui lòng nhập mã bất kỳ để thành công)
+                  </p>
+                </div>
+                <div className="quick-modal-footer">
+                  <button type="button" className="btn-secondary" onClick={() => setVerifyStep(1)}>Quay lại</button>
+                  <button type="submit" className="btn-primary" disabled={bookingLoading}>
+                    {bookingLoading ? 'Đang xử lý...' : 'Xác nhận & Hoàn tất'}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
