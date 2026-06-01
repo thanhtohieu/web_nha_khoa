@@ -74,16 +74,16 @@ export default function MedicalRecordDetail() {
     setError(null);
     try {
       const res = await medicalApi.getRecordById(id);
-      const data = res.data;
-      setRecord(data);
+      const payload = res.data?.data ?? res.data;
+      setRecord(payload);
       setForm({
-        diagnosis: data.diagnosis || '',
-        chiefComplaint: data.chiefComplaint || '',
-        clinicalFindings: data.clinicalFindings || '',
-        treatment: data.treatment || '',
-        followUpDate: data.followUpDate ? data.followUpDate.slice(0, 10) : '',
-        notes: data.notes || '',
-        status: data.status || 'active',
+        diagnosis: payload.diagnosis || '',
+        chiefComplaint: payload.chiefComplaint || payload.chief_complaint || '',
+        clinicalFindings: payload.clinicalFindings || payload.clinical_findings || '',
+        treatment: payload.treatment || payload.treatment_plan || '',
+        followUpDate: payload.followUpDate || payload.follow_up_date ? (payload.followUpDate || payload.follow_up_date).slice(0, 10) : '',
+        notes: payload.notes || '',
+        status: payload.status || 'active',
       });
     } catch (err) {
       setError(err.message);
@@ -411,7 +411,7 @@ export default function MedicalRecordDetail() {
             <div className="info-grid">
               <div className="info-item">
                 <span className="info-label">Lý do khám</span>
-                <span className="info-value">{record.chiefComplaint || '—'}</span>
+                <span className="info-value">{record.chiefComplaint || record.chief_complaint || '—'}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">Chẩn đoán</span>
@@ -419,15 +419,15 @@ export default function MedicalRecordDetail() {
               </div>
               <div className="info-item full-width">
                 <span className="info-label">Khám lâm sàng</span>
-                <span className="info-value">{record.clinicalFindings || '—'}</span>
+                <span className="info-value">{record.clinicalFindings || record.clinical_findings || '—'}</span>
               </div>
               <div className="info-item full-width">
                 <span className="info-label">Hướng điều trị</span>
-                <span className="info-value">{record.treatment || '—'}</span>
+                <span className="info-value">{record.treatment || record.treatment_plan || '—'}</span>
               </div>
               <div className="info-item">
                 <span className="info-label">Tái khám</span>
-                <span className="info-value">{formatDate(record.followUpDate)}</span>
+                <span className="info-value">{formatDate(record.followUpDate || record.follow_up_date)}</span>
               </div>
               <div className="info-item full-width">
                 <span className="info-label">Ghi chú</span>

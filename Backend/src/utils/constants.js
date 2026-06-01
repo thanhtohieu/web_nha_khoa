@@ -90,7 +90,9 @@ const DAYS_OF_WEEK = Object.freeze({
 // ========================
 const MEDICAL_RECORD_STATUS = Object.freeze({
   DRAFT: 'draft',
+  ACTIVE: 'active',
   COMPLETED: 'completed',
+  CANCELLED: 'cancelled',
 });
 
 // ========================
