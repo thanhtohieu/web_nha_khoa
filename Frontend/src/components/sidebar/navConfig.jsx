@@ -103,6 +103,11 @@ export const NAV_CONFIG = {
       Icon: Icons.Clipboard,
     },
     {
+      label: 'Duyệt ngày nghỉ',
+      path: '/admin/leaves',
+      Icon: Icons.Calendar,
+    },
+    {
       label: 'Monitor',
       path: ROUTES.ADMIN_MONITOR,
       Icon: Icons.Monitor,

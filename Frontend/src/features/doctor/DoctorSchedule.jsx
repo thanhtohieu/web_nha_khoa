@@ -7,7 +7,9 @@ import '../clinic/ClinicManagement.css'; // Reuse the new clinic CSS
 
 export default function DoctorSchedule() {
   const { user } = useAuth();
-  const { shifts, fetchShifts, rosters, setRosterFilters, createRoster, rosterLoading } = useClinicStore();
+  const { shifts, fetchShifts, rosters, setRosterFilters, createRoster, rosterLoading, leaves, fetchLeaves, createLeave, leaveLoading } = useClinicStore();
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [leaveData, setLeaveData] = useState({ date: '', reason: '' });
 
   const [weekStart, setWeekStart] = useState(() => {
     const today = new Date();
@@ -23,6 +25,7 @@ export default function DoctorSchedule() {
 
   useEffect(() => {
     fetchShifts();
+    fetchLeaves();
   }, []);
 
   useEffect(() => {
@@ -53,6 +56,23 @@ export default function DoctorSchedule() {
     return rosters.filter(r => r.roster_date === date && r.shift_id === shiftId);
   };
 
+  const getLeaveForDate = (date) => {
+    return leaves.find(l => l.leave_date === date && l.doctor?.user?.id === user?.id);
+  };
+
+  const handleLeaveSubmit = async (e) => {
+    e.preventDefault();
+    if (!leaveData.date || !leaveData.reason) return alert('Vui lòng điền đủ thông tin');
+    const res = await createLeave({ leave_date: leaveData.date, reason: leaveData.reason });
+    if (res.success) {
+      alert('Đăng ký nghỉ phép thành công. Vui lòng chờ duyệt!');
+      setShowLeaveModal(false);
+      setLeaveData({ date: '', reason: '' });
+    } else {
+      alert(res.message);
+    }
+  };
+
   return (
     <div className="clinic-page" style={{ padding: '24px', maxWidth: '100%', margin: '0 auto', background: '#f4f7f9', minHeight: '100vh' }}>
       <div className="clinic-header" style={{ marginBottom: '24px' }}>
@@ -68,6 +88,13 @@ export default function DoctorSchedule() {
         </div>
         <button className="btn-secondary" style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={nextWeek}>
           Tuần sau <Icon name="chevRight" size={14} />
+        </button>
+        <button 
+          className="btn-primary" 
+          style={{ padding: '8px 16px', marginLeft: '16px', display: 'flex', alignItems: 'center', gap: '8px', background: '#eab308', color: '#fff', border: 'none' }} 
+          onClick={() => setShowLeaveModal(true)}
+        >
+          <Icon name="calendar" size={14} /> Đăng ký nghỉ
         </button>
       </div>
 
@@ -94,6 +121,20 @@ export default function DoctorSchedule() {
                   <td style={{ padding: '16px', borderRight: '1px solid #e2e8f0' }}>
                     <div style={{ fontWeight: 700, color: isToday ? '#16a34a' : '#334155', fontSize: '0.95rem' }}>{VN_DAYS[index]}</div>
                     <div style={{ fontSize: '0.8rem', color: isToday ? '#22c55e' : '#64748b', marginTop: '4px' }}>{dateObj.toLocaleDateString('vi-VN')}</div>
+                    
+                    {/* Hien thi trang thai xin nghi */}
+                    {(() => {
+                      const l = getLeaveForDate(dateStr);
+                      if (!l) return null;
+                      let bg = '#fef3c7', col = '#b45309', txt = 'Xin nghỉ: Chờ duyệt';
+                      if (l.status === 'approved') { bg = '#dcfce7'; col = '#166534'; txt = 'Xin nghỉ: Đã duyệt'; }
+                      if (l.status === 'rejected') { bg = '#fee2e2'; col = '#b91c1c'; txt = 'Xin nghỉ: Bị từ chối'; }
+                      return (
+                        <div style={{ marginTop: '8px', padding: '4px 6px', background: bg, color: col, fontSize: '0.75rem', fontWeight: 600, borderRadius: '4px', textAlign: 'center' }}>
+                          {txt}
+                        </div>
+                      );
+                    })()}
                   </td>
                   {shifts.map(shift => {
                     const slotRosters = getRostersForSlot(dateStr, shift.id);
@@ -125,7 +166,7 @@ export default function DoctorSchedule() {
                             );
                           })}
                           
-                          {!myRoster && new Date(dateStr) >= new Date(toISODate(new Date())) && (
+                          {!myRoster && new Date(dateStr) >= new Date(toISODate(new Date())) && (!getLeaveForDate(dateStr) || getLeaveForDate(dateStr).status === 'rejected') && (
                             <button 
                               onClick={() => handleRegister(dateStr, shift.id)}
                               disabled={rosterLoading}
@@ -158,6 +199,44 @@ export default function DoctorSchedule() {
           </tbody>
         </table>
       </div>
+
+      {showLeaveModal && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="modal-content" style={{ background: 'white', padding: '24px', borderRadius: '8px', width: '400px', maxWidth: '90%' }}>
+            <h2 style={{ marginTop: 0, marginBottom: '16px', fontSize: '1.25rem', color: '#0f172a' }}>Đăng ký xin nghỉ</h2>
+            <form onSubmit={handleLeaveSubmit}>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, color: '#334155' }}>Ngày xin nghỉ</label>
+                <input 
+                  type="date" 
+                  min={toISODate(new Date())}
+                  required
+                  value={leaveData.date}
+                  onChange={e => setLeaveData({ ...leaveData, date: e.target.value })}
+                  style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                />
+              </div>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, color: '#334155' }}>Lý do nghỉ</label>
+                <textarea 
+                  required
+                  rows="3"
+                  value={leaveData.reason}
+                  onChange={e => setLeaveData({ ...leaveData, reason: e.target.value })}
+                  style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                  placeholder="Nhập lý do chi tiết..."
+                ></textarea>
+              </div>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                <button type="button" className="btn-secondary" onClick={() => setShowLeaveModal(false)} style={{ padding: '8px 16px' }}>Hủy</button>
+                <button type="submit" className="btn-primary" disabled={leaveLoading} style={{ padding: '8px 16px' }}>
+                  {leaveLoading ? 'Đang gửi...' : 'Gửi yêu cầu'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

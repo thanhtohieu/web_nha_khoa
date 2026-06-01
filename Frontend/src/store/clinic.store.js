@@ -215,6 +215,50 @@ const useClinicStore = create((set, get) => ({
     }
   },
 
+  // --- LEAVES ---
+  leaves: [],
+  leaveLoading: false,
+  leaveError: null,
+
+  fetchLeaves: async () => {
+    try {
+      set({ leaveLoading: true, leaveError: null });
+      const { default: leaveApi } = await import('../api/leave.api.js');
+      const res = await leaveApi.getAll();
+      set({ leaves: res.data?.data || [], leaveLoading: false });
+    } catch (error) {
+      set({ leaveError: error.response?.data?.message || 'Lỗi khi tải danh sách ngày nghỉ', leaveLoading: false });
+    }
+  },
+
+  createLeave: async (data) => {
+    set({ leaveLoading: true, leaveError: null });
+    try {
+      const { default: leaveApi } = await import('../api/leave.api.js');
+      await leaveApi.create(data);
+      await get().fetchLeaves();
+      return { success: true };
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Lỗi khi xin nghỉ';
+      set({ leaveError: msg, leaveLoading: false });
+      return { success: false, message: msg };
+    }
+  },
+
+  updateLeaveStatus: async (id, data) => {
+    set({ leaveLoading: true, leaveError: null });
+    try {
+      const { default: leaveApi } = await import('../api/leave.api.js');
+      await leaveApi.updateStatus(id, data);
+      await get().fetchLeaves();
+      return { success: true };
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Lỗi khi duyệt/từ chối';
+      set({ leaveError: msg, leaveLoading: false });
+      return { success: false, message: msg };
+    }
+  },
+
 }));
 
 export default useClinicStore;

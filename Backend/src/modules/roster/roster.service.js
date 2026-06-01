@@ -21,6 +21,13 @@ const rosterService = {
     const isHoliday = await holidayRepository.isHoliday(roster_date);
     if (isHoliday) throw new AppError('Ngày này là ngày nghỉ của phòng khám', 400);
 
+    // Check doctor leave
+    const leaveRepository = require('../leave/leave.repository');
+    const existingLeave = await leaveRepository.findByDoctorAndDate(doctor_profile_id, roster_date);
+    if (existingLeave && existingLeave.status !== 'rejected') {
+      throw new AppError('Bạn đã xin nghỉ vào ngày này nên không thể đăng ký ca làm việc', 400);
+    }
+
     // Check shift exists
     const shift = await shiftRepository.findById(shift_id);
     if (!shift || !shift.is_active) throw new AppError('Ca làm việc không hợp lệ hoặc đã bị vô hiệu hóa', 400);

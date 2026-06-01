@@ -48,6 +48,7 @@ const Profile = lazy(() => import('./features/user/Profile'));
 const HolidayManagement = lazy(() => import('./features/clinic/HolidayManagement'));
 const ShiftManagement = lazy(() => import('./features/clinic/ShiftManagement'));
 const RosterManagement = lazy(() => import('./features/clinic/RosterManagement'));
+const AdminLeaves = lazy(() => import('./features/clinic/AdminLeaves'));
 const AppointmentMonitor = lazy(() => import('./features/clinic/AppointmentMonitor'));
 
 // Root redirect — users are redirected based on role by auth store
@@ -114,6 +115,7 @@ function App() {
           <Route path="holidays" element={<HolidayManagement />} />
           <Route path="shifts" element={<ShiftManagement />} />
           <Route path="rosters" element={<RosterManagement />} />
+          <Route path="leaves" element={<AdminLeaves />} />
           <Route path="monitor" element={<AppointmentMonitor />} />
         </Route>
 

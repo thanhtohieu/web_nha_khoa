@@ -137,6 +137,13 @@ const setupAssociations = () => {
   Roster.belongsTo(Shift, { foreignKey: 'shift_id', as: 'shift' });
   DoctorProfile.hasMany(Roster, { foreignKey: 'doctor_profile_id', as: 'rosters' });
   Shift.hasMany(Roster, { foreignKey: 'shift_id', as: 'rosters' });
+
+  // ========================
+  // DOCTOR LEAVE
+  // ========================
+  const Leave = require('../modules/leave/leave.model');
+  Leave.belongsTo(DoctorProfile, { foreignKey: 'doctor_profile_id', as: 'doctor' });
+  DoctorProfile.hasMany(Leave, { foreignKey: 'doctor_profile_id', as: 'leaves' });
 };
 
 module.exports = setupAssociations;

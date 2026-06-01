@@ -30,6 +30,7 @@ const dashboardRoutes = require('./modules/dashboard/dashboard.route');
 const holidayRoutes = require('./modules/holiday/holiday.route');
 const shiftRoutes = require('./modules/shift/shift.route');
 const rosterRoutes = require('./modules/roster/roster.route');
+const leaveRoutes = require('./modules/leave/leave.route');
 
 const app = express();
 
@@ -100,6 +101,7 @@ app.use(`${API}/dashboard`, dashboardRoutes);
 app.use(`${API}/holidays`, holidayRoutes);
 app.use(`${API}/shifts`, shiftRoutes);
 app.use(`${API}/rosters`, rosterRoutes);
+app.use(`${API}/leaves`, leaveRoutes);
 
 // Error handlers
 app.use(notFoundHandler);

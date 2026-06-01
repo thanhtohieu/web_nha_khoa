@@ -161,6 +161,15 @@ const ROSTER_STATUS = Object.freeze({
   REJECTED: 'rejected',
 });
 
+// ========================
+// LEAVE STATUS
+// ========================
+const LEAVE_STATUS = Object.freeze({
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
+});
+
 module.exports = {
   ROLES,
   APPOINTMENT_STATUS,
@@ -183,4 +192,5 @@ module.exports = {
   QUEUE_NAMES,
   HOLIDAY_TYPE,
   ROSTER_STATUS,
+  LEAVE_STATUS,
 };
