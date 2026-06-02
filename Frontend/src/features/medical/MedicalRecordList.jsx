@@ -177,7 +177,7 @@ export default function MedicalRecordList() {
                         {r.patient?.phone && <div style={{ fontSize: '0.78rem', color: '#9ca3af' }}>{r.patient.phone}</div>}
                       </td>
                       <td style={tdStyle}>{doctorName}</td>
-                      <td style={tdStyle}>{formatDate(r.visit_date || r.visitDate || r.created_at)}</td>
+                      <td style={tdStyle}>{formatDate(r.appointment?.appointment_date || r.visit_date || r.visitDate || r.created_at)}</td>
                       <td style={{ ...tdStyle, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {r.diagnosis || <span style={{ color: '#d1d5db' }}>Chưa có</span>}
                       </td>

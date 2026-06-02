@@ -142,4 +142,48 @@ const Prescription = sequelize.define(
   }
 );
 
-module.exports = { MedicalRecord, Prescription };
+// Dịch vụ thực hiện trong lần khám
+const MedicalRecordService = sequelize.define(
+  'MedicalRecordService',
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    medical_record_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: { model: 'medical_records', key: 'id' },
+      onDelete: 'CASCADE',
+    },
+    service_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: { model: 'services', key: 'id' },
+    },
+    price: {
+      type: DataTypes.DECIMAL(12, 0),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+    },
+    notes: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    }
+  },
+  {
+    tableName: 'medical_record_services',
+    indexes: [
+      { fields: ['medical_record_id'] },
+      { fields: ['service_id'] },
+    ],
+  }
+);
+
+module.exports = { MedicalRecord, Prescription, MedicalRecordService };

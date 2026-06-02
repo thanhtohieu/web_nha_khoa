@@ -35,10 +35,16 @@ const paymentRepository = {
     });
   },
 
+  async findByMedicalRecordId(medicalRecordId) {
+    return Payment.findOne({
+      where: { medical_record_id: medicalRecordId },
+      include: defaultIncludes,
+      order: [['created_at', 'DESC']],
+    });
+  },
+
   async findAll({ userId, status, method, startDate, endDate, offset, limit }) {
-    const where = {
-      transaction_code: { [Op.notLike]: 'MOCK%' },
-    };
+    const where = {};
     if (userId) where.user_id = userId;
     if (status) where.status = status;
     if (method) where.method = method;

@@ -7,6 +7,7 @@ const { isAdmin, isAdminOrReceptionist } = require('../../middlewares/role.middl
 router.get('/vnpay-return', paymentController.vnpayReturn);
 router.get('/vnpay/return', paymentController.verifyVnpay);
 
+
 router.use(authenticate);
 
 router.get('/', paymentController.getAll);
@@ -15,6 +16,9 @@ router.get('/:id', paymentController.getById);
 
 // Thanh toán tiền mặt: lễ tân / admin
 router.post('/cash', isAdminOrReceptionist, paymentController.createCashPayment);
+
+// Giả lập thanh toán online cho patient (MoMo, Bank Transfer)
+router.post('/mock-online', paymentController.createMockOnlinePayment);
 
 // Thanh toán VNPay: patient tự thanh toán
 router.post('/vnpay', paymentController.createVnpayPayment);

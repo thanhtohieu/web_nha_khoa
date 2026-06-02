@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import useAppointmentStore from '../../store/appointment.store';
 import useAuth from '../../hooks/useAuth';
 import './AppointmentDetail.css';
@@ -144,9 +144,20 @@ export default function AppointmentDetail() {
     <div className="detail-container">
       <div className="detail-topbar">
         <button className="btn-back" onClick={() => navigate(-1)}>← Quay lại</button>
-        <span className="status-pill" style={{ color: statusMeta.color, background: statusMeta.bg }}>
-          {statusMeta.label}
-        </span>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          {appt.payment_status !== 'paid' && ['patient', 'receptionist'].includes(role) && (
+            <Link 
+              to={`/${role === 'patient' ? 'patient' : 'receptionist'}/billing/checkout?appointmentId=${id}`}
+              className="btn-primary"
+              style={{ textDecoration: 'none', padding: '6px 12px', fontSize: '0.85rem' }}
+            >
+              Thanh toán phí khám
+            </Link>
+          )}
+          <span className="status-pill" style={{ color: statusMeta.color, background: statusMeta.bg }}>
+            {statusMeta.label}
+          </span>
+        </div>
       </div>
 
       <h1 className="detail-title">Chi tiết lịch hẹn</h1>

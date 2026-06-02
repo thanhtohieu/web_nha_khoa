@@ -112,26 +112,43 @@ const paymentService = {
   // --------------------
   // TẠO THANH TOÁN (TIỀN MẶT)
   // --------------------
-  async createCashPayment(appointmentId, userId, notes) {
+  async createCashPayment(appointmentId, userId, notes, medicalRecordId = null, paymentMethod = 'cash') {
     const appointment = await appointmentRepository.findById(appointmentId);
     if (!appointment) throw new AppError('Không tìm thấy lịch hẹn', 404);
 
-    const existing = await paymentRepository.findByAppointmentId(appointmentId);
-    if (existing && existing.status === PAYMENT_STATUS.PAID) {
-      throw new AppError('Lịch hẹn này đã được thanh toán', 400);
+    let amount = 0;
+    let existing = null;
+
+    if (medicalRecordId) {
+      const medicalRepository = require('../medical/medical.repository');
+      const record = await medicalRepository.findById(medicalRecordId);
+      if (!record) throw new AppError('Không tìm thấy hồ sơ bệnh án', 404);
+      
+      const services = record.services || [];
+      amount = services.reduce((sum, s) => sum + parseFloat(s.price || 0) * (s.quantity || 1), 0);
+      
+      if (amount === 0) {
+        amount = parseFloat(appointment.doctor?.consultation_fee || 0);
+      }
+      
+      existing = await paymentRepository.findByMedicalRecordId(medicalRecordId);
+    } else {
+      amount = parseFloat(appointment.doctor?.consultation_fee || 0);
+      existing = await paymentRepository.findByAppointmentId(appointmentId);
     }
 
-    // Tính số tiền: phí tư vấn + phí dịch vụ
-    const amount = parseFloat(appointment.doctor?.consultation_fee || 0) +
-                   parseFloat(appointment.service?.price || 0);
+    if (existing && existing.status === PAYMENT_STATUS.PAID) {
+      throw new AppError('Giao dịch này đã được thanh toán', 400);
+    }
 
-    const txCode = `CASH${Date.now()}`;
+    const txCode = `MOCK${Date.now()}`;
     const paymentData = {
       appointment_id: appointmentId,
+      medical_record_id: medicalRecordId,
       user_id: appointment.patient_id,
       transaction_code: txCode,
       amount,
-      method: PAYMENT_METHOD.CASH,
+      method: paymentMethod,
       status: PAYMENT_STATUS.PAID,
       paid_at: new Date(),
       notes,
@@ -159,7 +176,7 @@ const paymentService = {
   // --------------------
   // TẠO URL THANH TOÁN VNPAY
   // --------------------
-  async createVnpayPayment(appointmentId, userId, ipAddr) {
+  async createVnpayPayment(appointmentId, userId, ipAddr, medicalRecordId = null) {
     const appointment = await appointmentRepository.findById(appointmentId);
     if (!appointment) throw new AppError('Không tìm thấy lịch hẹn', 404);
 
@@ -168,20 +185,46 @@ const paymentService = {
       throw new AppError('Bạn không có quyền thanh toán lịch hẹn này', 403);
     }
 
-    const existing = await paymentRepository.findByAppointmentId(appointmentId);
-    if (existing && existing.status === PAYMENT_STATUS.PAID) {
-      throw new AppError('Lịch hẹn này đã được thanh toán', 400);
+    let amount = 0;
+    let existing = null;
+    let orderInfo = '';
+
+    if (medicalRecordId) {
+      const medicalRepository = require('../medical/medical.repository');
+      const record = await medicalRepository.findById(medicalRecordId);
+      if (!record) throw new AppError('Không tìm thấy hồ sơ bệnh án', 404);
+      
+      const services = record.services || [];
+      amount = services.reduce((sum, s) => sum + parseFloat(s.price || 0) * (s.quantity || 1), 0);
+      
+      if (amount === 0) {
+        amount = parseFloat(appointment.doctor?.consultation_fee || 0);
+        orderInfo = `Thanh toan phi kham ho so ${record.id.slice(-8)}`;
+      } else {
+        orderInfo = `Thanh toan dich vu ho so ${record.id.slice(-8)}`;
+      }
+      
+      existing = await paymentRepository.findByMedicalRecordId(medicalRecordId);
+    } else {
+      amount = parseFloat(appointment.doctor?.consultation_fee || 0);
+      existing = await paymentRepository.findByAppointmentId(appointmentId);
+      orderInfo = `Thanh toan lich kham ${appointment.booking_code}`;
     }
 
-    const amount = parseFloat(appointment.doctor?.consultation_fee || 0) +
-                   parseFloat(appointment.service?.price || 0);
+    if (existing && existing.status === PAYMENT_STATUS.PAID) {
+      throw new AppError('Giao dịch này đã được thanh toán', 400);
+    }
+
+    if (amount <= 0) {
+      throw new AppError('Số tiền thanh toán phải lớn hơn 0', 400);
+    }
 
     const txCode = `VNP${Date.now()}`;
-    const orderInfo = `Thanh toan lich kham ${appointment.booking_code}`;
     const paymentUrl = createVnpayUrl(txCode, amount, orderInfo, ipAddr);
 
     const paymentData = {
       appointment_id: appointmentId,
+      medical_record_id: medicalRecordId,
       user_id: userId,
       transaction_code: txCode,
       amount,
@@ -290,7 +333,7 @@ const paymentService = {
   // --------------------
   // MOCK VNPAY (dev / bài tập - không cần sandbox thật)
   // --------------------
-  async createMockVnpayPayment(appointmentId, userId) {
+  async createMockVnpayPayment(appointmentId, userId, medicalRecordId = null) {
     const appointment = await appointmentRepository.findById(appointmentId);
     if (!appointment) throw new AppError('Không tìm thấy lịch hẹn', 404);
 
@@ -298,16 +341,41 @@ const paymentService = {
       throw new AppError('Bạn không có quyền thanh toán lịch hẹn này', 403);
     }
 
-    const existing = await paymentRepository.findByAppointmentId(appointmentId);
-    if (existing && existing.status === PAYMENT_STATUS.PAID) {
-      throw new AppError('Lịch hẹn này đã được thanh toán', 400);
+    let amount = 0;
+    let existing = null;
+    let orderInfo = '';
+
+    if (medicalRecordId) {
+      const medicalRepository = require('../medical/medical.repository');
+      const record = await medicalRepository.findById(medicalRecordId);
+      if (!record) throw new AppError('Không tìm thấy hồ sơ bệnh án', 404);
+      
+      const services = record.services || [];
+      amount = services.reduce((sum, s) => sum + parseFloat(s.price || 0) * (s.quantity || 1), 0);
+      
+      if (amount === 0) {
+        amount = parseFloat(appointment.doctor?.consultation_fee || 0);
+        orderInfo = `Thanh toan phi kham ho so ${record.id.slice(-8)}`;
+      } else {
+        orderInfo = `Thanh toan dich vu ho so ${record.id.slice(-8)}`;
+      }
+      
+      existing = await paymentRepository.findByMedicalRecordId(medicalRecordId);
+    } else {
+      amount = parseFloat(appointment.doctor?.consultation_fee || 0);
+      existing = await paymentRepository.findByAppointmentId(appointmentId);
+      orderInfo = `Thanh toan lich kham ${appointment.booking_code}`;
     }
 
-    const amount = parseFloat(appointment.doctor?.consultation_fee || 0) +
-                   parseFloat(appointment.service?.price || 0);
+    if (existing && existing.status === PAYMENT_STATUS.PAID) {
+      throw new AppError('Giao dịch này đã được thanh toán', 400);
+    }
+
+    if (amount <= 0) {
+      throw new AppError('Số tiền thanh toán phải lớn hơn 0', 400);
+    }
 
     const txCode = `MOCK${Date.now()}`;
-    const orderInfo = `Thanh toan lich kham ${appointment.booking_code}`;
     const paymentUrl = createMockPaymentUrl(txCode, amount, orderInfo);
 
     // Tạo hoặc cập nhật payment record
@@ -323,6 +391,7 @@ const paymentService = {
     } else {
       payment = await paymentRepository.create({
         appointment_id: appointmentId,
+        medical_record_id: medicalRecordId,
         user_id: userId,
         transaction_code: txCode,
         amount,

@@ -1,0 +1,1 @@
+const { sequelize } = require('./src/config/database'); sequelize.query('SELECT * FROM medical_records WHERE id=\'d099474c-5bde-43ea-9fa7-887efd8d447e\'').then(res => console.log(res[0])).catch(console.error).finally(() => process.exit())

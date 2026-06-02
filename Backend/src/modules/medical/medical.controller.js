@@ -68,6 +68,19 @@ const medicalController = {
       return successResponse(res, { message: 'Cập nhật đƠn thuốc thành công', data });
     } catch (error) { next(error); }
   },
+  async getServices(req, res, next) {
+    try {
+      const data = await medicalService.getServices(req.params.id, req.user);
+      return successResponse(res, { data });
+    } catch (error) { next(error); }
+  },
+
+  async saveServices(req, res, next) {
+    try {
+      const data = await medicalService.saveServices(req.params.id, req.body, req.user);
+      return successResponse(res, { message: 'Lưu chỉ định dịch vụ thành công', data });
+    } catch (error) { next(error); }
+  },
 };
 
 module.exports = medicalController;

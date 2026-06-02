@@ -19,8 +19,12 @@ const start = async () => {
     await connectDB();
 
     // 2. Kiểm tra Redis
-    await redis.ping();
-    logger.info('✅ Redis sẵn sàng');
+    try {
+      await redis.ping();
+      logger.info('✅ Redis sẵn sàng');
+    } catch (err) {
+      logger.warn('⚠️ Redis không phản hồi. Server vẫn tiếp tục chạy nhưng các chức năng cache/queue có thể bị lỗi.');
+    }
 
     // 3. Khởi động BullMQ queues
     await initQueues();

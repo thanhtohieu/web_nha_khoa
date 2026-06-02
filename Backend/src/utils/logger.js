@@ -5,14 +5,15 @@ const path = require('path');
 const { combine, timestamp, printf, colorize, errors, json } = format;
 
 const logFormat = printf(({ level, message, timestamp, stack }) => {
-  return `${timestamp} [${level}]: ${stack || message}`;
+  return `${timestamp} ${level}: ${stack || message}`;
 });
 
 const logger = createLogger({
   level: process.env.NODE_ENV === 'production' ? 'warn' : 'debug',
   format: combine(
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    errors({ stack: true })
+    errors({ stack: true }),
+    logFormat
   ),
   transports: [
     // Console (dev)

@@ -34,6 +34,7 @@ export default function MedicalRecordDetail() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const isDoctor = user?.role === 'doctor';
+  const role = user?.role || 'patient';
   const isNew = id === 'new';
 
   const [record, setRecord] = useState(null);
@@ -56,7 +57,7 @@ export default function MedicalRecordDetail() {
           const res = await appointmentApi.getAppointments({ limit: 100 });
           const payload = res.data?.data ?? res.data ?? res;
           const list = Array.isArray(payload) ? payload : (payload.items || []);
-          const filtered = list.filter(a => ['checkin', 'confirmed', 'pending', 'completed'].includes(a.status));
+          const filtered = list.filter(a => ['checkin', 'checked_in', 'confirmed', 'pending', 'completed'].includes(a.status));
           setAppointments(filtered);
         } catch (err) {
           console.error('Failed to fetch appointments:', err);
@@ -98,7 +99,20 @@ export default function MedicalRecordDetail() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [name]: value };
+      
+      // Auto-fill chief complaint when selecting an appointment
+      if (name === 'appointmentId' && isNew && value) {
+        const selectedAppt = appointments.find(a => String(a.id) === String(value) || String(a._id) === String(value));
+        if (selectedAppt && selectedAppt.reason) {
+          next.chiefComplaint = selectedAppt.reason;
+        }
+      }
+      
+      return next;
+    });
+    
     if (formErrors[name]) {
       setFormErrors((prev) => ({ ...prev, [name]: null }));
     }
@@ -187,16 +201,18 @@ export default function MedicalRecordDetail() {
             </button>
           )}
           {!isNew && (
-            <Link
-              to={`/${user?.role || 'doctor'}/records/${id}/prescription`}
-              className="btn btn-outline"
-            >
-              Đơn thuốc
+            <Link to={`/${role}/records/${id}/prescription`} className="btn btn-outline" style={{ display: 'inline-block' }}>
+              <span className="icon">💊</span> Đơn thuốc
             </Link>
           )}
           {!isNew && (
+            <Link to={`/${role}/records/${id}/services`} className="btn btn-outline" style={{ display: 'inline-block' }}>
+              <span className="icon">🦷</span> Dịch vụ chỉ định
+            </Link>
+          )}
+          {!isNew && ['patient', 'receptionist'].includes(user?.role) && (
             <Link
-              to={`/${user?.role === 'patient' ? 'patient' : 'receptionist'}/billing/${id}?recordId=${id}`}
+              to={`/${user?.role}/billing/checkout?recordId=${id}`}
               className="btn btn-outline"
             >
               Thanh toán

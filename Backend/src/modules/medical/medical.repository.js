@@ -1,4 +1,5 @@
-const { MedicalRecord, Prescription } = require('./medical.model');
+const { MedicalRecord, Prescription, MedicalRecordService } = require('./medical.model');
+const Service = require('../service/service.model');
 const User = require('../user/user.model');
 const DoctorProfile = require('../doctor/doctor.model');
 const Appointment = require('../appointment/appointment.model');
@@ -34,6 +35,13 @@ const defaultIncludes = [
     attributes: ['id', 'booking_code', 'appointment_date', 'appointment_time'],
   },
   { model: Prescription, as: 'prescriptions', separate: true, order: [['sort_order', 'ASC']] },
+  {
+    model: MedicalRecordService,
+    as: 'services',
+    include: [{ model: Service, as: 'service', attributes: ['name', 'price'] }],
+    attributes: ['id', 'price', 'quantity', 'notes', 'created_at'],
+    separate: true,
+  },
 ];
 
 const medicalRepository = {

@@ -15,6 +15,11 @@ const Payment = sequelize.define(
       allowNull: false,
       references: { model: 'appointments', key: 'id' },
     },
+    medical_record_id: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: { model: 'medical_records', key: 'id' },
+    },
     user_id: {
       type: DataTypes.UUID,
       allowNull: false,

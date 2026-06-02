@@ -39,6 +39,8 @@ const ReceptionistCheckin = lazy(() => import('./features/appointment/Receptioni
 const MedicalRecordList = lazy(() => import('./features/medical/MedicalRecordList'));
 const MedicalRecordDetail = lazy(() => import('./features/medical/MedicalRecordDetail'));
 const Prescription = lazy(() => import('./features/medical/Prescription'));
+const PatientPrescriptionList = lazy(() => import('./features/medical/PatientPrescriptionList'));
+const MedicalRecordServices = lazy(() => import('./features/medical/MedicalRecordServices'));
 const PaymentList = lazy(() => import('./features/payment/PaymentList'));
 const PaymentCheckout = lazy(() => import('./features/payment/PaymentCheckout'));
 const PaymentResult = lazy(() => import('./features/payment/PaymentResult'));
@@ -130,6 +132,7 @@ function App() {
           <Route path="records" element={<MedicalRecordList />} />
           <Route path="records/:id" element={<MedicalRecordDetail />} />
           <Route path="records/:id/prescription" element={<Prescription />} />
+          <Route path="records/:id/services" element={<MedicalRecordServices />} />
           <Route path="profile" element={<DoctorProfile />} />
         </Route>
 
@@ -158,7 +161,8 @@ function App() {
           <Route path="records" element={<MedicalRecordList />} />
           <Route path="records/:id" element={<MedicalRecordDetail />} />
           <Route path="records/:id/prescription" element={<Prescription />} />
-          <Route path="prescriptions" element={<Navigate to="../records" replace />} />
+          <Route path="records/:id/services" element={<MedicalRecordServices />} />
+          <Route path="prescriptions" element={<PatientPrescriptionList />} />
           <Route path="billing" element={<PaymentList />} />
           <Route path="billing/:id" element={<PaymentCheckout />} />
           <Route path="profile" element={<Profile />} />

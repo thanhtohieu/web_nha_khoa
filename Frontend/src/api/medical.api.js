@@ -22,6 +22,13 @@ const medicalApi = {
   updatePrescription: (recordId, data) =>
     axiosClient.put(`/medical-records/${recordId}/prescription`, data),
 
+  // Dịch vụ
+  getServices: (recordId) => 
+    axiosClient.get(`/medical-records/${recordId}/services`),
+    
+  saveServices: (recordId, data) => 
+    axiosClient.put(`/medical-records/${recordId}/services`, data),
+
   // ── Lookup ────────────────────────────────────────────────
   getMedicines: (params) => axiosClient.get('/medicines', { params }),
 

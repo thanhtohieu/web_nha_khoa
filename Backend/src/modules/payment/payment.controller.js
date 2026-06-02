@@ -24,19 +24,30 @@ const paymentController = {
     } catch (error) { next(error); }
   },
 
+  async createMockOnlinePayment(req, res, next) {
+    try {
+      const { appointmentId, medicalRecordId, method } = req.body;
+      const data = await paymentService.createCashPayment(appointmentId, req.user.id, `Giả lập thanh toán trực tuyến qua ${method}`, medicalRecordId, method);
+      return createdResponse(res, { message: 'Giả lập thanh toán trực tuyến thành công', data });
+    } catch (error) { 
+      console.error('ERROR IN MOCK ONLINE PAYMENT:', error);
+      next(error); 
+    }
+  },
+
   async createCashPayment(req, res, next) {
     try {
-      const { appointmentId, notes } = req.body;
-      const data = await paymentService.createCashPayment(appointmentId, req.user.id, notes);
+      const { appointmentId, notes, medicalRecordId, method } = req.body;
+      const data = await paymentService.createCashPayment(appointmentId, req.user.id, notes, medicalRecordId, method || 'cash');
       return createdResponse(res, { message: 'Thanh toán tiền mặt thành công', data });
     } catch (error) { next(error); }
   },
 
   async createVnpayPayment(req, res, next) {
     try {
-      const { appointmentId } = req.body;
-      const ipAddr = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-      const data = await paymentService.createVnpayPayment(appointmentId, req.user.id, ipAddr);
+      const { appointmentId, medicalRecordId } = req.body;
+      const ipAddr = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
+      const data = await paymentService.createVnpayPayment(appointmentId, req.user.id, ipAddr, medicalRecordId);
       return successResponse(res, { message: 'Tạo link thanh toán thành công', data });
     } catch (error) { next(error); }
   },
@@ -70,8 +81,8 @@ const paymentController = {
   // --- MOCK PAYMENT (dev / bài tập) ---
   async createMockVnpayPayment(req, res, next) {
     try {
-      const { appointmentId } = req.body;
-      const data = await paymentService.createMockVnpayPayment(appointmentId, req.user.id);
+      const { appointmentId, medicalRecordId } = req.body;
+      const data = await paymentService.createMockVnpayPayment(appointmentId, req.user.id, medicalRecordId);
       return successResponse(res, { message: 'Tạo link thanh toán giả thành công', data });
     } catch (error) { next(error); }
   },

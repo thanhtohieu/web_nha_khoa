@@ -42,7 +42,7 @@ const medicalService = {
       treatment_plan: treatmentPlan || data.treatment || null,
       notes: notes || null,
       follow_up_date: (followUpDate && followUpDate.trim() !== '') ? followUpDate : null,
-      status: MEDICAL_RECORD_STATUS.DRAFT,
+      status: data.status || MEDICAL_RECORD_STATUS.DRAFT,
     });
 
     // Thêm đơn thuốc
@@ -199,6 +199,58 @@ const medicalService = {
       notes: updated.notes,
       updated_at: updated.updated_at,
       created_at: updated.created_at,
+    };
+  },
+
+  // --------------------
+  // DỊCH VỤ ĐIỀU TRỊ
+  // --------------------
+  async getServices(recordId, requestUser) {
+    const record = await medicalRepository.findById(recordId);
+    if (!record) throw new AppError('Không tìm thấy hồ sơ bệnh án', 404);
+
+    if (requestUser.role === ROLES.PATIENT && record.patient_id !== requestUser.id) {
+      throw new AppError('Bạn không có quyền xem hồ sơ này', 403);
+    }
+
+    const items = record.services || [];
+    
+    return {
+      id: record.id,
+      medical_record_id: record.id,
+      items,
+    };
+  },
+
+  async saveServices(recordId, data, requestUser) {
+    const record = await medicalRepository.findById(recordId);
+    if (!record) throw new AppError('Không tìm thấy hồ sơ bệnh án', 404);
+
+    if (requestUser.role === ROLES.DOCTOR) {
+      const myDoctor = await doctorRepository.findByUserId(requestUser.id);
+      if (!myDoctor || myDoctor.id !== record.doctor_profile_id) {
+        throw new AppError('Bạn không có quyền chỉ định dịch vụ cho hồ sơ này', 403);
+      }
+    } else if (requestUser.role !== ROLES.ADMIN) {
+      throw new AppError('Chỉ bác sĩ hoặc admin mới được chỉ định dịch vụ', 403);
+    }
+
+    const { items = [] } = data;
+
+    const serviceRows = items.map((item) => ({
+      service_id: item.service_id || item.serviceId,
+      price: item.price || 0,
+      quantity: item.quantity || 1,
+      notes: item.notes || null,
+    }));
+
+    await medicalRepository.upsertServices(recordId, serviceRows);
+
+    const updated = await medicalRepository.findById(recordId);
+    return {
+      id: updated.id,
+      medical_record_id: updated.id,
+      items: updated.services || [],
     };
   },
 };

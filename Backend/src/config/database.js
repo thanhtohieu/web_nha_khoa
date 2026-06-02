@@ -28,18 +28,26 @@ const sequelize = new Sequelize(
   }
 );
 
-const connectDB = async () => {
-  try {
-    await sequelize.authenticate();
-    logger.info('✅ Database kết nối thành công');
+const connectDB = async (retries = 5, delay = 5000) => {
+  while (retries > 0) {
+    try {
+      await sequelize.authenticate();
+      logger.info('✅ Database kết nối thành công');
 
-    if (process.env.DB_SYNC === 'true') {
-      await sequelize.sync({ alter: process.env.DB_SYNC_ALTER === 'true' });
-      logger.info('✅ Database sync hoàn tất');
+      if (process.env.DB_SYNC === 'true') {
+        await sequelize.sync({ alter: process.env.DB_SYNC_ALTER === 'true' });
+        logger.info('✅ Database sync hoàn tất');
+      }
+      return; // Thành công thì thoát vòng lặp
+    } catch (error) {
+      retries -= 1;
+      logger.error(`❌ Kết nối database thất bại. Còn ${retries} lần thử lại... Lỗi: ${error.message}`);
+      if (retries === 0) {
+        throw error; // Hết số lần thử thì văng lỗi
+      }
+      // Chờ trước khi thử lại
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
-  } catch (error) {
-    logger.error('❌ Kết nối database thất bại:', error.message);
-    throw error;
   }
 };
 

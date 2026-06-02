@@ -8,7 +8,7 @@ const DoctorSlot = require('../modules/doctor/slot.model');
 const Specialty = require('../modules/service/specialty.model');
 const Service = require('../modules/service/service.model');
 const Appointment = require('../modules/appointment/appointment.model');
-const { MedicalRecord, Prescription } = require('../modules/medical/medical.model');
+const { MedicalRecord, Prescription, MedicalRecordService } = require('../modules/medical/medical.model');
 const Notification = require('../modules/notification/notification.model');
 const Payment = require('../modules/payment/payment.model');
 const Review = require('../modules/review/review.model');
@@ -77,7 +77,10 @@ const setupAssociations = () => {
   MedicalRecord.belongsTo(User, { foreignKey: 'patient_id', as: 'patient' });
   MedicalRecord.belongsTo(DoctorProfile, { foreignKey: 'doctor_profile_id', as: 'doctor' });
   MedicalRecord.hasMany(Prescription, { foreignKey: 'medical_record_id', as: 'prescriptions' });
+  MedicalRecord.hasMany(MedicalRecordService, { foreignKey: 'medical_record_id', as: 'services' });
   Prescription.belongsTo(MedicalRecord, { foreignKey: 'medical_record_id', as: 'medicalRecord' });
+  MedicalRecordService.belongsTo(MedicalRecord, { foreignKey: 'medical_record_id', as: 'medicalRecord' });
+  MedicalRecordService.belongsTo(Service, { foreignKey: 'service_id', as: 'service' });
 
   // ========================
   // NOTIFICATION

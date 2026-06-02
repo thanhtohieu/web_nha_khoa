@@ -106,26 +106,26 @@ export default function PaymentResult() {
             <div className="detail-row">
               <span className="detail-label">Mã hoá đơn</span>
               <span className="detail-value code">
-                {payment.code || payment._id.slice(-8).toUpperCase()}
+                {payment.transaction_code || (payment.id ? payment.id.slice(-8).toUpperCase() : '—')}
               </span>
             </div>
             <div className="detail-row">
               <span className="detail-label">Bệnh nhân</span>
-              <span className="detail-value">{payment.patient?.fullName || '—'}</span>
+              <span className="detail-value">{payment.patient?.fullName || payment.user?.full_name || '—'}</span>
             </div>
             <div className="detail-row">
               <span className="detail-label">Hình thức</span>
               <span className="detail-value">
-                {payment.method === 'cash' ? 'Tiền mặt' : 'VNPay'}
+                {payment.method === 'cash' ? 'Tiền mặt' : payment.method === 'momo' ? 'Ví MoMo' : payment.method === 'bank_transfer' ? 'Chuyển khoản' : 'VNPay'}
               </span>
             </div>
             <div className="detail-row">
               <span className="detail-label">Thời gian</span>
-              <span className="detail-value">{formatDateTime(payment.paidAt || payment.createdAt)}</span>
+              <span className="detail-value">{formatDateTime(payment.paid_at || payment.paidAt || payment.created_at || payment.createdAt)}</span>
             </div>
             <div className="detail-row total-row">
               <span className="detail-label">Tổng thanh toán</span>
-              <span className="detail-value amount">{formatCurrency(payment.totalAmount)}</span>
+              <span className="detail-value amount">{formatCurrency(payment.amount || payment.totalAmount || 0)}</span>
             </div>
           </div>
         )}
@@ -154,7 +154,7 @@ export default function PaymentResult() {
 
           {!isPaid && payment && (
             <Link
-              to={`/${user?.role === 'patient' ? 'patient' : 'receptionist'}/billing/${payment.medicalRecord?._id || payment.record}?recordId=${payment.medicalRecord?._id || payment.record}`}
+              to={`/${user?.role === 'patient' ? 'patient' : 'receptionist'}/billing/${payment.medical_record_id || payment.appointment_id}?recordId=${payment.medical_record_id || payment.appointment_id}`}
               className="btn btn-primary"
             >
               Thử lại
@@ -165,9 +165,9 @@ export default function PaymentResult() {
             Danh sách thanh toán
           </Link>
 
-          {payment?.medicalRecord && (
+          {(payment?.medical_record_id || payment?.medicalRecord) && (
             <Link
-              to={`/${user?.role === 'patient' ? 'patient' : 'doctor'}/records/${payment.medicalRecord._id || payment.medicalRecord}`}
+              to={`/${user?.role === 'patient' ? 'patient' : 'doctor'}/records/${payment.medical_record_id || payment.medicalRecord?.id}`}
               className="btn btn-ghost"
             >
               Xem bệnh án

@@ -17,6 +17,7 @@ const paymentApi = {
   createPayment: (data) => axiosClient.post('/payments', data),
   createCashPayment: (data) => axiosClient.post('/payments/cash', data),
   createVnpayPayment: (data) => axiosClient.post('/payments/vnpay', data),
+  createMockOnlinePayment: (data) => axiosClient.post('/payments/mock-online', data),
 
   /**
    * Process cash payment (doctor/receptionist confirms)
