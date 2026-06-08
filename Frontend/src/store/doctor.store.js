@@ -226,6 +226,34 @@ const useDoctorStore = create((set, get) => ({
       return { success: false, message };
     }
   },
+
+  updateDoctor: async (id, data) => {
+    try {
+      // Gọi API cập nhật thông tin bác sĩ (bao gồm cả user info và doctor profile info)
+      const res = await doctorApi.updateDoctorProfile(id, {
+        fullName: data.fullName,
+        phone: data.phone || undefined,
+        gender: data.gender || undefined,
+        dateOfBirth: data.dateOfBirth || undefined,
+        specialtyId: data.specialtyId || undefined,
+        title: data.title || undefined,
+        experienceYears: data.experienceYears ? parseInt(data.experienceYears) : 0,
+        consultationFee: data.consultationFee ? parseFloat(data.consultationFee) : 0,
+      });
+
+      // Refresh danh sách bác sĩ
+      const state = get();
+      state.fetchDoctors({ page: state.doctorPage, limit: state.doctorLimit });
+      
+      return { success: true, data: res.data.data ?? res.data };
+    } catch (err) {
+      const apiErrors = err.response?.data?.errors;
+      const message = apiErrors && Array.isArray(apiErrors)
+        ? apiErrors.map(e => e.message || e.msg).join(', ')
+        : (err.response?.data?.message ?? err.message ?? 'Cập nhật hồ sơ bác sĩ thất bại.');
+      return { success: false, message };
+    }
+  },
 }));
 
 export default useDoctorStore;

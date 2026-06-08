@@ -27,6 +27,7 @@ export const ROUTES = {
   ADMIN_SHIFTS:     '/admin/shifts',
   ADMIN_ROSTERS:    '/admin/rosters',
   ADMIN_MONITOR:    '/admin/monitor',
+  ADMIN_SALARY:     '/admin/salary',
 
   // ── Doctor ─────────────────────────────────────────────────────────────────
   DOCTOR_DASHBOARD:     '/doctor/dashboard',

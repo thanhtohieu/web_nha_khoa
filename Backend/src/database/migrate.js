@@ -20,6 +20,7 @@ require('../modules/contact/contact.model');
 require('../modules/holiday/holiday.model');
 require('../modules/shift/shift.model');
 require('../modules/roster/roster.model');
+require('../modules/salary/salary.model');
 
 // Load associations
 const setupAssociations = require('../config/associations');

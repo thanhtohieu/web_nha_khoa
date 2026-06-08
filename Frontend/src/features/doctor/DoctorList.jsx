@@ -16,7 +16,7 @@ function useDebounce(val, ms = 400) {
 }
 
 /* ── Doctor card ── */
-function DoctorCard({ doctor, onClick }) {
+function DoctorCard({ doctor, onClick, isAdmin }) {
   const fullName = doctor.user?.full_name || 'Bác sĩ';
   const specialtyName = doctor.specialty?.name || 'Đa khoa';
   const avatarUrl = doctor.user?.avatar;
@@ -53,7 +53,7 @@ function DoctorCard({ doctor, onClick }) {
 
       <div className="doctor-card-actions">
         <button className="btn btn-primary" style={{ width: '100%' }} onClick={(e) => { e.stopPropagation(); onClick(); }}>
-          Xem lịch khám
+          {isAdmin ? 'Xem & Sửa thông tin' : 'Xem lịch khám'}
         </button>
       </div>
     </div>
@@ -286,6 +286,195 @@ function CreateDoctorModal({ onClose, onCreated, specialties }) {
   );
 }
 
+/* ── Edit Doctor Modal (Admin) ── */
+function EditDoctorModal({ doctor, onClose, onUpdated, specialties }) {
+  const { updateDoctor } = useDoctorStore();
+  const [form, setForm] = useState({
+    fullName: doctor?.user?.full_name || doctor?.fullName || '',
+    phone: doctor?.user?.phone || doctor?.phone || '',
+    gender: doctor?.user?.gender || doctor?.gender || '',
+    dateOfBirth: doctor?.user?.date_of_birth ? doctor.user.date_of_birth.substring(0, 10) : (doctor?.dateOfBirth ? doctor.dateOfBirth.substring(0, 10) : ''),
+    specialtyId: doctor?.specialty_id || doctor?.specialty?.id || '',
+    title: doctor?.title || '',
+    experienceYears: doctor?.experience_years != null ? String(doctor.experience_years) : '0',
+    consultationFee: doctor?.consultation_fee != null ? String(doctor.consultation_fee) : '0',
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.specialtyId) {
+      setError('Vui lòng chọn chuyên khoa');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    const result = await updateDoctor(doctor.id, form);
+    setLoading(false);
+    if (result.success) {
+      onUpdated?.();
+      onClose();
+    } else {
+      setError(result.message);
+    }
+  };
+
+  return (
+    <div className="modal-overlay" style={{ zIndex: 1000 }}>
+      <div className="modal-box" style={{ maxWidth: 640, width: '95vw', padding: 24, textAlign: 'left' }}>
+        <div className="modal-title" style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: 12, marginBottom: 16, fontSize: '1.25rem', fontWeight: 600 }}>
+          Sửa thông tin bác sĩ
+        </div>
+        
+        <form onSubmit={handleSubmit}>
+          {error && <Alert type="error" onClose={() => setError(null)}>{error}</Alert>}
+          
+          <div style={{ maxHeight: '60vh', overflowY: 'auto', paddingRight: 8 }}>
+            <h4 style={{ margin: '0 0 12px 0', color: 'var(--color-primary)', borderBottom: '1px dashed var(--color-border)', paddingBottom: 4, fontSize: '0.95rem' }}>
+              1. Thông tin cá nhân
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 12 }}>
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 500, fontSize: '0.85rem' }}>Họ và tên <span style={{ color: 'var(--color-error)' }}>*</span></label>
+                <input
+                  className="form-control"
+                  name="fullName"
+                  value={form.fullName}
+                  onChange={handleChange}
+                  required
+                  placeholder="Nguyễn Văn A"
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: 6 }}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 500, fontSize: '0.85rem' }}>Số điện thoại</label>
+                <input
+                  className="form-control"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="0901234567"
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: 6 }}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 12 }}>
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 500, fontSize: '0.85rem' }}>Giới tính</label>
+                <select 
+                  className="form-control" 
+                  name="gender" 
+                  value={form.gender} 
+                  onChange={handleChange}
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: 6, background: '#fff' }}
+                >
+                  <option value="">— Chọn —</option>
+                  <option value="male">Nam</option>
+                  <option value="female">Nữ</option>
+                  <option value="other">Khác</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 500, fontSize: '0.85rem' }}>Ngày sinh</label>
+                <input
+                  className="form-control"
+                  type="date"
+                  name="dateOfBirth"
+                  value={form.dateOfBirth}
+                  onChange={handleChange}
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: 6 }}
+                />
+              </div>
+            </div>
+
+            <h4 style={{ margin: '20px 0 12px 0', color: 'var(--color-primary)', borderBottom: '1px dashed var(--color-border)', paddingBottom: 4, fontSize: '0.95rem' }}>
+              2. Hồ sơ chuyên môn
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 12 }}>
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 500, fontSize: '0.85rem' }}>Chuyên khoa <span style={{ color: 'var(--color-error)' }}>*</span></label>
+                <select
+                  className="form-control"
+                  name="specialtyId"
+                  value={form.specialtyId}
+                  onChange={handleChange}
+                  required
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: 6, background: '#fff' }}
+                >
+                  <option value="">— Chọn chuyên khoa —</option>
+                  {specialties.map((s) => (
+                    <option key={s.id || s} value={s.id || s}>
+                      {s.name || s}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 500, fontSize: '0.85rem' }}>Học vị / Chức danh</label>
+                <input
+                  className="form-control"
+                  name="title"
+                  value={form.title}
+                  onChange={handleChange}
+                  placeholder="Thạc sĩ, Bác sĩ"
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: 6 }}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 12 }}>
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 500, fontSize: '0.85rem' }}>Số năm kinh nghiệm</label>
+                <input
+                  className="form-control"
+                  type="number"
+                  name="experienceYears"
+                  value={form.experienceYears}
+                  onChange={handleChange}
+                  min="0"
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: 6 }}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" style={{ fontWeight: 500, fontSize: '0.85rem' }}>Phí khám bệnh (VNĐ)</label>
+                <input
+                  className="form-control"
+                  type="number"
+                  name="consultationFee"
+                  value={form.consultationFee}
+                  onChange={handleChange}
+                  min="0"
+                  style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--color-border)', borderRadius: 6 }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="modal-footer" style={{ marginTop: 24, borderTop: '1px solid var(--color-border)', paddingTop: 16 }}>
+            <button type="button" className="btn btn-secondary" onClick={onClose} disabled={loading}>
+              Huỷ
+            </button>
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? 'Đang lưu…' : 'Lưu thông tin'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 /* ── DoctorList ── */
 export default function DoctorList() {
   const navigate = useNavigate();
@@ -302,6 +491,7 @@ export default function DoctorList() {
   const [search, setSearch]       = useState('');
   const [specialty, setSpecialty] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editingDoctor, setEditingDoctor] = useState(null);
   const debouncedSearch           = useDebounce(search);
 
   const load = useCallback((page = 1) => {
@@ -364,7 +554,14 @@ export default function DoctorList() {
                   <DoctorCard
                     key={d.id}
                     doctor={d}
-                    onClick={() => navigate(`/doctors/${d.id}`)}
+                    isAdmin={isAdmin}
+                    onClick={() => {
+                      if (isAdmin) {
+                        setEditingDoctor(d);
+                      } else {
+                        navigate(`/doctors/${d.id}`);
+                      }
+                    }}
                   />
                 ))}
               </div>
@@ -388,6 +585,16 @@ export default function DoctorList() {
           specialties={specialties}
           onClose={() => setShowCreateModal(false)}
           onCreated={() => load(1)}
+        />
+      )}
+
+      {/* Edit doctor modal (admin only) */}
+      {editingDoctor && (
+        <EditDoctorModal
+          doctor={editingDoctor}
+          specialties={specialties}
+          onClose={() => setEditingDoctor(null)}
+          onUpdated={() => load(doctorPage)}
         />
       )}
     </div>

@@ -179,6 +179,24 @@ const appointmentService = {
       status: APPOINTMENT_STATUS.CHECKED_IN,
       checked_in_at: new Date(),
     });
+
+    // Auto-create draft medical record if it doesn't exist
+    try {
+      const medicalRepository = require('../medical/medical.repository');
+      const existingRecord = await medicalRepository.findByAppointmentId(id);
+      if (!existingRecord) {
+        await medicalRepository.create({
+          patient_id: appointment.patient_id,
+          doctor_profile_id: appointment.doctor_profile_id,
+          appointment_id: id,
+          chief_complaint: appointment.reason || '',
+        });
+      }
+    } catch (err) {
+      const logger = require('../../utils/logger');
+      logger.error('Failed to auto-create medical record on check-in: ' + err.message);
+    }
+
     emitAppointmentUpdate(updated);
     return updated;
   },

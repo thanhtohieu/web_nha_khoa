@@ -23,6 +23,10 @@
   --color-primary-light:#e8f0fc;
   --color-primary-muted:#6ba3e0;
 
+  --color-accent:       var(--color-primary);
+  --color-accent-hover: var(--color-primary-dark);
+  --color-accent-light: var(--color-primary-light);
+
   /* Role Colors */
   --color-admin:        #2d3a8c;
   --color-admin-light:  #eaecf8;

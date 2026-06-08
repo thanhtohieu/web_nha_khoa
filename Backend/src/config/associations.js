@@ -19,6 +19,7 @@ const Contact = require('../modules/contact/contact.model');
 const Holiday = require('../modules/holiday/holiday.model');
 const Shift = require('../modules/shift/shift.model');
 const Roster = require('../modules/roster/roster.model');
+const { SalaryConfig, SalarySlip } = require('../modules/salary/salary.model');
 
 const setupAssociations = () => {
 
@@ -147,6 +148,12 @@ const setupAssociations = () => {
   const Leave = require('../modules/leave/leave.model');
   Leave.belongsTo(DoctorProfile, { foreignKey: 'doctor_profile_id', as: 'doctor' });
   DoctorProfile.hasMany(Leave, { foreignKey: 'doctor_profile_id', as: 'leaves' });
+
+  // ========================
+  // SALARY
+  // ========================
+  SalarySlip.belongsTo(DoctorProfile, { foreignKey: 'doctor_profile_id', as: 'doctor' });
+  DoctorProfile.hasMany(SalarySlip, { foreignKey: 'doctor_profile_id', as: 'salarySlips' });
 };
 
 module.exports = setupAssociations;

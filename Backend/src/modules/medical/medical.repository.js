@@ -102,6 +102,15 @@ const medicalRepository = {
       prescriptions.map((p, i) => ({ ...p, medical_record_id: medicalRecordId, sort_order: i }))
     );
   },
+
+  async upsertServices(medicalRecordId, services) {
+    // Xóa cũ, thêm mới
+    await MedicalRecordService.destroy({ where: { medical_record_id: medicalRecordId } });
+    if (!services?.length) return [];
+    return MedicalRecordService.bulkCreate(
+      services.map(s => ({ ...s, medical_record_id: medicalRecordId }))
+    );
+  },
 };
 
 module.exports = medicalRepository;

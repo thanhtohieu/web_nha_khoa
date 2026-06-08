@@ -86,6 +86,13 @@ const Appointment = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    // Hệ số phức tạp của ca bệnh (dùng cho tính lương)
+    complexity_level: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      defaultValue: 0,
+      validate: { min: 0, max: 0.5 },
+    },
     // Nhắc nhở đã gửi chưa
     reminder_sent: {
       type: DataTypes.BOOLEAN,

@@ -52,6 +52,9 @@ export const Icons = {
   Monitor: () => (
     <svg {...iconProps}><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
   ),
+  DollarSign: () => (
+    <svg {...iconProps}><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+  ),
 };
 
 // ─── Nav configs per role ─────────────────────────────────────────────────────
@@ -111,6 +114,11 @@ export const NAV_CONFIG = {
       label: 'Monitor',
       path: ROUTES.ADMIN_MONITOR,
       Icon: Icons.Monitor,
+    },
+    {
+      label: 'Tính lương BS',
+      path: ROUTES.ADMIN_SALARY,
+      Icon: Icons.DollarSign,
     },
   ],
 

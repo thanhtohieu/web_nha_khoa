@@ -63,3 +63,16 @@ undefined
 undefined
 undefined
 undefined
+2026-06-08 07:55:43 error: [eval]:1
+require('dotenv').config(); const { Appointment } = require('./src/modules/appointment/appointment.model'); Appointment.findAll().then(res => console.log(JSON.stringify(res.map(a => ({date: a.appointment_date, doctor_profile_id: a.doctor_profile_id})), null, 2))).catch(console.error)
+                                                                                                                        ^
+
+TypeError: Cannot read properties of undefined (reading 'findAll')
+    at [eval]:1:121
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:446:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:444:60)
+    at evalFunction (node:internal/process/execution:279:30)
+    at evalTypeScript (node:internal/process/execution:291:3)
+    at node:internal/main/eval_string:74:3

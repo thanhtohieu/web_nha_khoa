@@ -52,6 +52,7 @@ const ShiftManagement = lazy(() => import('./features/clinic/ShiftManagement'));
 const RosterManagement = lazy(() => import('./features/clinic/RosterManagement'));
 const AdminLeaves = lazy(() => import('./features/clinic/AdminLeaves'));
 const AppointmentMonitor = lazy(() => import('./features/clinic/AppointmentMonitor'));
+const SalaryPage = lazy(() => import('./features/salary/SalaryPage'));
 
 // Root redirect — users are redirected based on role by auth store
 import useAuthStore from './store/auth.store';
@@ -119,6 +120,7 @@ function App() {
           <Route path="rosters" element={<RosterManagement />} />
           <Route path="leaves" element={<AdminLeaves />} />
           <Route path="monitor" element={<AppointmentMonitor />} />
+          <Route path="salary/*" element={<SalaryPage />} />
         </Route>
 
         {/* ── Doctor routes ────────────────────────────────────── */}

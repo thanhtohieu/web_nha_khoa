@@ -40,6 +40,9 @@ const doctorApi = {
   /** GET /admin/doctors/:id/schedule?from&to */
   getScheduleByDoctorId: (id, from, to) =>
     axiosClient.get(`/admin/doctors/${id}/schedule`, { params: { from, to } }),
+
+  /** PUT /doctors/:id */
+  updateDoctorProfile: (id, data) => axiosClient.put(`/doctors/${id}`, data),
 };
 
 export default doctorApi;
