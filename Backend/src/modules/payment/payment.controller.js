@@ -43,6 +43,13 @@ const paymentController = {
     } catch (error) { next(error); }
   },
 
+  async confirmPayment(req, res, next) {
+    try {
+      const data = await paymentService.confirmPayment(req.params.id, req.user.id);
+      return successResponse(res, { message: 'Xác nhận thanh toán thành công', data });
+    } catch (error) { next(error); }
+  },
+
   async createVnpayPayment(req, res, next) {
     try {
       const { appointmentId, medicalRecordId } = req.body;

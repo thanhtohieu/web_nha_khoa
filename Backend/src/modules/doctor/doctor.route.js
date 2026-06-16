@@ -16,6 +16,7 @@ router.delete('/me/schedule/:slotId', authenticate, isDoctor, doctorController.d
 router.get('/', optionalAuth, doctorController.getAllDoctors);
 router.get('/:id', optionalAuth, doctorController.getDoctorById);
 router.get('/:id/slots', doctorController.getAvailableSlots);
+router.get('/:id/rosters', doctorController.getDoctorRosters);
 
 // Admin: tạo & quản lý doctor profiles
 router.post('/', authenticate, isAdmin, doctorProfileValidation, validate, doctorController.createDoctorProfile);

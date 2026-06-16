@@ -8,6 +8,9 @@ const appointmentApi = {
   getDoctorSlots: (doctorId, date) =>
     axiosClient.get(`/doctors/${doctorId}/slots`, { params: { date } }),
 
+  getDoctorRosters: (doctorId, from, to) =>
+    axiosClient.get(`/doctors/${doctorId}/rosters`, { params: { from, to } }),
+
   // Appointments
   getAppointments: (params = {}) =>
     axiosClient.get('/appointments', { params }),

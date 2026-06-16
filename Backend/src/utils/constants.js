@@ -26,6 +26,7 @@ const APPOINTMENT_STATUS = Object.freeze({
 // ========================
 const PAYMENT_STATUS = Object.freeze({
   PENDING: 'pending',
+  PENDING_CONFIRMATION: 'pending_confirmation',
   PAID: 'paid',
   FAILED: 'failed',
   REFUNDED: 'refunded',

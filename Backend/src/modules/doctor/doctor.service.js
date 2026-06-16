@@ -200,6 +200,44 @@ const doctorService = {
     return generatedSlots;
   },
 
+  async getDoctorRosters(doctorProfileId, fromDate, toDate) {
+    if (!fromDate || !toDate) {
+      throw new AppError('Vui lòng cung cấp từ ngày và đến ngày', 400);
+    }
+
+    const Roster = require('../roster/roster.model');
+    const Shift = require('../shift/shift.model');
+
+    const rosters = await Roster.findAll({
+      where: {
+        doctor_profile_id: doctorProfileId,
+        roster_date: {
+          [Op.between]: [fromDate, toDate]
+        },
+        status: 'approved'
+      },
+      include: [{ model: Shift, as: 'shift' }],
+      order: [['roster_date', 'ASC']]
+    });
+
+    // Group by date
+    const grouped = {};
+    for (const r of rosters) {
+      if (!r.shift) continue;
+      const date = r.roster_date;
+      if (!grouped[date]) {
+        grouped[date] = { date, shifts: [] };
+      }
+      grouped[date].shifts.push({
+        name: r.shift.name,
+        startTime: r.shift.start_time,
+        endTime: r.shift.end_time
+      });
+    }
+
+    return Object.values(grouped);
+  },
+
   async getMySchedule(userId, from, to) {
     const doctor = await doctorRepository.findByUserId(userId);
     if (!doctor) throw new AppError('Không tìm thấy hồ sơ bác sĩ', 404);

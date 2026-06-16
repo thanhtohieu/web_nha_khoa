@@ -41,6 +41,12 @@
   border: 2px solid #fecaca;
 }
 
+.result-icon.warning {
+  background: #fff7ed;
+  color: #ea580c;
+  border: 2px solid #ffedd5;
+}
+
 .result-title {
   font-size: 1.5rem;
   font-weight: 700;
@@ -49,6 +55,7 @@
 
 .result-title.success { color: #15803d; }
 .result-title.failed  { color: #b91c1c; }
+.result-title.warning { color: #ea580c; }
 
 .result-desc {
   color: #6b7280;

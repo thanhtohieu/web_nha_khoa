@@ -17,6 +17,8 @@ const useAppointmentStore = create((set, get) => ({
   // Booking
   doctors: [],
   doctorsLoading: false,
+  doctorRosters: [],
+  rostersLoading: false,
   slots: [],
   slotsLoading: false,
   bookingLoading: false,
@@ -88,6 +90,17 @@ const useAppointmentStore = create((set, get) => ({
       set({ slots: mappedSlots, slotsLoading: false });
     } catch {
       set({ slotsLoading: false });
+    }
+  },
+
+  fetchDoctorRosters: async (doctorId, from, to) => {
+    set({ rostersLoading: true });
+    try {
+      const res = await appointmentApi.getDoctorRosters(doctorId, from, to);
+      const data = res.data?.data ?? res.data ?? [];
+      set({ doctorRosters: Array.isArray(data) ? data : [], rostersLoading: false });
+    } catch {
+      set({ doctorRosters: [], rostersLoading: false });
     }
   },
 

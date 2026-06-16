@@ -142,6 +142,8 @@ const paymentService = {
     }
 
     const txCode = `MOCK${Date.now()}`;
+    const isOnlineMock = paymentMethod !== 'cash';
+    
     const paymentData = {
       appointment_id: appointmentId,
       medical_record_id: medicalRecordId,
@@ -149,8 +151,8 @@ const paymentService = {
       transaction_code: txCode,
       amount,
       method: paymentMethod,
-      status: PAYMENT_STATUS.PAID,
-      paid_at: new Date(),
+      status: isOnlineMock ? PAYMENT_STATUS.PENDING_CONFIRMATION : PAYMENT_STATUS.PAID,
+      paid_at: isOnlineMock ? null : new Date(),
       notes,
     };
 
@@ -158,19 +160,54 @@ const paymentService = {
       ? await paymentRepository.update(existing.id, paymentData)
       : await paymentRepository.create(paymentData);
 
-    // Cập nhật payment_status của appointment
-    await appointmentRepository.update(appointmentId, {
+    if (!isOnlineMock) {
+      // Cập nhật payment_status của appointment
+      await appointmentRepository.update(appointmentId, {
+        payment_status: PAYMENT_STATUS.PAID,
+      });
+
+      // Notify patient
+      const patient = await userRepository.findById(appointment.patient_id);
+      notificationService.notifyPaymentSuccess(
+        { ...payment.toJSON(), amount },
+        patient?.email
+      ).catch(() => {});
+    }
+
+    return payment;
+  },
+
+  // --------------------
+  // XÁC NHẬN THANH TOÁN ONLINE
+  // --------------------
+  async confirmPayment(paymentId, staffUserId) {
+    const payment = await paymentRepository.findById(paymentId);
+    if (!payment) throw new AppError('Không tìm thấy giao dịch', 404);
+    if (payment.status !== PAYMENT_STATUS.PENDING_CONFIRMATION) {
+      throw new AppError('Giao dịch không ở trạng thái chờ xác nhận', 400);
+    }
+
+    const appointment = await appointmentRepository.findById(payment.appointment_id);
+    if (!appointment) throw new AppError('Không tìm thấy lịch hẹn liên quan', 404);
+
+    const updatedPayment = await paymentRepository.update(paymentId, {
+      status: PAYMENT_STATUS.PAID,
+      paid_at: new Date(),
+      notes: (payment.notes || '') + `\n[Xác nhận bởi: ${staffUserId}]`,
+    });
+
+    await appointmentRepository.update(payment.appointment_id, {
       payment_status: PAYMENT_STATUS.PAID,
     });
 
     // Notify patient
     const patient = await userRepository.findById(appointment.patient_id);
     notificationService.notifyPaymentSuccess(
-      { ...payment.toJSON(), amount },
+      { ...updatedPayment.toJSON(), amount: payment.amount },
       patient?.email
     ).catch(() => {});
 
-    return payment;
+    return updatedPayment;
   },
 
   // --------------------

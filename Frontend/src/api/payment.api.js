@@ -22,7 +22,7 @@ const paymentApi = {
   /**
    * Process cash payment (doctor/receptionist confirms)
    */
-  confirmCash: (id) => axiosClient.post(`/payments/${id}/confirm-cash`),
+  confirmPayment: (id) => axiosClient.patch(`/payments/${id}/confirm`),
 
   /**
    * Initiate VNPay — returns { payUrl }

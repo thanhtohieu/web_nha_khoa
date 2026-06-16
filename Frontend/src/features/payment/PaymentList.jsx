@@ -17,6 +17,7 @@ const METHOD_LABEL = {
 
 const STATUS_META = {
   pending: { label: 'Chờ thanh toán', color: '#f59e0b', bg: '#fef3c7' },
+  pending_confirmation: { label: 'Chờ xác nhận', color: '#ea580c', bg: '#ffedd5' },
   paid: { label: 'Đã thanh toán', color: '#10b981', bg: '#d1fae5' },
   failed: { label: 'Thất bại', color: '#ef4444', bg: '#fee2e2' },
   refunded: { label: 'Đã hoàn tiền', color: '#6b7280', bg: '#f3f4f6' },
@@ -98,6 +99,9 @@ function PatientBillingView() {
               const p = payRes.data?.data ?? payRes.data;
               if (p?.id) {
                 paymentStatus = p.status;
+                if (paymentStatus === 'pending_confirmation') {
+                  paymentStatus = 'pending_confirmation_patient';
+                }
                 paymentData = p;
               }
             }
@@ -173,7 +177,9 @@ function PatientBillingView() {
               </thead>
               <tbody>
                 {records.map((record) => {
-                  const statusMeta = STATUS_META[record.paymentStatus] || STATUS_META.unpaid;
+                  const statusMeta = record.paymentStatus === 'pending_confirmation_patient' 
+                    ? { label: 'Đang chờ lễ tân xác nhận', color: '#ea580c', bg: '#ffedd5' } 
+                    : STATUS_META[record.paymentStatus] || STATUS_META.unpaid;
                   const serviceCount = (record.services || []).length;
                   const serviceNames = (record.services || [])
                     .slice(0, 2)
@@ -226,6 +232,18 @@ function PatientBillingView() {
                           >
                             Thanh toán
                           </button>
+                        ) : record.paymentStatus === 'pending_confirmation_patient' ? (
+                          <button
+                            style={{ padding: '4px 12px', border: '1px solid #e5e7eb', borderRadius: 6, background: '#fff', fontSize: '0.8rem', cursor: 'pointer', color: '#374151' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (record.paymentData?.id) {
+                                navigate(`/${role}/billing/${record.paymentData.id}`);
+                              }
+                            }}
+                          >
+                            Xem hoá đơn
+                          </button>
                         ) : isPaid ? (
                           <button
                             style={{ padding: '4px 12px', border: '1px solid #e5e7eb', borderRadius: 6, background: '#fff', fontSize: '0.8rem', cursor: 'pointer', color: '#374151' }}
@@ -275,6 +293,7 @@ function StaffBillingView() {
   const [total, setTotal] = useState(0);
   const [statusFilter, setStatusFilter] = useState('');
   const [methodFilter, setMethodFilter] = useState('');
+  const [confirmingId, setConfirmingId] = useState(null);
 
   const totalPages = Math.ceil(total / LIMIT);
 
@@ -324,6 +343,7 @@ function StaffBillingView() {
       <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
         <select style={filterStyle} value={statusFilter} onChange={handleFilterChange(setStatusFilter)}>
           <option value="">Tất cả trạng thái</option>
+          <option value="pending_confirmation">Chờ xác nhận</option>
           <option value="pending">Chờ thanh toán</option>
           <option value="paid">Đã thanh toán</option>
           <option value="failed">Thất bại</option>
@@ -406,15 +426,38 @@ function StaffBillingView() {
                         </span>
                       </td>
                       <td style={tdStyle}>
-                        <button
-                          style={{ padding: '4px 12px', border: '1px solid #e5e7eb', borderRadius: 6, background: '#fff', fontSize: '0.8rem', cursor: 'pointer', color: '#374151' }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/${role}/billing/${payment.id || payment._id}`);
-                          }}
-                        >
-                          Xem
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button
+                            style={{ padding: '4px 12px', border: '1px solid #e5e7eb', borderRadius: 6, background: '#fff', fontSize: '0.8rem', cursor: 'pointer', color: '#374151' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/${role}/billing/${payment.id || payment._id}`);
+                            }}
+                          >
+                            Xem
+                          </button>
+                          {payment.status === 'pending_confirmation' && (
+                            <button
+                              style={{ padding: '4px 12px', border: 'none', borderRadius: 6, background: '#10b981', fontSize: '0.8rem', cursor: 'pointer', color: '#fff', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}
+                              disabled={confirmingId === (payment.id || payment._id)}
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                const id = payment.id || payment._id;
+                                setConfirmingId(id);
+                                try {
+                                  await paymentApi.confirmPayment(id);
+                                  fetchPayments();
+                                } catch (error) {
+                                  alert('Lỗi xác nhận: ' + (error.response?.data?.message || error.message));
+                                } finally {
+                                  setConfirmingId(null);
+                                }
+                              }}
+                            >
+                              {confirmingId === (payment.id || payment._id) ? <div style={{ width: 12, height: 12, border: '2px solid #fff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> : '✅ Xác nhận'}
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );

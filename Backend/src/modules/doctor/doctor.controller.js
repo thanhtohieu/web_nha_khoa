@@ -63,6 +63,14 @@ const doctorController = {
     } catch (error) { next(error); }
   },
 
+  async getDoctorRosters(req, res, next) {
+    try {
+      const { from, to } = req.query;
+      const data = await doctorService.getDoctorRosters(req.params.id, from, to);
+      return successResponse(res, { data });
+    } catch (error) { next(error); }
+  },
+
   async getMySchedule(req, res, next) {
     try {
       const { from, to } = req.query;

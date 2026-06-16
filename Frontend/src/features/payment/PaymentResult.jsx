@@ -65,38 +65,43 @@ export default function PaymentResult() {
   }, [isVnpayReturn, verifyVnpay, fetchPayment]);
 
   // Determine final status
-  const isPaid = (() => {
-    if (directStatus === 'paid') return true;
+  const status = (() => {
+    if (directStatus) return directStatus;
     if (isVnpayReturn) {
-      return (
-        verifyResult?.success === true ||
-        searchParams.get('vnp_ResponseCode') === '00'
-      );
+      return (verifyResult?.success === true || searchParams.get('vnp_ResponseCode') === '00') ? 'paid' : 'failed';
     }
-    return payment?.status === 'paid';
+    return payment?.status;
   })();
+
+  const isPaid = status === 'paid';
+  const isPendingConfirmation = status === 'pending_confirmation';
 
   if (loading) return <Spinner text="Đang xác nhận thanh toán..." />;
 
   return (
     <div className="result-page">
       <div className="result-card">
-        {/* Status icon */}
-        <div className={`result-icon ${isPaid ? 'success' : 'failed'}`}>
-          {isPaid ? '✓' : '✗'}
+        <div className={`result-icon ${isPaid ? 'success' : isPendingConfirmation ? 'warning' : 'failed'}`}>
+          {isPaid ? '✓' : isPendingConfirmation ? '⏳' : '✗'}
         </div>
 
-        <h1 className={`result-title ${isPaid ? 'success' : 'failed'}`}>
-          {isPaid ? 'Thanh toán thành công!' : 'Thanh toán thất bại'}
+        <h1 className={`result-title ${isPaid ? 'success' : isPendingConfirmation ? 'warning' : 'failed'}`}>
+          {isPaid ? 'Thanh toán thành công!' : isPendingConfirmation ? 'Chờ xác nhận' : 'Thanh toán thất bại'}
         </h1>
 
         {error && (
           <p className="result-error">{error}</p>
         )}
 
-        {!isPaid && !error && (
+        {!isPaid && !isPendingConfirmation && !error && (
           <p className="result-desc">
             Giao dịch không được xác nhận. Vui lòng thử lại hoặc chọn hình thức khác.
+          </p>
+        )}
+
+        {isPendingConfirmation && !error && (
+          <p className="result-desc" style={{ color: '#ea580c' }}>
+            Thanh toán đã được ghi nhận. Vui lòng chờ lễ tân xác nhận.
           </p>
         )}
 

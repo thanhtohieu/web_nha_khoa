@@ -16,6 +16,7 @@ const PAYMENT_METHODS = [
 
 const STATUS_LABELS = {
   pending: 'Chờ thanh toán',
+  pending_confirmation: 'Chờ xác nhận',
   paid: 'Đã thanh toán',
   failed: 'Thất bại',
   refunded: 'Đã hoàn tiền',

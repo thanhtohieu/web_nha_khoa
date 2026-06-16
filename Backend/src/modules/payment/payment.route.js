@@ -23,6 +23,9 @@ router.post('/mock-online', paymentController.createMockOnlinePayment);
 // Thanh toán VNPay: patient tự thanh toán
 router.post('/vnpay', paymentController.createVnpayPayment);
 
+// Xác nhận thanh toán: lễ tân / admin
+router.patch('/:id/confirm', isAdminOrReceptionist, paymentController.confirmPayment);
+
 // Hoàn tiền: admin only
 router.patch('/:id/refund', isAdmin, paymentController.refund);
 

@@ -18,7 +18,8 @@ export default function Booking() {
   const hasPatientStep = !isPatient;
 
   const { doctors, doctorsLoading, slots, slotsLoading, bookingLoading, bookingError,
-    fetchDoctors, fetchSlots, createAppointment, clearBookingError } = useAppointmentStore();
+    doctorRosters, rostersLoading,
+    fetchDoctors, fetchSlots, fetchDoctorRosters, createAppointment, clearBookingError } = useAppointmentStore();
 
   const { users: patients, usersLoading: patientsLoading, fetchPatients, createPatient } = useUserStore();
 
@@ -80,6 +81,37 @@ export default function Booking() {
       fetchSlots(form.doctorId, form.date);
     }
   }, [form.doctorId, form.date, fetchSlots]);
+
+  useEffect(() => {
+    if (form.doctorId) {
+      const today = new Date();
+      const end = new Date();
+      end.setDate(end.getDate() + 30);
+      const fromStr = today.toISOString().split('T')[0];
+      const toStr = end.toISOString().split('T')[0];
+      fetchDoctorRosters(form.doctorId, fromStr, toStr);
+    }
+  }, [form.doctorId, fetchDoctorRosters]);
+
+  const generateCalendarDays = useCallback(() => {
+    const today = new Date();
+    const days = [];
+    for (let i = 0; i < 30; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() + i);
+      const dateStr = d.toISOString().split('T')[0];
+      const roster = doctorRosters.find((r) => r.date === dateStr);
+      days.push({
+        date: dateStr,
+        dayOfWeek: d.getDay(),
+        dayNum: d.getDate(),
+        month: d.getMonth() + 1,
+        hasShift: !!roster,
+        shifts: roster?.shifts || [],
+      });
+    }
+    return days;
+  }, [doctorRosters]);
 
   const setField = (key, val) => {
     setForm((f) => ({ ...f, [key]: val }));
@@ -338,6 +370,55 @@ export default function Booking() {
         {((hasPatientStep && step === 2) || (!hasPatientStep && step === 1)) && (
           <div className="step-panel">
             <h2>Chọn ngày & giờ khám</h2>
+
+            {form.doctorId && (
+              <div className="roster-calendar-section">
+                <h3 className="roster-title">📅 Lịch làm việc của bác sĩ (30 ngày tới)</h3>
+                <p className="roster-hint">Chọn ngày có ca (màu xanh) để xem khung giờ trống</p>
+                
+                {rostersLoading ? (
+                  <div className="loading-spinner" />
+                ) : (
+                  <>
+                    <div className="roster-weekday-header">
+                      {['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'].map(d => (
+                        <div key={d} className="roster-weekday">{d}</div>
+                      ))}
+                    </div>
+                    <div className="roster-grid">
+                      {/* Empty cells for first week alignment */}
+                      {Array.from({ length: generateCalendarDays()[0]?.dayOfWeek || 0 }).map((_, i) => (
+                        <div key={`empty-${i}`} className="roster-day empty" />
+                      ))}
+                      
+                      {generateCalendarDays().map(day => (
+                        <button
+                          key={day.date}
+                          type="button"
+                          className={`roster-day ${day.hasShift ? 'has-shift' : 'no-shift'} ${form.date === day.date ? 'selected' : ''}`}
+                          disabled={!day.hasShift}
+                          onClick={() => {
+                            if (day.hasShift) {
+                              setField('date', day.date);
+                              setField('slotId', '');
+                              setField('slotTime', '');
+                            }
+                          }}
+                          title={day.hasShift ? day.shifts.map(s => `${s.name}: ${s.startTime}-${s.endTime}`).join(', ') : 'Bác sĩ không có lịch trực'}
+                        >
+                          <span className="roster-day-num">{day.dayNum}</span>
+                          {(day.dayNum === 1 || generateCalendarDays().indexOf(day) === 0) && (
+                            <span className="roster-day-month">T{day.month}</span>
+                          )}
+                          {day.hasShift && <span className="roster-day-dot" />}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
             <div className="field-group">
               <label>Ngày khám</label>
               <input
