@@ -140,12 +140,12 @@ export default function MonthlySalarySlip() {
               <div className="salary-slip-info-item">
                 <span className="label">Bác sĩ:</span>
                 <span className="value">
-                  {slip.doctor_name || selectedDoctorInfo?.user?.full_name || selectedDoctorInfo?.full_name || '—'}
+                  {slip.doctor?.user?.full_name || slip.doctor_name || selectedDoctorInfo?.user?.full_name || selectedDoctorInfo?.full_name || '—'}
                 </span>
               </div>
               <div className="salary-slip-info-item">
                 <span className="label">Học vị:</span>
-                <span className="value">{slip.doctor_title || '—'}</span>
+                <span className="value">{slip.doctor?.title || slip.doctor_title || '—'}</span>
               </div>
               <div className="salary-slip-info-item">
                 <span className="label">Tháng/Năm:</span>
@@ -155,12 +155,12 @@ export default function MonthlySalarySlip() {
               </div>
               <div className="salary-slip-info-item">
                 <span className="label">Hệ số BS:</span>
-                <span className="value">{slip.doctor_coefficient || '—'}</span>
+                <span className="value">{slip.details?.[0]?.doctorCoefficient || slip.doctor_coefficient || '—'}</span>
               </div>
             </div>
 
             <div className="salary-slip-body">
-              {slip.shifts && slip.shifts.length > 0 ? (
+              {(slip.details || slip.shifts) && (slip.details || slip.shifts).length > 0 ? (
                 <div className="salary-table-wrap">
                   <table className="salary-table">
                     <thead>
@@ -176,15 +176,15 @@ export default function MonthlySalarySlip() {
                       </tr>
                     </thead>
                     <tbody>
-                      {slip.shifts.map((s, idx) => (
+                      {(slip.details || slip.shifts).map((s, idx) => (
                         <tr key={idx}>
                           <td className="text-center">{idx + 1}</td>
-                          <td>{formatDate(s.date)}</td>
-                          <td>{s.shift_name || s.shiftName || '—'}</td>
-                          <td className="text-right">{(s.hours || s.shiftHours || 0).toFixed(1)}</td>
-                          <td className="text-right">{s.shift_coefficient || s.shiftCoefficient || '—'}</td>
-                          <td className="text-right">{(s.patient_complexity || s.totalPatientComplexity || 0).toFixed(2)}</td>
-                          <td className="text-right">{(s.converted_hours || s.convertedHours || 0).toFixed(2)}</td>
+                          <td>{formatDate(s.rosterDate || s.date)}</td>
+                          <td>{s.shiftName || s.shift_name || '—'}</td>
+                          <td className="text-right">{(s.shiftHours || s.hours || 0).toFixed(1)}</td>
+                          <td className="text-right">{s.shiftCoefficient || s.shift_coefficient || '—'}</td>
+                          <td className="text-right">{(s.totalPatientComplexity || s.patient_complexity || 0).toFixed(2)}</td>
+                          <td className="text-right">{(s.convertedHours || s.converted_hours || 0).toFixed(2)}</td>
                           <td className="text-right font-bold">
                             {formatCurrency(s.amount || s.totalAmount || 0)} đ
                           </td>
@@ -193,17 +193,17 @@ export default function MonthlySalarySlip() {
                       <tr className="total-row">
                         <td colSpan={3} style={{ fontWeight: 700 }}>TỔNG CỘNG</td>
                         <td className="text-right font-bold">
-                          {slip.shifts.reduce((sum, s) => sum + (s.hours || s.shiftHours || 0), 0).toFixed(1)}
+                          {(slip.details || slip.shifts).reduce((sum, s) => sum + (s.hours || s.shiftHours || 0), 0).toFixed(1)}
                         </td>
                         <td></td>
                         <td></td>
                         <td className="text-right font-bold">
-                          {slip.shifts.reduce((sum, s) => sum + (s.converted_hours || s.convertedHours || 0), 0).toFixed(2)}
+                          {(slip.details || slip.shifts).reduce((sum, s) => sum + (s.converted_hours || s.convertedHours || 0), 0).toFixed(2)}
                         </td>
                         <td className="text-right font-bold">
                           {formatCurrency(
                             slip.total_amount || slip.totalAmount ||
-                            slip.shifts.reduce((sum, s) => sum + (s.amount || s.totalAmount || 0), 0)
+                            (slip.details || slip.shifts).reduce((sum, s) => sum + (s.amount || s.totalAmount || 0), 0)
                           )} đ
                         </td>
                       </tr>
@@ -218,13 +218,13 @@ export default function MonthlySalarySlip() {
               )}
             </div>
 
-            {slip.shifts && slip.shifts.length > 0 && (
+            {(slip.details || slip.shifts) && (slip.details || slip.shifts).length > 0 && (
               <div className="salary-slip-total">
                 <span className="label">💰 TỔNG LƯƠNG THÁNG {slip.month || month}/{slip.year || year}</span>
                 <span className="value">
                   {formatCurrency(
                     slip.total_amount || slip.totalAmount ||
-                    slip.shifts.reduce((sum, s) => sum + (s.amount || s.totalAmount || 0), 0)
+                    (slip.details || slip.shifts).reduce((sum, s) => sum + (s.amount || s.totalAmount || 0), 0)
                   )} VNĐ
                 </span>
               </div>

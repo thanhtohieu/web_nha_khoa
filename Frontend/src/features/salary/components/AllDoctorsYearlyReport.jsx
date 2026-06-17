@@ -68,21 +68,21 @@ export default function AllDoctorsYearlyReport() {
   const chartData = MONTH_NAMES.map((name, monthIdx) => {
     const entry = { name };
     doctorList.forEach((doc) => {
-      const docName = doc.doctor_name || doc.doctorName || doc.name || 'BS';
-      const months = doc.months || doc.monthly_data || [];
+      const docName = doc.doctor?.fullName || doc.doctor?.full_name || doc.doctor_name || doc.doctorName || doc.name || 'BS';
+      const months = doc.monthlyData || doc.months || doc.monthly_data || [];
       const m = months.find((md) => (md.month || md.monthNumber) === monthIdx + 1) || {};
-      entry[docName] = m.total_amount || m.totalAmount || m.amount || 0;
+      entry[docName] = Number(m.total_amount || m.totalAmount || m.amount || 0);
     });
     return entry;
   });
 
   // Table data with totals
   const tableData = doctorList.map((doc) => {
-    const docName = doc.doctor_name || doc.doctorName || doc.name || 'BS';
-    const months = doc.months || doc.monthly_data || [];
+    const docName = doc.doctor?.fullName || doc.doctor?.full_name || doc.doctor_name || doc.doctorName || doc.name || 'BS';
+    const months = doc.monthlyData || doc.months || doc.monthly_data || [];
     const monthlyAmounts = MONTH_NAMES.map((_, idx) => {
       const m = months.find((md) => (md.month || md.monthNumber) === idx + 1) || {};
-      return m.total_amount || m.totalAmount || m.amount || 0;
+      return Number(m.total_amount || m.totalAmount || m.amount || 0);
     });
     const total = monthlyAmounts.reduce((sum, v) => sum + v, 0);
     return { name: docName, months: monthlyAmounts, total };
@@ -92,7 +92,7 @@ export default function AllDoctorsYearlyReport() {
 
   // Doctor names for chart bars
   const doctorNames = doctorList.map(
-    (doc) => doc.doctor_name || doc.doctorName || doc.name || 'BS'
+    (doc) => doc.doctor?.fullName || doc.doctor?.full_name || doc.doctor_name || doc.doctorName || doc.name || 'BS'
   );
 
   return (

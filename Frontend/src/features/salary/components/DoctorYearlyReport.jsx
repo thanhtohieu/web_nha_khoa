@@ -81,13 +81,13 @@ export default function DoctorYearlyReport() {
   };
 
   // Build chart data
-  const months = report?.months || report?.monthly_data || [];
+  const months = report?.monthlyData || report?.months || report?.monthly_data || [];
   const chartData = MONTH_NAMES.map((name, idx) => {
     const m = months.find((md) => (md.month || md.monthNumber) === idx + 1) || {};
     return {
       name,
-      amount: m.total_amount || m.totalAmount || m.amount || 0,
-      shifts: m.total_shifts || m.totalShifts || 0,
+      amount: Number(m.total_amount || m.totalAmount || m.amount || 0),
+      shifts: Number(m.total_shifts || m.totalShifts || 0),
     };
   });
 
