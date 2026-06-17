@@ -57,7 +57,12 @@ const serviceService = {
   async getAll(query) {
     const { page, limit, offset } = getPagination(query);
     const { specialtyId, search } = query;
-    const isActive = query.isActive !== undefined ? query.isActive === 'true' : true;
+    let isActive;
+    if (query.isActive === 'all') {
+      isActive = undefined;
+    } else {
+      isActive = query.isActive !== undefined ? query.isActive === 'true' : true;
+    }
 
     return serviceRepository.findAll({ page, limit, offset, specialtyId, isActive, search });
   },
@@ -116,6 +121,13 @@ const serviceService = {
     if (!service) throw new AppError('Không tìm thấy dịch vụ', 404);
     await serviceRepository.delete(id);
     return true;
+  },
+
+  async toggleStatus(id) {
+    const service = await serviceRepository.findById(id);
+    if (!service) throw new AppError('Không tìm thấy dịch vụ', 404);
+    
+    return serviceRepository.update(id, { is_active: !service.is_active });
   },
 };
 

@@ -71,6 +71,11 @@ export const NAV_CONFIG = {
       Icon: Icons.Users,
     },
     {
+      label: 'Quản lý dịch vụ',
+      path: ROUTES.ADMIN_SERVICES,
+      Icon: Icons.Clipboard,
+    },
+    {
       label: 'Quản lý bác sĩ',
       path: ROUTES.ADMIN_DOCTORS,
       Icon: Icons.Doctor,

@@ -11,7 +11,7 @@ const medicalService = {
   // --------------------
   async create(data, requestUser) {
     const { appointmentId, chiefComplaint, clinicalFindings, diagnosis, icdCode,
-      vitals, labOrders, treatmentPlan, notes, followUpDate, prescriptions } = data;
+      vitals, labOrders, treatmentPlan, notes, followUpDate, prescriptions, complexityLevel } = data;
 
     // Lấy appointment
     const appointment = await appointmentRepository.findById(appointmentId);
@@ -50,6 +50,13 @@ const medicalService = {
       await medicalRepository.upsertPrescriptions(record.id, prescriptions);
     }
 
+    // Cập nhật độ khó ca bệnh
+    if (complexityLevel !== undefined) {
+      await appointmentRepository.update(appointmentId, {
+        complexity_level: parseFloat(complexityLevel) || 0
+      });
+    }
+
     return medicalRepository.findById(record.id);
   },
 
@@ -72,7 +79,7 @@ const medicalService = {
     }
 
     const { chiefComplaint, clinicalFindings, diagnosis, icdCode, vitals,
-      labOrders, treatmentPlan, notes, followUpDate, status, prescriptions } = data;
+      labOrders, treatmentPlan, notes, followUpDate, status, prescriptions, complexityLevel } = data;
 
     const updated = await medicalRepository.update(id, {
       chief_complaint: chiefComplaint || null,
@@ -89,6 +96,13 @@ const medicalService = {
 
     if (prescriptions !== undefined) {
       await medicalRepository.upsertPrescriptions(id, prescriptions);
+    }
+
+    // Cập nhật độ khó ca bệnh
+    if (complexityLevel !== undefined) {
+      await appointmentRepository.update(record.appointment_id, {
+        complexity_level: parseFloat(complexityLevel) || 0
+      });
     }
 
     return medicalRepository.findById(id);

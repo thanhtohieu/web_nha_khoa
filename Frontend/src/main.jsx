@@ -9,7 +9,7 @@ import './styles/global.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ErrorBoundary fallback={<div>Something went wrong</div>}>
+    <ErrorBoundary fallbackRender={({error}) => <div style={{padding: 20, color: 'red'}}>Something went wrong: {error.message}<br/><pre>{error.stack}</pre></div>}>
       <BrowserRouter>
         <AuthInitializer>
           <App />

@@ -5,7 +5,7 @@ import useAuthStore from '../../store/auth.store';
 import {
   Spinner, Alert, PageHeader, Pagination,
   EmptyState, Icon, ConfirmDialog, fmtCurrency,
-} from './DoctorUI';
+} from '../doctor/DoctorUI';
 import '../doctor/doctor.css';
 
 /* ── Debounce ── */
@@ -26,7 +26,7 @@ const CATEGORY_EMOJI = {
 };
 
 /* ── Service card ── */
-function ServiceCard({ service, isAdmin, onView, onToggle, onDelete }) {
+function ServiceCard({ service, isAdmin, onView, onEdit, onToggle, onDelete }) {
   const emoji = CATEGORY_EMOJI[service.category] ?? CATEGORY_EMOJI.default;
 
   return (
@@ -68,10 +68,17 @@ function ServiceCard({ service, isAdmin, onView, onToggle, onDelete }) {
             <>
               <button
                 className="btn-icon-only"
-                onClick={(e) => { e.stopPropagation(); onToggle(); }}
-                title={service.status === 'active' ? 'Ẩn dịch vụ' : 'Kích hoạt'}
+                onClick={(e) => { e.stopPropagation(); onEdit(); }}
+                title="Chỉnh sửa"
               >
-                <Icon name={service.status === 'active' ? 'ban' : 'check'} size={14} />
+                <Icon name="edit" size={14} />
+              </button>
+              <button
+                className="btn-icon-only"
+                onClick={(e) => { e.stopPropagation(); onToggle(); }}
+                title={service.is_active ? 'Ẩn dịch vụ' : 'Kích hoạt'}
+              >
+                <Icon name={service.is_active ? 'ban' : 'check'} size={14} />
               </button>
               <button
                 className="btn-icon-only"
@@ -83,12 +90,9 @@ function ServiceCard({ service, isAdmin, onView, onToggle, onDelete }) {
               </button>
             </>
           )}
-          <button className="btn btn-primary btn-sm" onClick={onView}>
-            Chi tiết
-          </button>
         </div>
       </div>
-      {isAdmin && service.status === 'inactive' && (
+      {isAdmin && !service.is_active && (
         <div style={{
           position: 'absolute', top: 8, right: 8,
           background: '#6b7280', color: 'white',
@@ -103,8 +107,8 @@ function ServiceCard({ service, isAdmin, onView, onToggle, onDelete }) {
 /* ── ServiceList ── */
 export default function ServiceList() {
   const navigate  = useNavigate();
-  const { getRole } = useAuthStore();
-  const isAdmin   = getRole() === 'admin';
+  const user      = useAuthStore((s) => s.user);
+  const isAdmin   = user?.role === 'admin';
 
   const {
     services, serviceTotal, servicePage, serviceLimit,
@@ -121,8 +125,8 @@ export default function ServiceList() {
   const debouncedSearch = useDebounce(search);
 
   const load = useCallback((page = 1) => {
-    fetchServices({ page, limit: serviceLimit, search: debouncedSearch, category });
-  }, [debouncedSearch, category, serviceLimit]);
+    fetchServices({ page, limit: serviceLimit, search: debouncedSearch, category, isActive: isAdmin ? 'all' : true });
+  }, [debouncedSearch, category, serviceLimit, isAdmin]);
 
   useEffect(() => { fetchCategories(); }, []);
   useEffect(() => { load(1); }, [debouncedSearch, category]);
@@ -168,7 +172,7 @@ export default function ServiceList() {
         <select className="filter-select" value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value="">Tất cả danh mục</option>
           {categories.map((c) => (
-            <option key={c.value ?? c} value={c.value ?? c}>{c.label ?? c}</option>
+            <option key={c.id || c.value || JSON.stringify(c)} value={c.id || c.value || ''}>{c.name || c.label || 'Không tên'}</option>
           ))}
         </select>
       </div>
@@ -186,7 +190,8 @@ export default function ServiceList() {
                     key={s.id}
                     service={s}
                     isAdmin={isAdmin}
-                    onView={() => navigate(`/services/${s.id}`)}
+                    onView={() => navigate(isAdmin ? `/admin/services/${s.id}/edit` : `/services/${s.id}`)}
+                    onEdit={() => navigate(`/admin/services/${s.id}/edit`)}
                     onToggle={() => setConfirm({ type: 'toggle', service: s })}
                     onDelete={() => setConfirm({ type: 'delete', service: s })}
                   />
@@ -214,7 +219,7 @@ export default function ServiceList() {
           desc={
             confirm.type === 'delete'
               ? `Bạn chắc chắn muốn xoá dịch vụ "${confirm.service.name}"? Hành động này không thể hoàn tác.`
-              : `Bạn muốn ${confirm.service.status === 'active' ? 'ẩn' : 'hiển thị lại'} dịch vụ "${confirm.service.name}"?`
+              : `Bạn muốn ${confirm.service.is_active ? 'ẩn' : 'hiển thị lại'} dịch vụ "${confirm.service.name}"?`
           }
           onConfirm={handleConfirm}
           onCancel={() => { setConfirm(null); setConfirmError(null); }}

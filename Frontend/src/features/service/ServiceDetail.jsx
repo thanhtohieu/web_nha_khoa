@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useServiceStore from '../../store/service.store';
+import useAuthStore from '../../store/auth.store';
 import {
   Spinner, Alert, BackBtn, PageHeader, Card, CardHeader, CardBody,
   AvatarPlaceholder, Btn, Icon, fmtCurrency, fmtDate,
-} from './DoctorUI';
+} from '../doctor/DoctorUI';
 import '../doctor/doctor.css';
 
 /* ── Detail field ── */
@@ -44,6 +45,8 @@ const CATEGORY_EMOJI = {
 export default function ServiceDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
+  const isAdmin = user?.role === 'admin';
   const { selectedService: service, selectedServiceLoading: loading, selectedServiceError: error,
     fetchServiceById, clearSelectedService } = useServiceStore();
 
@@ -70,7 +73,14 @@ export default function ServiceDetail() {
 
   return (
     <div>
-      <BackBtn onClick={() => navigate(-1)}>Quay lại danh sách dịch vụ</BackBtn>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <BackBtn onClick={() => navigate(-1)}>Quay lại danh sách dịch vụ</BackBtn>
+        {isAdmin && (
+          <button className="btn btn-secondary" onClick={() => navigate(`/admin/services/${id}/edit`)}>
+            <Icon name="edit" size={14} /> Chỉnh sửa
+          </button>
+        )}
+      </div>
 
       <div className="service-detail-layout">
         {/* ── Left: main content ── */}
@@ -210,8 +220,8 @@ export default function ServiceDetail() {
             <CardBody>
               <DetailField label="Danh mục">{service.category}</DetailField>
               <DetailField label="Trạng thái">
-                <span className={`badge badge-${service.status === 'active' ? 'active' : 'inactive'}`}>
-                  {service.status === 'active' ? 'Đang hoạt động' : 'Tạm ngừng'}
+                <span className={`badge badge-${service.is_active ? 'active' : 'inactive'}`}>
+                  {service.is_active ? 'Đang hoạt động' : 'Tạm ngừng'}
                 </span>
               </DetailField>
               {service.createdAt && (

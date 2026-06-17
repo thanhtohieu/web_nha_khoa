@@ -16,6 +16,7 @@ const EMPTY_FORM = {
   followUpDate: '',
   notes: '',
   status: 'draft',
+  complexityLevel: '0',
 };
 
 function buildFormErrors(form, isNew) {
@@ -85,6 +86,7 @@ export default function MedicalRecordDetail() {
         followUpDate: payload.followUpDate || payload.follow_up_date ? (payload.followUpDate || payload.follow_up_date).slice(0, 10) : '',
         notes: payload.notes || '',
         status: payload.status || 'active',
+        complexityLevel: payload.appointment?.complexity_level?.toString() || '0',
       });
     } catch (err) {
       setError(err.message);
@@ -386,6 +388,23 @@ export default function MedicalRecordDetail() {
                 </select>
               </div>
 
+              <div className="form-group">
+                <label className="form-label">Độ khó ca bệnh</label>
+                <select
+                  name="complexityLevel"
+                  className="form-select"
+                  value={form.complexityLevel}
+                  onChange={handleChange}
+                >
+                  <option value="0">Bình thường (+0 hệ số)</option>
+                  <option value="0.1">Mức độ 1 (+0.1 hệ số)</option>
+                  <option value="0.2">Mức độ 2 (+0.2 hệ số)</option>
+                  <option value="0.3">Mức độ 3 (+0.3 hệ số)</option>
+                  <option value="0.4">Mức độ 4 (+0.4 hệ số)</option>
+                  <option value="0.5">Mức độ 5 (+0.5 hệ số)</option>
+                </select>
+              </div>
+
               <div className="form-group full-width">
                 <label className="form-label">Ghi chú thêm</label>
                 <textarea
@@ -444,6 +463,12 @@ export default function MedicalRecordDetail() {
               <div className="info-item">
                 <span className="info-label">Tái khám</span>
                 <span className="info-value">{formatDate(record.followUpDate || record.follow_up_date)}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Độ khó ca bệnh</span>
+                <span className="info-value">
+                  {record.appointment?.complexity_level ? `+${record.appointment.complexity_level} hệ số` : 'Bình thường (+0)'}
+                </span>
               </div>
               <div className="info-item full-width">
                 <span className="info-label">Ghi chú</span>

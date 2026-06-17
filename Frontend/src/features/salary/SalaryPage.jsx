@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './SalaryPage.css';
 import SalaryConfigForm from './components/SalaryConfigForm';
-import PatientComplexityTable from './components/PatientComplexityTable';
 import ShiftCalculatorDemo from './components/ShiftCalculatorDemo';
 import MonthlySalarySlip from './components/MonthlySalarySlip';
 import MonthlyAllDoctorsReport from './components/MonthlyAllDoctorsReport';
@@ -16,7 +15,6 @@ const MENU_GROUPS = [
     icon: '📋',
     items: [
       { key: 'config',       label: 'Cấu hình lương' },
-      { key: 'complexity',   label: 'Cập nhật độ khó ca bệnh' },
       { key: 'shift-demo',   label: 'Tính lương ca làm việc (Demo)' },
       { key: 'monthly-slip', label: 'Lập phiếu lương tháng' },
     ],
@@ -35,7 +33,6 @@ const MENU_GROUPS = [
 
 const VIEW_TITLES = {
   'config':             { title: 'Cấu hình lương',              desc: 'Thiết lập lương cơ bản, hệ số ca và hệ số bác sĩ' },
-  'complexity':         { title: 'Cập nhật độ khó ca bệnh',     desc: 'Điều chỉnh mức độ phức tạp cho từng ca khám' },
   'shift-demo':         { title: 'Tính lương ca làm việc (Demo)', desc: 'Mô phỏng tính lương cho một ca làm việc' },
   'monthly-slip':       { title: 'Lập phiếu lương tháng',       desc: 'Tạo phiếu lương chi tiết cho bác sĩ theo tháng' },
   'report-month':       { title: 'Báo cáo tháng (Tất cả BS)',   desc: 'Tổng hợp lương tất cả bác sĩ trong tháng' },
@@ -47,7 +44,6 @@ const VIEW_TITLES = {
 function renderView(activeView) {
   switch (activeView) {
     case 'config':             return <SalaryConfigForm />;
-    case 'complexity':         return <PatientComplexityTable />;
     case 'shift-demo':         return <ShiftCalculatorDemo />;
     case 'monthly-slip':       return <MonthlySalarySlip />;
     case 'report-month':       return <MonthlyAllDoctorsReport />;

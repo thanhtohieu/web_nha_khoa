@@ -44,6 +44,13 @@ const serviceController = {
       return successResponse(res, { message: 'Đã xóa dịch vụ' });
     } catch (error) { next(error); }
   },
+
+  async toggleStatus(req, res, next) {
+    try {
+      const data = await serviceService.toggleStatus(req.params.id);
+      return successResponse(res, { message: 'Đã thay đổi trạng thái dịch vụ', data });
+    } catch (error) { next(error); }
+  },
 };
 
 module.exports = serviceController;

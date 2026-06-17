@@ -18,6 +18,7 @@ export const ROUTES = {
 
   // ── Admin ──────────────────────────────────────────────────────────────────
   ADMIN_DASHBOARD:  '/admin/dashboard',
+  ADMIN_SERVICES:   '/admin/services',
   ADMIN_USERS:      '/admin/users',
   ADMIN_DOCTORS:    '/admin/doctors',
   ADMIN_REPORTS:    '/admin/reports',

@@ -28,6 +28,8 @@ import { NotFoundPage, UnderConstructionPage } from './features/dashboard/ErrorP
 const AdminReports = lazy(() => import('./features/dashboard/AdminReports'));
 const AdminAuditLog = lazy(() => import('./features/admin/AdminAuditLog'));
 const AdminSettings = lazy(() => import('./features/admin/AdminSettings'));
+const AdminServiceList = lazy(() => import('./features/service/ServiceList'));
+const AdminServiceForm = lazy(() => import('./features/service/ServiceForm'));
 const UserList = lazy(() => import('./features/user/UserList'));
 const DoctorList = lazy(() => import('./features/doctor/DoctorList'));
 const DoctorProfile = lazy(() => import('./features/doctor/DoctorProfile'));
@@ -110,6 +112,9 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="services" element={<AdminServiceList />} />
+          <Route path="services/new" element={<AdminServiceForm />} />
+          <Route path="services/:id/edit" element={<AdminServiceForm />} />
           <Route path="users" element={<UserList />} />
           <Route path="doctors" element={<DoctorList />} />
           <Route path="reports" element={<AdminReports />} />

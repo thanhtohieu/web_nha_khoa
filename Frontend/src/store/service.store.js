@@ -14,8 +14,8 @@ const useServiceStore = create((set) => ({
   fetchServices: async (params = {}) => {
     set({ listLoading: true, listError: null });
     try {
-      const { page = 1, limit = 12, search = '', category = '' } = params;
-      const res = await serviceApi.getServices({ page, limit, search, category });
+      const { page = 1, limit = 12, search = '', category = '', isActive } = params;
+      const res = await serviceApi.getServices({ page, limit, search, category, isActive });
       set({
         services: res.data.items ?? res.data.data ?? res.data,
         serviceTotal: res.data.total ?? 0,
@@ -34,7 +34,7 @@ const useServiceStore = create((set) => ({
   fetchCategories: async () => {
     try {
       const res = await serviceApi.getCategories();
-      set({ categories: res.data ?? [] });
+      set({ categories: res.data?.data ?? res.data ?? [] });
     } catch (_) {}
   },
 
@@ -49,7 +49,7 @@ const useServiceStore = create((set) => ({
     set({ selectedServiceLoading: true, selectedServiceError: null, selectedService: null });
     try {
       const res = await serviceApi.getServiceById(id);
-      set({ selectedService: res.data, selectedServiceLoading: false });
+      set({ selectedService: res.data?.data ?? res.data, selectedServiceLoading: false });
     } catch (err) {
       set({
         selectedServiceError: err.response?.data?.message ?? 'Không thể tải thông tin dịch vụ.',
@@ -62,13 +62,31 @@ const useServiceStore = create((set) => ({
     set({ selectedService: null, selectedServiceError: null }),
 
   // ── Admin mutations ───────────────────────────────────────────────────────
+  createService: async (data) => {
+    try {
+      await serviceApi.createService(data);
+      return { success: true };
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message ?? 'Thêm mới thất bại.' };
+    }
+  },
+
+  updateService: async (id, data) => {
+    try {
+      await serviceApi.updateService(id, data);
+      return { success: true };
+    } catch (err) {
+      return { success: false, message: err.response?.data?.message ?? 'Cập nhật thất bại.' };
+    }
+  },
+
   toggleServiceStatus: async (id) => {
     try {
       await serviceApi.toggleServiceStatus(id);
       set((state) => ({
         services: state.services.map((s) =>
           s.id === id
-            ? { ...s, status: s.status === 'active' ? 'inactive' : 'active' }
+            ? { ...s, is_active: !s.is_active }
             : s
         ),
       }));

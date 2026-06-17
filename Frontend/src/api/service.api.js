@@ -8,8 +8,8 @@ const serviceApi = {
   /** GET /services/:id */
   getServiceById: (id) => axiosClient.get(`/services/${id}`),
 
-  /** GET /services/categories */
-  getCategories: () => axiosClient.get('/services/categories'),
+  /** GET /specialties */
+  getCategories: () => axiosClient.get('/specialties'),
 
   // ── Admin ─────────────────────────────────────────────────────────────────
   /** POST /services */
