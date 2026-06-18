@@ -1,0 +1,227 @@
+
+Sheet 'Danh mục bằng cấp ':
+  Row  3 - TC001: 'Hiển thị danh mục bằng cấp'
+  Row  4 - TC002: 'Chọn chức năng thêm bằng cấp'
+  Row  6 - TC003: 'Các trường thông tin dữ liệu bị bỏ qua và người dùng chọn nút "Lưu"'
+  Row 11 - TC004: 'Nhập thông tin cho trường thông tin Tên đầy đủ bằng cấp và tất cả các dữ liệu còn lại bỏ qua'
+  Row 16 - TC005: 'Nhập thông tin cho trường thông tin Tên viết tắt bằng cấp và tất cả các dữ liệu còn lại bỏ qua'
+  Row 21 - TC006: 'Nhập thông tin cho các trường thông tin dầy đủ'
+  Row 26 - TC007: 'Người dùng không thêm danh mục mà chọn Hủy'
+  Row 29 - TC008: 'Chọn chức năng Sửa'
+  Row 31 - TC009: 'Các trường thông tin dữ liệu bị bỏ qua và người dùng chọn nút "Lưu"'
+  Row 36 - TC010: 'Bỏ trống trường thông tin Tên đầy đủ bằng cấp'
+  Row 41 - TC011: 'Bỏ trống trường thông tin Tên viết tắt bằng cấp'
+  Row 46 - TC012: 'Sửa tất cả trường thông tin'
+  Row 51 - TC013: 'Xóa bằng cấp trong danh mục bằng cấp'
+  Row 53 - TC014: 'Người dùng chắc chắn muốn xóa bằng cấp trong danh mục bằng cấp'
+  Row 56 - TC013: 'Người dùng không chắc chắn muốn xóa bằng cấp trong danh mục bằng cấp'
+  Row 59 - TC014: 'Người dùng xóa bằng cấp đang được giảng viên sử dụng'
+  --> Total in 'Danh mục bằng cấp ': 16
+
+Sheet 'Khoa':
+  Row  3 - TC001: 'Hiển thị Khoa'
+  Row  4 - TC002: 'Chọn chức năng thêm Khoa'
+  Row  6 - TC003: 'Các trường thông tin dữ liệu bị bỏ qua và người dùng chọn nút "Lưu"'
+  Row 12 - TC004: 'Nhập thông tin cho trường thông tin Tên đầy đủ Khoa và tất cả các dữ liệu còn lại bỏ qua'
+  Row 18 - TC005: 'Nhập thông tin cho trường thông tin Tên vắn tắt Khoa và tất cả các dữ liệu còn lại bỏ qua'
+  Row 24 - TC006: 'Nhập thông tin cho trường thông tin Mô tả nhiệm vụ và tất cả các dữ liệu còn lại bỏ qua'
+  Row 30 - TC007: 'Nhập thông tin đầy đủ cho tất cả các trường dữ liệu'
+  Row 36 - TC008: 'Người dùng không thêm danh mục mà chọn Hủy'
+  Row 39 - TC009: 'Chọn chức năng Sửa'
+  Row 41 - TC010: 'Các trường thông tin dữ liệu bị bỏ qua và người dùng chọn nút "Lưu"'
+  Row 47 - TC011: 'Bỏ trống trường thông tin Tên đầy đủ Khoa'
+  Row 53 - TC012: 'Bỏ trống trường thông tin Tên viết tắt Khoa'
+  Row 59 - TC013: 'Bỏ trống trường thông tin Mô tả nhiệm vụ'
+  Row 65 - TC014: 'Sửa tất cả các trường thông tin'
+  Row 71 - TC015: 'Xóa Khoa trong danh mục Khoa'
+  Row 73 - TC016: 'Người dùng chắc chắn muốn xóa Khoa trong danh mục Khoa'
+  Row 76 - TC017: 'Người dùng không chắc chắn muốn xóa Khoa trong danh mục Khoa'
+  Row 79 - TC018: 'Người dùng xóa Khoa đang được giảng viên sử dụng'
+  --> Total in 'Khoa': 18
+
+Sheet 'Giáo viên':
+  Row  3 - TC001: 'Hiển thị Giáo viên'
+  Row  4 - TC002: 'Chọn chức năng thêm Giáo viên'
+  Row  6 - TC003: 'Các trường thông tin dữ liệu bị bỏ qua và người dùng chọn nút "Lưu"'
+  Row 16 - TC004: 'Nhập thông tin cho trường thông tin Mã số và tất cả các dữ liệu còn lại bỏ qua'
+  Row 26 - TC005: 'Nhập thông tin cho trường thông tin Họ tên và tất cả các dữ liệu còn lại bỏ qua'
+  Row 36 - TC006: 'Nhập thông tin cho trường thông tin Ngày sinh và tất cả các dữ liệu còn lại bỏ qua'
+  Row 46 - TC007: 'Nhập thông tin cho trường thông tin Điện thoại và tất cả các dữ liệu còn lại bỏ qua'
+  Row 56 - TC008: 'Nhập thông tin cho trường thông tin Email và tất cả các dữ liệu còn lại bỏ qua'
+  Row 66 - TC009: 'Nhập thông tin cho trường thông tin Khoa và tất cả các dữ liệu còn lại bỏ qua'
+  Row 76 - TC010: 'Nhập thông tin cho trường thông tin Bằng cấp và tất cả các dữ liệu còn lại bỏ qua'
+  Row 86 - TC011: 'Nhập thông tin đầy đủ cho tất cả các trường thông tin nhưng mã số trùng với giáo viên khác'
+  Row 96 - TC012: 'Nhập thông tin đầy đủ cho tất cả các trường thông tin nhưng email sai định dạng'
+  Row 106 - TC013: 'Nhập thông tin đầy đủ cho tất cả các trường thông tin nhưng ngày sinh không hợp lệ'
+  Row 116 - TC014: 'Nhập thông tin đầy đủ cho tất cả các trường thông tin nhưng không có Khoa'
+  Row 126 - TC015: 'Nhập thông tin đầy đủ cho tất cả các trường thông tin nhưng không có Bằng cấp'
+  Row 136 - TC016: 'Nhập thông tin đầy đủ cho tất cả các trường thông tin đúng định dạng'
+  Row 146 - TC017: 'Người dùng không thêm Giáo viên mà chọn Hủy'
+  Row 149 - TC018: 'Chọn chức năng Sửa'
+  Row 151 - TC019: 'Các thông tin được bỏ qua và người dùng chon Lưu'
+  Row 161 - TC020: 'Bỏ trống trường thông tin Mã số'
+  Row 171 - TC021: 'Bỏ trống trường thông tin Họ tên'
+  Row 181 - TC022: 'Bỏ trống trường thông tin Ngày sinh'
+  Row 191 - TC023: 'Bỏ trống trường thông tin Điện thoại'
+  Row 201 - TC024: 'Bỏ trống trường thông tin Email'
+  Row 211 - TC025: 'Bỏ trống trường thông tin Khoa'
+  Row 221 - TC026: 'Bỏ trống trường thông tin Bằng cấp'
+  Row 231 - TC027: 'Sửa mã số trùng với mã số đã tồn tại'
+  Row 241 - TC028: 'Sửa Điện thoại không đúng định dạng'
+  Row 251 - TC029: 'Sửa Email không đúng định dạng'
+  Row 261 - TC030: 'Sửa ngày sinh không hợp lệ'
+  Row 271 - TC031: 'Sửa các trường thông tin đầy đủ và đúng định dạng'
+  Row 281 - TC032: 'Xóa giáo viên trong bảng  Giáo viên'
+  Row 284 - TC033: 'Người dùng chắc chắn xóa giáo viên trong bảng  Giáo viên'
+  Row 288 - TC034: 'Người dùng không chắc chắn xóa giáo viên trong bảng  Giáo viên'
+  --> Total in 'Giáo viên': 34
+
+Sheet 'Thống kê':
+  Row  3 - TC001: 'Hiển thị thống kê'
+  Row  4 - TC002: 'Chọn tiêu chí thống kê theo khoa'
+  Row  7 - TC003: 'Chọn tiêu chí thống kê theo bằng cấp'
+  Row 10 - TC004: 'Chọn tiêu chí thống kê theo độ tuổi'
+  Row 13 - TC005: 'Chọn tiêu chí thống kê theo khoa ( không có dữ liệu về khoa )'
+  Row 16 - TC006: 'Chọn tiêu chí thống kê theo bằng cấp ( không có dữ liệu về bằng cấp )'
+  Row 19 - TC007: 'Chọn tiêu chí thống kê theo độ tuổi ( không có dữ liệu về độ tuổi  )'
+  Row 22 - TC008: 'Xuất file báo cáo'
+  Row 25 - TC008: 'Xuất file báo cáo ( lỗi thư mục )'
+  --> Total in 'Thống kê': 9
+
+Sheet 'Học phần':
+  Row  3 - TC001: 'Hiển thị học phần'
+  Row  5 - TC002: 'Thêm mới học phần'
+  Row  8 - TC003: 'Người dùng chỉ điền trường thông tin Tên học phần , còn lại bỏ trống'
+  Row 17 - TC004: 'Người dùng chỉ điền trường thông tin Số tín chỉ , còn lại bỏ trống'
+  Row 26 - TC005: 'Người dùng chỉ điền trường thông tin Hệ số học phần , còn lại bỏ trống'
+  Row 35 - TC006: 'Người dùng chỉ điền trường thông tin Số tiết , còn lại bỏ trống'
+  Row 44 - TC007: 'Người dùng chỉ điền trường thông tin Khoa phụ trách , còn lại bỏ trống'
+  Row 53 - TC008: 'Người dùng điền đầy đủ thông tin'
+  Row 62 - TC009: 'Người dùng hủy không thêm mới học phần'
+  Row 66 - TC010: 'Người dùng điền đầy đủ thông tin học phần trùng với học phần đã có'
+  Row 75 - TC011: 'Người dùng muốn chỉnh sửa học phần'
+  Row 79 - TC012: 'Người dùng chỉnh sửa và nhấn "Lưu".'
+  Row 84 - TC013: 'Người dùng muốn xóa học phần'
+  Row 88 - TC014: 'Người dùng xóa học phần ( không có trong kỳ học nào )'
+  Row 93 - TC015: 'Người dùng xóa học phần'
+  --> Total in 'Học phần': 15
+
+Sheet 'Kỳ học':
+  Row  3 - TC001: 'Hiển thị Kỳ học'
+  Row  5 - TC002: 'Thêm mới Kỳ học'
+  Row  8 - TC003: 'Người dùng chỉ điền thông tin của Tên kỳ'
+  Row 16 - TC004: 'Người dùng chỉ điền thông tin của Năm học'
+  Row 24 - TC005: 'Người dùng chỉ điền thông tin của Ngày bắt đầu'
+  Row 32 - TC006: 'Người dùng chỉ điền thông tin của Ngày kết thúc'
+  Row 40 - TC007: 'Người dùng  điền thông tin đầy đủ'
+  Row 48 - TC008: 'Người dùng  điền thông tin đầy đủ nhưng thời gian  ngày bắt đầu trùng với kỳ khác'
+  Row 56 - TC009: 'Người dùng  điền thông tin đầy đủ nhưng thời gian giữa ngày bắt đầu trùng với ngày kết thúc nhỏ hơn 60 ngày'
+  Row 64 - TC010: 'Người dùng  điền thông tin đầy đủ nhưng thời gian giữa ngày bắt đầu của kỳ mới cách kỳ khác dưới 45 ngày'
+  Row 72 - TC012: 'Người dùng muốn chỉnh sửa Kỳ học'
+  Row 76 - TC013: 'Người dùng chỉnh sửa và nhấn "Lưu".'
+  Row 81 - TC014: 'Người dùng muốn xóa Kỳ học'
+  Row 85 - TC015: 'Người dùng xóa kỳ học ( không có học phần nào )'
+  Row 90 - TC016: 'Người dùng xóa kỳ học'
+  --> Total in 'Kỳ học': 15
+
+Sheet 'Lớp học phần':
+  Row  3 - TC001: 'Hiển thị Lớp học phần'
+  Row  5 - TC002: 'Người dùng thêm Lớp học phần'
+  Row  8 - TC003: 'Người dùng thêm Lớp học phần bỏ trống thông tin tên học phần'
+  Row 16 - TC004: 'Người dùng thêm Lớp học phần tạo số lớp quá 10'
+  Row 24 - TC005: 'Người dùng thêm Lớp học phần chọn Hủy'
+  Row 32 - TC006: 'Người dùng thêm Lớp học phần'
+  Row 40 - TC007: 'Người dùng xuất file excel danh sách lớp'
+  Row 43 - TC008: 'Người dùng xóa lớp đã tạo'
+  Row 48 - TC009: 'Người dùng thay đổi số sinh viên lớp đã tạo'
+  Row 53 - TC0010: 'Người dùng thêm Lớp học phần vào lớp học phần cũ'
+  --> Total in 'Lớp học phần': 10
+
+Sheet 'Phân công giáo viên':
+  Row  3 - TC001: 'Hiển thị  Phân công giáo viên'
+  Row  5 - TC002: 'Hiển thị  Tạo phân công mới'
+  Row  8 - TC003: 'Người dùng chỉ chọn thông tin giáo viên trong  Tạo phân công mới'
+  Row 14 - TC004: 'Người dùng chỉ chọn thông tin Lớp học phần trong  Tạo phân công mới'
+  Row 20 - TC005: 'Người dùng không chọn thông tin'
+  Row 26 - TC006: 'Người dùng chọn đầy đủ thông tin'
+  Row 32 - TC007: 'Người dùng không chọn thông tin'
+  Row 38 - TC008: 'Người dùng phân công hàng loạt'
+  Row 44 - TC009: 'Người dùng phân công hàng loạt'
+  Row 51 - TC009: 'Người dùng lọc danh sách đã phân công'
+  --> Total in 'Phân công giáo viên': 10
+
+Sheet 'Báo cáo giáo viên theo năm ':
+  Row  3 - TC001: 'Hiển thị trang báo cáo giáo viên theo năm'
+  Row  5 - TC002: 'Báo cáo tiền dạy của giáo viên theo năm'
+  Row 10 - TC002: 'Báo cáo tiền dạy của giáo viên theo năm'
+  Row 15 - TC003: 'So sánh tính tiền dạy và báo cáo tiền dạy của giáo viên theo năm'
+  Row 21 - TC004: 'Xuất file báo cáo ra excel'
+  --> Total in 'Báo cáo giáo viên theo năm ': 5
+
+Sheet 'Báo cáo theo khoa ':
+  Row  3 - TC001: 'Hiển thị trang báo cáo tiền dạy theo khoa'
+  Row  5 - TC002: 'Báo cáo tiền dạy của giáo viên theo khoa'
+  Row 10 - TC002: 'Báo cáo tiền dạy của giáo viên theo khoa'
+  Row 15 - TC003: 'So sánh tính tiền dạy và báo cáo tiền dạy của giáo viên theo khoa'
+  Row 21 - TC004: 'Xuất file báo cáo ra excel'
+  --> Total in 'Báo cáo theo khoa ': 5
+
+Sheet 'Báo cáo toàn trường':
+  Row  3 - TC001: 'Hiển thị trang báo cáo giáo viên toàn trường'
+  Row  5 - TC002: 'Báo cáo tiền dạy toàn trường'
+  Row 10 - TC002: 'Báo cáo tiền dạy toàn trường'
+  Row 15 - TC003: 'So sánh tính tiền dạy và báo cáo tiền dạy toàn trường'
+  Row 21 - TC004: 'Xuất file báo cáo ra excel'
+  --> Total in 'Báo cáo toàn trường': 5
+
+Sheet 'Định mức tiền theo tiết':
+  Row  3 - TC001: 'Hiển thị trang đinh mức tiền theo tiết'
+  Row  5 - TC002: 'Thêm mới định mức tiền'
+  Row 11 - TC003: 'Thêm mới định mức tiền với số tiền  lớn'
+  Row 17 - TC004: 'Thêm mới định mức tiền với năm học đã có định mức'
+  Row 23 - TC005: 'Hủy thêm mới định mức'
+  Row 29 - TC006: 'Chỉnh sửa định mức'
+  Row 35 - TC007: 'Chỉnh sửa định mức lên số tiền lớn'
+  Row 41 - TC008: 'Chỉnh sửa định mức lên số tiền quá nhỏ'
+  Row 47 - TC009: 'Hủy chỉnh sửa định mức'
+  Row 51 - TC010: 'Xóa định mức ( không sử dụng )'
+  Row 55 - TC011: 'Xóa định mức ( có sử dụng )'
+  Row 59 - TC012: 'Hủy xóa định mức'
+  --> Total in 'Định mức tiền theo tiết': 12
+
+Sheet 'Hệ số giáo viên':
+  Row  3 - TC001: 'Hiển thị trang hệ số giáo viên'
+  Row  5 - TC002: 'Chỉnh sửa hệ số giáo viên'
+  Row  9 - TC003: 'Xóa hệ số giáo viên'
+  Row 13 - TC004: 'Lưu hệ số giáo viên mà không thay đổi'
+  Row 17 - TC005: 'Lưu hệ số giáo viên ≤ 0'
+  --> Total in 'Hệ số giáo viên': 5
+
+Sheet 'Hệ số lớp':
+  Row  3 - TC001: 'Hiển thị trang hệ số lớp'
+  Row  5 - TC002: 'Chỉnh sửa số sinh viên chuẩn'
+  Row  9 - TC003: 'Chỉnh sửa số sinh viên chuẩn'
+  --> Total in 'Hệ số lớp': 3
+
+Sheet 'Tính tiền dạy ':
+  Row  3 - TC001: 'Hiển thị trang tính tiền dạy'
+  Row  5 - TC002: 'Tính tiền dạy của giáo viên đã được phân công'
+  Row 11 - TC003: 'Tính tiền dạy của giáo viên chưa được phân công'
+  Row 17 - TC004: 'Tính đúng đắn của công thức'
+  Row 24 - TC005: 'Tính tiền với hệ số của năm 2026-2027'
+  Row 31 - TC006: 'Tính tiền với hệ số của năm 2027-2028'
+  Row 38 - TC007: 'Tính tiền với định mức mới (250.000)'
+  Row 45 - TC008: 'So sánh hệ số dùng cho năm học có đúng với hệ số tính tiền đối với giáo viên'
+  Row 52 - TC009: 'So sánh hệ số dùng cho năm học có đúng với hệ số giáo viên đối với giáo viên'
+  Row 59 - TC010: 'Tính tiền với hệ số của năm 2027-2028 cho giáo viên chưa được phân công'
+  --> Total in 'Tính tiền dạy ': 10
+
+Sheet 'Admin ':
+  Row  3 - TC001: 'Các trường dữ liệu được bỏ qua người dùng nhấn Đăng nhập'
+  Row  8 - TC002: 'Người dùng chỉ điền tài khoản và chọn đăng nhập'
+  Row 13 - TC003: 'Người dùng điền tài khoản , mật khẩu , chọn vai trò hợp lệ và chọn đăng nhập'
+  Row 18 - TC004: 'Người dùng điền tài khoản , mật khẩu chọn đăng nhập  nhưng sai vai trò'
+  Row 23 - TC005: 'Người dùng xem thông tin cá nhân của bản thân'
+  --> Total in 'Admin ': 5
+
+Grand Total rows with Test Case ID: 177

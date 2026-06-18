@@ -80,8 +80,8 @@ export default function ShiftCalculatorDemo() {
     // Total patient complexity
     const totalComplexity = patients.reduce((sum, p) => sum + (p.complexity || 0), 0);
 
-    // Converted hours
-    const convertedHours = hours * sc * (1 + totalComplexity);
+    // Converted hours: Số giờ quy đổi = Số giờ mỗi ca × (Hệ số ca làm việc + Tổng hệ số bệnh nhân)
+    const convertedHours = hours * (sc + totalComplexity);
 
     // Total
     const total = convertedHours * titleInfo.coeff * rate;
@@ -107,7 +107,7 @@ export default function ShiftCalculatorDemo() {
         patients: patients.map((p) => ({
           name: p.name,
           code: p.code,
-          complexity_level: p.complexity,
+          complexityLevel: p.complexity,
         })),
         hourlyRate: rate,
       });
@@ -119,7 +119,7 @@ export default function ShiftCalculatorDemo() {
         convertedHours: serverResult.convertedHours ?? localResult.convertedHours,
         doctorCoefficient: serverResult.doctorCoefficient ?? localResult.doctorCoefficient,
         hourlyRate: serverResult.hourlyRate ?? localResult.hourlyRate,
-        totalAmount: serverResult.totalAmount ?? localResult.totalAmount,
+        totalAmount: serverResult.amount ?? localResult.totalAmount,
       });
     } catch {
       // fallback to local calculation

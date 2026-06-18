@@ -1,0 +1,2505 @@
+
+
+
+
+TRƯỜNG ĐẠI HỌC PHENIKA
+TRƯỜNG CÔNG NGHỆ THÔNG TIN PHENIKAA
+
+
+BÁO CÁO BÀI TẬP LỚN
+HỌC PHẦN: ĐÁNH GIÁ VÀ KIỂM ĐỊNH CHẤT LƯỢNG PHẦN MỀM
+Đề tài: Đánh giá chất lượng phần mềm phòng khám nha khoa
+Tài liệu số 1: Báo cáo đặc tả phần mềm phòng khám nha khoa
+Nhóm 9
+Thành viên:  Trần Quốc Huy – 22010241
+                                                   Đinh Thế Thành – 22010228
+                                                   Lê Việt Anh – 22010188
+                                                   Trần Văn Thành – 21012328
+                                                   Nguyễn Tuấn Anh – 22010200
+Giảng viên hướng dẫn:      TS. Mai Thúy Nga   
+
+
+Hà Nội, tháng 6 năm 2026
+BẢNG PHÂN CÔNG CÔNG VIỆC
+
+[ROW]
+[CELL]
+STT
+[CELL]
+Họ và tên
+[CELL]
+Công việc thực hiện
+[CELL]
+Tỉ lệ đóng góp
+[ROW]
+[CELL]
+1
+[CELL]
+Trần Quốc Huy
+[CELL]
+Tổng hợp tài liệu, viết phần tổng quan, lời mở đầu, kết luận, rà soát và chuẩn hóa tên Use Case
+[CELL]
+20%
+[ROW]
+[CELL]
+2
+[CELL]
+Đinh Thế Thành
+[CELL]
+Phân tích và đặc tả UC1 – Quản trị viên, xây dựng danh sách chức năng và sơ đồ Use Case UC1
+[CELL]
+20%
+[ROW]
+[CELL]
+3
+[CELL]
+Lê Việt Anh
+[CELL]
+Phân tích và đặc tả UC2 – Quản lý lịch khám, xây dựng test-case cho nhóm chức năng UC2
+[CELL]
+20%
+[ROW]
+[CELL]
+4
+[CELL]
+Trần Văn Thành
+[CELL]
+Phân tích và đặc tả UC3 – Tiếp đón và khám bệnh, xây dựng test-case cho nhóm chức năng UC3
+[CELL]
+20%
+[ROW]
+[CELL]
+5
+[CELL]
+Nguyễn Tuấn Anh
+[CELL]
+Thiết kế giao diện minh họa, bổ sung kiểm thử tự động, kiểm thử phi chức năng và định dạng báo cáo
+[CELL]
+20%
+
+
+
+
+
+
+
+
+
+
+
+MỤC LỤC
+ TOC \o "1-3" \h \z \u LỜI MỞ ĐẦU PAGEREF _Toc232602990 \h 4
+CHƯƠNG 1: TỔNG QUAN VỀ HỆ THỐNG QUẢN LÝ PHÒNG KHÁM NHA KHOA PAGEREF _Toc232602991 \h 5
+1.1. Mô tả bài toán PAGEREF _Toc232602992 \h 5
+1.2. Đối tượng sử dụng PAGEREF _Toc232602993 \h 6
+1.3. Phạm vi hệ thống PAGEREF _Toc232602994 \h 6
+1.4. Sơ đồ Use Case tổng quan PAGEREF _Toc232602995 \h 8
+1.5. Quy ước thống nhất tên Use Case PAGEREF _Toc232602996 \h 9
+1.6. Công nghệ và cấu trúc hệ thống PAGEREF _Toc232602997 \h 10
+1.7. Các trạng thái nghiệp vụ chính trong hệ thống PAGEREF _Toc232602998 \h 11
+CHƯƠNG 2: ĐẶC TẢ UC1 – QUẢN LÝ HỆ THỐNG PAGEREF _Toc232602999 \h 13
+2.1. Sơ đồ Use Case chi tiết PAGEREF _Toc232603000 \h 13
+2.2. Đặc tả UC1.1 – Quản lý người dùng và phân quyền PAGEREF _Toc232603001 \h 13
+2.3. Đặc tả UC1.2 – Quản lý bác sĩ hoặc nhân viên PAGEREF _Toc232603002 \h 18
+2.4. Đặc tả UC1.3 – Quản lý danh mục dịch vụ PAGEREF _Toc232603003 \h 23
+2.5. Đặc tả UC1.4 – Thiết lập giá dịch vụ PAGEREF _Toc232603004 \h 27
+CHƯƠNG 3: ĐẶC TẢ UC2 – QUẢN LÝ LỊCH KHÁM PAGEREF _Toc232603005 \h 30
+3.1. Sơ đồ Use Case chi tiết PAGEREF _Toc232603006 \h 30
+3.2. Đặc tả UC2.1 – Thiết lập các ngày nghỉ PAGEREF _Toc232603007 \h 30
+3.3. Đặc tả UC2.2 – Thiết lập ca làm việc PAGEREF _Toc232603008 \h 34
+3.4. Đặc tả UC2.3 – Đăng ký lịch trực của bác sĩ PAGEREF _Toc232603009 \h 37
+3.5. Đặc tả UC2.4 – Đăng ký lịch khám của bệnh nhân PAGEREF _Toc232603010 \h 41
+3.6. Đặc tả UC2.5 – Theo dõi lịch khám PAGEREF _Toc232603011 \h 45
+CHƯƠNG 4: ĐẶC TẢ UC3 – TIẾP ĐÓN VÀ KHÁM BỆNH PAGEREF _Toc232603012 \h 49
+4.1. Sơ đồ Use Case chi tiết PAGEREF _Toc232603013 \h 49
+4.2. Đặc tả UC3.1 – Tiếp đón người đến khám PAGEREF _Toc232603014 \h 49
+4.3. Đặc tả UC3.2 – Khám bệnh và cập nhật hồ sơ PAGEREF _Toc232603015 \h 53
+4.4. Đặc tả UC3.3 – Thanh toán chi phí khám bệnh PAGEREF _Toc232603016 \h 58
+4.5. Đặc tả UC3.4 – Thống kê doanh thu PAGEREF _Toc232603017 \h 63
+CHƯƠNG 5: ĐẶC TẢ UC4 – TÍNH LƯƠNG BÁC SĨ PAGEREF _Toc232603018 \h 67
+5.1. Sơ đồ Use Case chi tiết PAGEREF _Toc232603019 \h 67
+5.2. Đặc tả UC4.1 – Thiết lập mức tiền cơ bản cho một giờ PAGEREF _Toc232603020 \h 67
+5.3. Đặc tả UC4.2 – Thiết lập hệ số ca làm việc các ngày trong tuần PAGEREF _Toc232603021 \h 69
+5.4. Đặc tả UC4.3 – Nhập hệ số các ca cần xử lý phức tạp trong tháng PAGEREF _Toc232603022 \h 71
+5.5. Đặc tả UC4.4 – Lập phiếu lương cho một bác sĩ trong một tháng PAGEREF _Toc232603023 \h 74
+5.6. Đặc tả UC4.5 – Báo cáo tiền lương tất cả bác sĩ trong một tháng PAGEREF _Toc232603024 \h 79
+5.7. Đặc tả UC4.6 – Báo cáo tiền lương của một bác sĩ trong một năm PAGEREF _Toc232603025 \h 81
+5.8. Đặc tả UC4.7 – Báo cáo tiền lương tất cả bác sĩ trong một năm PAGEREF _Toc232603026 \h 85
+KẾT LUẬN PAGEREF _Toc232603027 \h 88
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LỜI MỞ ĐẦU
+Trong lĩnh vực y tế, đặc biệt là tại các phòng khám nha khoa, việc quản lý thông tin bệnh nhân, bác sĩ, lịch khám, dịch vụ điều trị, hồ sơ bệnh án và thanh toán là những nghiệp vụ quan trọng, đòi hỏi tính chính xác, nhanh chóng và bảo mật cao. Tuy nhiên, nếu các quy trình này được thực hiện thủ công hoặc bằng nhiều công cụ rời rạc, phòng khám dễ gặp các vấn đề như trùng lịch khám, khó tra cứu hồ sơ bệnh nhân, thất lạc thông tin điều trị, sai sót trong thanh toán và mất nhiều thời gian khi lập báo cáo.
+Xuất phát từ nhu cầu thực tế đó, nhóm thực hiện đề tài “Dự án phát triển phần mềm quản lý phòng khám nha khoa” nhằm xây dựng một hệ thống hỗ trợ tin học hóa các quy trình nghiệp vụ chính trong phòng khám. Hệ thống giúp quản lý tập trung dữ liệu, hỗ trợ đặt lịch khám, tiếp đón bệnh nhân, cập nhật hồ sơ điều trị, quản lý thanh toán và thống kê báo cáo. Qua đó, phần mềm góp phần nâng cao hiệu quả vận hành, giảm sai sót trong quá trình làm việc và cải thiện chất lượng phục vụ bệnh nhân.
+Tài liệu này trình bày các nội dung chính gồm: tổng quan hệ thống, danh sách tác nhân, sơ đồ Use Case, đặc tả chi tiết các nhóm chức năng UC1, UC2, UC3, giao diện minh họa, xây dựng trường hợp kiểm thử, kiểm thử tự động và kiểm thử phi chức năng. Đây là cơ sở quan trọng để nhóm phát triển, kiểm thử và đánh giá chất lượng phần mềm một cách có hệ thống.
+
+
+
+
+
+
+
+
+
+CHƯƠNG 1: TỔNG QUAN VỀ HỆ THỐNG QUẢN LÝ PHÒNG KHÁM NHA KHOA
+1.1. Mô tả bài toán
+Hệ thống quản lý phòng khám nha khoa là một website được xây dựng nhằm hỗ trợ quá trình quản lý và vận hành tại phòng khám. Hệ thống tập trung vào các nghiệp vụ chính như quản lý tài khoản người dùng, quản lý bác sĩ, quản lý danh mục dịch vụ nha khoa, quản lý lịch khám, quản lý ngày nghỉ, thiết lập ca làm việc, đăng ký lịch trực bác sĩ, tiếp đón bệnh nhân, khám bệnh, cập nhật hồ sơ bệnh án, kê đơn thuốc, chỉ định dịch vụ điều trị, thanh toán chi phí khám bệnh, thống kê doanh thu và tính lương bác sĩ.
+Theo mã nguồn của hệ thống, website được xây dựng theo mô hình tách biệt giữa Frontend và Backend. Phần Frontend sử dụng React/Vite để xây dựng giao diện người dùng. Phần Backend sử dụng Node.js/Express để xử lý nghiệp vụ, cung cấp API và kết nối cơ sở dữ liệu thông qua Sequelize. Dữ liệu của hệ thống được lưu trữ tập trung trong cơ sở dữ liệu quan hệ, giúp việc tra cứu, cập nhật và quản lý thông tin được thực hiện nhanh chóng và thống nhất.
+Hệ thống có các module chính tương ứng với từng nhóm nghiệp vụ. Module user dùng để quản lý người dùng và phân quyền theo vai trò. Module doctor quản lý hồ sơ bác sĩ, chuyên khoa, phí khám, lịch làm việc và trạng thái nhận lịch. Module service quản lý danh mục dịch vụ nha khoa và giá dịch vụ. Module holiday, shift, roster hỗ trợ thiết lập ngày nghỉ, ca làm việc và lịch trực bác sĩ. Module appointment xử lý nghiệp vụ đặt lịch khám, xác nhận lịch, check-in, hoàn thành lịch, hủy lịch và đánh dấu bệnh nhân không đến. Module medical quản lý hồ sơ bệnh án, đơn thuốc và dịch vụ điều trị. Module payment hỗ trợ thanh toán tiền mặt, chuyển khoản, VNPay và hoàn tiền. Module dashboard cung cấp số liệu thống kê, doanh thu và tình hình hoạt động. Module salary hỗ trợ cấu hình lương, nhập hệ số ca phức tạp, lập phiếu lương và báo cáo lương bác sĩ.
+Thay vì lưu trữ thông tin bằng giấy tờ hoặc các file riêng lẻ, hệ thống cho phép dữ liệu được quản lý tập trung trong cơ sở dữ liệu. Nhờ đó, Admin có thể quản lý người dùng, bác sĩ, dịch vụ và cấu hình hệ thống; Lễ tân có thể theo dõi lịch khám, tiếp đón bệnh nhân và xử lý thanh toán; Bác sĩ có thể xem lịch khám, cập nhật hồ sơ bệnh án, kê đơn thuốc và theo dõi thông tin điều trị; Bệnh nhân có thể đặt lịch khám, xem lịch hẹn, hồ sơ bệnh án, đơn thuốc và thông tin thanh toán của mình.
+1.2. Đối tượng sử dụng
+Theo mã nguồn, hệ thống có bốn vai trò chính được định nghĩa trong code gồm: admin, receptionist, doctor, patient. Các vai trò này tương ứng với các tác nhân chính trong hệ thống như sau:
+
+[ROW]
+[CELL]
+Tác nhân
+[CELL]
+Vai trò trong hệ thống
+[ROW]
+[CELL]
+Admin
+[CELL]
+Quản trị hệ thống, quản lý người dùng và phân quyền, quản lý bác sĩ, quản lý dịch vụ nha khoa, thiết lập giá dịch vụ, thiết lập ngày nghỉ, ca làm việc, duyệt lịch trực bác sĩ, theo dõi lịch khám, xem báo cáo doanh thu và thực hiện tính lương bác sĩ.
+[ROW]
+[CELL]
+Lễ tân
+[CELL]
+Quản lý lịch khám, hỗ trợ đăng ký lịch khám cho bệnh nhân, xác nhận lịch, check-in bệnh nhân, theo dõi lịch khám trong ngày và hỗ trợ thanh toán chi phí khám bệnh.
+[ROW]
+[CELL]
+Bác sĩ
+[CELL]
+Đăng ký lịch trực, xem lịch khám được phân công, tiếp nhận bệnh nhân đã check-in, khám bệnh, cập nhật hồ sơ bệnh án, kê đơn thuốc, chỉ định dịch vụ điều trị và xem báo cáo lương cá nhân nếu được phân quyền.
+[ROW]
+[CELL]
+Bệnh nhân
+[CELL]
+Đăng ký/đăng nhập tài khoản, đặt lịch khám, xem lịch hẹn, hủy lịch theo điều kiện cho phép, xem hồ sơ bệnh án, xem đơn thuốc, xem thông tin thanh toán và cập nhật hồ sơ cá nhân.
+[ROW]
+[CELL]
+Khách truy cập
+[CELL]
+Có thể xem một số thông tin công khai như danh sách bác sĩ, danh mục dịch vụ, bài viết/blog hoặc gửi thông tin liên hệ nếu chức năng được bật trên giao diện.
+Lưu ý: Trong code hiện tại, Thu ngân chưa được tách thành một role riêng. Các thao tác thanh toán tại quầy chủ yếu do Lễ tân hoặc Admin thực hiện. Tương tự, Quản lý có thể được hiểu là một phần quyền của Admin. Vì vậy, khi đặc tả hệ thống theo đúng code, báo cáo nên dùng bốn tác nhân chính là Admin, Lễ tân, Bác sĩ và Bệnh nhân để đảm bảo thống nhất với phân quyền trong mã nguồn.
+
+1.3. Phạm vi hệ thống
+Hệ thống tập trung vào bốn nhóm chức năng chính, bám theo các module đã được triển khai trong mã nguồn:
+Quản lý hệ thống: Bao gồm quản lý người dùng và phân quyền, quản lý bác sĩ/nhân viên, quản lý danh mục dịch vụ nha khoa và thiết lập giá dịch vụ. Nhóm chức năng này liên quan đến các module user, doctor, service và specialty.
+Quản lý lịch khám: Bao gồm thiết lập các ngày nghỉ, thiết lập ca làm việc, đăng ký lịch trực của bác sĩ, đăng ký lịch khám của bệnh nhân và theo dõi lịch khám. Nhóm chức năng này liên quan đến các module holiday, shift, roster và appointment.
+Tiếp đón và khám bệnh: Bao gồm check-in bệnh nhân, khám bệnh, cập nhật hồ sơ bệnh án, kê đơn thuốc, chỉ định dịch vụ điều trị, thanh toán chi phí khám bệnh và thống kê doanh thu. Nhóm chức năng này liên quan đến các module appointment, medical, payment và dashboard.
+Tính lương bác sĩ: Bao gồm thiết lập mức tiền cơ bản theo giờ, thiết lập hệ số ca làm việc, nhập hệ số ca phức tạp, lập phiếu lương tháng cho một bác sĩ và lập các báo cáo lương theo tháng/năm. Nhóm chức năng này liên quan trực tiếp đến module salary.
+Ngoài các chức năng chính trên, trong mã nguồn còn có một số module hỗ trợ như notification, chat, review, blog, contact và media. Các module này hỗ trợ thông báo hệ thống, chat, đánh giá bác sĩ, bài viết, liên hệ và upload tài liệu. Tuy nhiên, trong phạm vi báo cáo này, nhóm tập trung đặc tả bốn nhóm chức năng chính đã được lựa chọn để đảm bảo nội dung báo cáo không quá dài và thống nhất với yêu cầu đề tài.
+
+
+
+
+
+
+1.4. Sơ đồ Use Case tổng quan 
+
+
+Hình 1-1: Sơ đồ Use Case tổng quan hệ thống quản lý phòng khám nha khoa
+Sơ đồ Use Case tổng quan mô tả các tác nhân chính tham gia hệ thống gồm Admin, Lễ tân, Bác sĩ và Bệnh nhân. Các tác nhân này tương tác với bốn nhóm chức năng lớn của hệ thống gồm Quản lý hệ thống, Quản lý lịch khám, Tiếp đón và khám bệnh, Tính lương bác sĩ.
+Trong đó, Admin là tác nhân có quyền cao nhất, có thể truy cập cả bốn nhóm chức năng. Lễ tân chủ yếu thao tác với nhóm Quản lý lịch khám và Tiếp đón, khám bệnh, đặc biệt là đặt lịch, xác nhận lịch, check-in và thanh toán. Bác sĩ tham gia vào nhóm Quản lý lịch khám thông qua đăng ký lịch trực, tham gia nhóm Tiếp đón và khám bệnh thông qua khám bệnh, cập nhật hồ sơ bệnh án, đồng thời có liên quan đến nhóm Tính lương bác sĩ. Bệnh nhân chủ yếu tương tác với nhóm Quản lý lịch khám thông qua đặt lịch khám và nhóm Tiếp đón, khám bệnh thông qua việc xem lịch hẹn, hồ sơ bệnh án, đơn thuốc và thông tin thanh toán.
+
+1.5. Quy ước thống nhất tên Use Case
+Để đảm bảo sự thống nhất giữa sơ đồ Use Case, đặc tả chức năng và bảng test-case, báo cáo sử dụng danh sách Use Case như sau:
+UC1 – Quản lý hệ thống
+
+[ROW]
+[CELL]
+Mã UC
+[CELL]
+Tên Use Case
+[ROW]
+[CELL]
+UC1.1
+[CELL]
+Quản lý người dùng và phân quyền
+[ROW]
+[CELL]
+UC1.2
+[CELL]
+Quản lý bác sĩ/nhân viên
+[ROW]
+[CELL]
+UC1.3
+[CELL]
+Quản lý danh mục dịch vụ
+[ROW]
+[CELL]
+UC1.4
+[CELL]
+Thiết lập giá dịch vụ
+UC2 – Quản lý lịch khám
+
+[ROW]
+[CELL]
+Mã UC
+[CELL]
+Tên Use Case
+[ROW]
+[CELL]
+UC2.1
+[CELL]
+Thiết lập các ngày nghỉ
+[ROW]
+[CELL]
+UC2.2
+[CELL]
+Thiết lập ca làm việc
+[ROW]
+[CELL]
+UC2.3
+[CELL]
+Đăng ký lịch trực của bác sĩ
+[ROW]
+[CELL]
+UC2.4
+[CELL]
+Đăng ký lịch khám của bệnh nhân
+[ROW]
+[CELL]
+UC2.5
+[CELL]
+Theo dõi lịch khám
+UC3 – Tiếp đón và khám bệnh
+
+[ROW]
+[CELL]
+Mã UC
+[CELL]
+Tên Use Case
+[ROW]
+[CELL]
+UC3.1
+[CELL]
+Tiếp đón người đến khám
+[ROW]
+[CELL]
+UC3.2
+[CELL]
+Khám bệnh và cập nhật hồ sơ
+[ROW]
+[CELL]
+UC3.3
+[CELL]
+Thanh toán chi phí khám bệnh
+[ROW]
+[CELL]
+UC3.4
+[CELL]
+Thống kê doanh thu
+UC4 – Tính lương bác sĩ
+
+[ROW]
+[CELL]
+Mã UC
+[CELL]
+Tên Use Case
+[ROW]
+[CELL]
+UC4.1
+[CELL]
+Thiết lập mức tiền cơ bản cho một giờ
+[ROW]
+[CELL]
+UC4.2
+[CELL]
+Thiết lập hệ số ca làm việc các ngày trong tuần
+[ROW]
+[CELL]
+UC4.3
+[CELL]
+Nhập hệ số các ca cần xử lý phức tạp trong tháng
+[ROW]
+[CELL]
+UC4.4
+[CELL]
+Lập phiếu lương cho một bác sĩ trong một tháng
+[ROW]
+[CELL]
+UC4.5
+[CELL]
+Báo cáo tiền lương tất cả bác sĩ trong một tháng
+[ROW]
+[CELL]
+UC4.6
+[CELL]
+Báo cáo tiền lương của một bác sĩ trong một năm
+[ROW]
+[CELL]
+UC4.7
+[CELL]
+Báo cáo tiền lương tất cả bác sĩ trong một năm
+Danh sách Use Case trên được xây dựng dựa trên các chức năng thật trong mã nguồn, đồng thời được sắp xếp lại theo bốn nhóm chức năng chính của báo cáo. Khi vẽ sơ đồ Use Case, viết đặc tả chi tiết và xây dựng test-case, cần sử dụng đúng tên Use Case trong bảng này để tránh tình trạng tên chức năng không thống nhất giữa các phần của tài liệu.
+1.6. Công nghệ và cấu trúc hệ thống
+Hệ thống được tổ chức theo mô hình Frontend – Backend. Phần Frontend xây dựng giao diện người dùng cho từng vai trò như Admin, Lễ tân, Bác sĩ và Bệnh nhân. Phần Backend cung cấp API, xử lý nghiệp vụ, xác thực người dùng và kết nối cơ sở dữ liệu.
+Các công nghệ chính trong hệ thống gồm:
+
+[ROW]
+[CELL]
+Thành phần
+[CELL]
+Công nghệ sử dụng
+[ROW]
+[CELL]
+Frontend
+[CELL]
+React, Vite
+[ROW]
+[CELL]
+Backend
+[CELL]
+Node.js, Express.js
+[ROW]
+[CELL]
+Cơ sở dữ liệu
+[CELL]
+MySQL thông qua Sequelize ORM
+[ROW]
+[CELL]
+Xác thực
+[CELL]
+JWT, Refresh Token
+[ROW]
+[CELL]
+Upload tệp
+[CELL]
+Cloudinary/Storage service
+[ROW]
+[CELL]
+Realtime
+[CELL]
+Socket.io
+[ROW]
+[CELL]
+Gửi email
+[CELL]
+Mailer service
+[ROW]
+[CELL]
+Thanh toán
+[CELL]
+Tiền mặt, chuyển khoản, VNPay/MoMo theo cấu hình
+[ROW]
+[CELL]
+Kiểm thử API
+[CELL]
+Có thể sử dụng Postman/Newman
+[ROW]
+[CELL]
+Kiểm thử hiệu năng
+[CELL]
+Có thể sử dụng JMeter
+Cấu trúc Backend được chia theo từng module nghiệp vụ. Mỗi module thường có các file như model, route, controller, service, repository và validation. Cách tổ chức này giúp mã nguồn dễ bảo trì, dễ mở rộng và thuận tiện cho việc đối chiếu khi viết đặc tả chức năng hoặc xây dựng test-case.
+1.7. Các trạng thái nghiệp vụ chính trong hệ thống
+Dựa theo mã nguồn, hệ thống sử dụng một số trạng thái nghiệp vụ quan trọng như sau:
+Trạng thái lịch khám
+
+[ROW]
+[CELL]
+Trạng thái trong code
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+pending
+[CELL]
+Lịch khám đang chờ xác nhận
+[ROW]
+[CELL]
+confirmed
+[CELL]
+Lịch khám đã được xác nhận
+[ROW]
+[CELL]
+checked_in
+[CELL]
+Bệnh nhân đã đến phòng khám và được check-in
+[ROW]
+[CELL]
+in_progress
+[CELL]
+Bệnh nhân đang được khám
+[ROW]
+[CELL]
+completed
+[CELL]
+Lịch khám đã hoàn thành
+[ROW]
+[CELL]
+cancelled
+[CELL]
+Lịch khám đã bị hủy
+[ROW]
+[CELL]
+no_show
+[CELL]
+Bệnh nhân không đến khám
+Trạng thái thanh toán
+
+[ROW]
+[CELL]
+Trạng thái trong code
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+pending
+[CELL]
+Chờ thanh toán
+[ROW]
+[CELL]
+pending_confirmation
+[CELL]
+Chờ xác nhận thanh toán
+[ROW]
+[CELL]
+paid
+[CELL]
+Đã thanh toán
+[ROW]
+[CELL]
+failed
+[CELL]
+Thanh toán thất bại
+[ROW]
+[CELL]
+refunded
+[CELL]
+Đã hoàn tiền
+Trạng thái hồ sơ bệnh án
+
+[ROW]
+[CELL]
+Trạng thái trong code
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+draft
+[CELL]
+Hồ sơ đang ở trạng thái nháp
+[ROW]
+[CELL]
+active
+[CELL]
+Hồ sơ đang được xử lý
+[ROW]
+[CELL]
+completed
+[CELL]
+Hồ sơ đã hoàn tất
+[ROW]
+[CELL]
+cancelled
+[CELL]
+Hồ sơ đã bị hủy
+Trạng thái lịch trực bác sĩ
+
+[ROW]
+[CELL]
+Trạng thái trong code
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+pending
+[CELL]
+Lịch trực đang chờ duyệt
+[ROW]
+[CELL]
+approved
+[CELL]
+Lịch trực đã được duyệt
+[ROW]
+[CELL]
+rejected
+[CELL]
+Lịch trực đã bị từ chối
+
+CHƯƠNG 2: ĐẶC TẢ UC1 – QUẢN LÝ HỆ THỐNG
+2.1. Sơ đồ Use Case chi tiết
+
+
+Hình 2-1: Sơ đồ UC1 chi tiết – Quản lý hệ thống
+Nhóm chức năng Quản lý hệ thống cho phép Quản trị viên quản lý các thông tin nền tảng của website quản lý phòng khám nha khoa, gồm người dùng, phân quyền, bác sĩ/nhân viên, danh mục dịch vụ và giá dịch vụ. Đây là các dữ liệu cơ sở được sử dụng cho đặt lịch khám, tiếp đón, khám bệnh, thanh toán và tính lương bác sĩ.
+2.2. Đặc tả UC1.1 – Quản lý người dùng và phân quyền
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên quản lý tài khoản người dùng trong hệ thống. Quản trị viên có thể xem danh sách người dùng, thêm mới người dùng, xem chi tiết, cập nhật thông tin, khóa/mở khóa tài khoản và xóa tài khoản. Hệ thống phân quyền người dùng theo vai trò gồm admin, doctor, receptionist, patient.
+Trong code, chức năng này tương ứng với module user, route chính là /api/v1/users.
+Tác nhân thực hiện
+Quản trị viên.
+Lễ tân, nhưng chỉ được tạo và xem danh sách bệnh nhân trong phạm vi được cấp quyền.
+Tiền điều kiện
+Người dùng đã đăng nhập vào hệ thống.
+Tài khoản có quyền phù hợp:
+Admin có quyền quản lý toàn bộ người dùng.
+Lễ tân chỉ được tạo tài khoản bệnh nhân.
+Cơ sở dữ liệu người dùng đã được thiết lập.
+Hậu điều kiện
+Thông tin người dùng được thêm, sửa, khóa/mở khóa hoặc xóa trong hệ thống.
+Vai trò của người dùng được cập nhật đúng theo phân quyền.
+Danh sách người dùng được làm mới trên giao diện.
+Nếu thao tác không thành công, dữ liệu không thay đổi và hệ thống hiển thị thông báo lỗi.
+Luồng sự kiện
+Luồng chính
+Quản trị viên truy cập chức năng “Quản lý người dùng”.
+Hệ thống hiển thị danh sách tài khoản người dùng.
+Quản trị viên tìm kiếm người dùng theo họ tên, email hoặc số điện thoại.
+Quản trị viên lọc danh sách theo vai trò hoặc trạng thái hoạt động.
+Quản trị viên chọn một trong các thao tác:
+Thêm người dùng.
+Xem chi tiết người dùng.
+Cập nhật người dùng.
+Khóa hoặc mở khóa tài khoản.
+Xóa tài khoản.
+Hệ thống hiển thị biểu mẫu hoặc hộp thoại xác nhận tương ứng.
+Quản trị viên nhập hoặc xác nhận thông tin.
+Hệ thống kiểm tra dữ liệu đầu vào.
+Nếu hợp lệ, hệ thống lưu thay đổi vào cơ sở dữ liệu.
+Hệ thống hiển thị thông báo thành công và cập nhật danh sách.
+Luồng phát sinh
+Nếu họ tên bị bỏ trống hoặc không đạt độ dài hợp lệ, hệ thống thông báo lỗi.
+Nếu email không hợp lệ, hệ thống thông báo “Email không hợp lệ”.
+Nếu email đã tồn tại, hệ thống thông báo “Email đã tồn tại”.
+Nếu số điện thoại sai định dạng, hệ thống thông báo “Số điện thoại không hợp lệ”.
+Nếu lễ tân tạo tài khoản, hệ thống tự gán vai trò là bệnh nhân.
+Nếu xóa tài khoản Admin cuối cùng, hệ thống không cho phép xóa và thông báo “Không thể xóa admin duy nhất của hệ thống”.
+Nếu tài khoản bị khóa, người dùng không thể tiếp tục sử dụng các chức năng yêu cầu đăng nhập.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+full_name
+[CELL]
+Họ tên người dùng
+[ROW]
+[CELL]
+email
+[CELL]
+Email đăng nhập
+[ROW]
+[CELL]
+phone
+[CELL]
+Số điện thoại
+[ROW]
+[CELL]
+password_hash
+[CELL]
+Mật khẩu đã mã hóa
+[ROW]
+[CELL]
+role
+[CELL]
+Vai trò: admin, doctor, receptionist, patient
+[ROW]
+[CELL]
+gender
+[CELL]
+Giới tính
+[ROW]
+[CELL]
+date_of_birth
+[CELL]
+Ngày sinh
+[ROW]
+[CELL]
+address
+[CELL]
+Địa chỉ
+[ROW]
+[CELL]
+is_active
+[CELL]
+Trạng thái hoạt động
+[ROW]
+[CELL]
+is_verified
+[CELL]
+Trạng thái xác thực email
+[ROW]
+[CELL]
+blood_type
+[CELL]
+Nhóm máu của bệnh nhân
+[ROW]
+[CELL]
+allergies
+[CELL]
+Dị ứng
+[ROW]
+[CELL]
+emergency_contact_name
+[CELL]
+Tên liên hệ khẩn cấp
+[ROW]
+[CELL]
+emergency_contact_phone
+[CELL]
+SĐT liên hệ khẩn cấp
+
+
+
+
+
+
+
+Giao diện minh họa
+
+
+Hình 2-2: Giao diện danh sách người dùng
+
+
+Hình 2-3: Giao diện khóa/mở khóa người dùng
+
+
+2.3. Đặc tả UC1.2 – Quản lý bác sĩ hoặc nhân viên
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên quản lý hồ sơ bác sĩ trong hệ thống. Mỗi bác sĩ được liên kết với một tài khoản người dùng có role là doctor. Hồ sơ bác sĩ gồm chuyên khoa, học hàm/học vị, giới thiệu, số năm kinh nghiệm, học vấn, chứng chỉ, phí khám, ngày làm việc, giờ làm việc, thời lượng mỗi lượt khám, số bệnh nhân tối đa mỗi ngày và trạng thái nhận lịch.
+Trong code, chức năng này tương ứng với module doctor, route chính là /api/v1/doctors.
+Tác nhân thực hiện
+Quản trị viên.
+Bác sĩ, đối với chức năng tự cập nhật hồ sơ cá nhân và lịch làm việc của mình.
+Bệnh nhân hoặc khách truy cập có thể xem danh sách bác sĩ và chi tiết bác sĩ.
+Tiền điều kiện
+Quản trị viên đã đăng nhập hệ thống.
+Tài khoản người dùng dùng để tạo hồ sơ bác sĩ phải tồn tại.
+Tài khoản đó phải có role là doctor.
+Nếu liên kết chuyên khoa, chuyên khoa phải tồn tại trong hệ thống.
+Hậu điều kiện
+Hồ sơ bác sĩ được tạo hoặc cập nhật.
+Bác sĩ có thể được chọn khi đặt lịch khám nếu trạng thái is_available = true.
+Thông tin bác sĩ được hiển thị trên danh sách bác sĩ.
+Nếu dữ liệu không hợp lệ, hệ thống không lưu thay đổi.
+Luồng sự kiện
+Luồng chính
+Quản trị viên chọn chức năng “Quản lý bác sĩ”.
+Hệ thống hiển thị danh sách bác sĩ hiện có.
+Quản trị viên chọn “Thêm bác sĩ” hoặc chọn bác sĩ cần chỉnh sửa.
+Hệ thống hiển thị biểu mẫu hồ sơ bác sĩ.
+Quản trị viên nhập thông tin:
+Tài khoản người dùng.
+Chuyên khoa.
+Học hàm/học vị.
+Giới thiệu.
+Số năm kinh nghiệm.
+Học vấn.
+Chứng chỉ.
+Phí khám.
+Ngày làm việc.
+Giờ bắt đầu và giờ kết thúc.
+Thời lượng mỗi slot khám.
+Số bệnh nhân tối đa mỗi ngày.
+Quản trị viên nhấn “Lưu”.
+Hệ thống kiểm tra dữ liệu.
+Nếu hợp lệ, hệ thống lưu hồ sơ bác sĩ.
+Hệ thống hiển thị thông báo thành công và cập nhật danh sách.
+Luồng phát sinh
+Nếu người dùng không tồn tại, hệ thống thông báo “Không tìm thấy người dùng”.
+Nếu người dùng không có role doctor, hệ thống thông báo “Người dùng này không phải bác sĩ”.
+Nếu bác sĩ đã có hồ sơ, hệ thống thông báo “Bác sĩ này đã có hồ sơ”.
+Nếu bác sĩ sửa hồ sơ không phải của mình, hệ thống thông báo không có quyền.
+Nếu phí khám nhỏ hơn 0, hệ thống báo lỗi.
+Nếu số năm kinh nghiệm nhỏ hơn 0, hệ thống báo lỗi.
+Nếu thời lượng khám không hợp lệ, hệ thống yêu cầu nhập lại.
+Nếu Admin/Bác sĩ tắt trạng thái nhận lịch, bác sĩ đó không được chọn để đặt lịch mới.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+user_id
+[CELL]
+Tài khoản người dùng liên kết
+[ROW]
+[CELL]
+specialty_id
+[CELL]
+Chuyên khoa
+[ROW]
+[CELL]
+title
+[CELL]
+Học hàm/học vị, ví dụ BS., ThS.BS., PGS.TS.BS.
+[ROW]
+[CELL]
+bio
+[CELL]
+Giới thiệu bác sĩ
+[ROW]
+[CELL]
+experience_years
+[CELL]
+Số năm kinh nghiệm
+[ROW]
+[CELL]
+education
+[CELL]
+Học vấn
+[ROW]
+[CELL]
+certificate
+[CELL]
+Chứng chỉ
+[ROW]
+[CELL]
+consultation_fee
+[CELL]
+Phí khám
+[ROW]
+[CELL]
+working_days
+[CELL]
+Các ngày làm việc
+[ROW]
+[CELL]
+working_start
+[CELL]
+Giờ bắt đầu làm việc
+[ROW]
+[CELL]
+working_end
+[CELL]
+Giờ kết thúc làm việc
+[ROW]
+[CELL]
+slot_duration_minutes
+[CELL]
+Thời lượng mỗi lượt khám
+[ROW]
+[CELL]
+max_patients_per_day
+[CELL]
+Số bệnh nhân tối đa mỗi ngày
+[ROW]
+[CELL]
+is_available
+[CELL]
+Trạng thái nhận lịch
+[ROW]
+[CELL]
+rating_avg
+[CELL]
+Điểm đánh giá trung bình
+[ROW]
+[CELL]
+rating_count
+[CELL]
+Số lượt đánh giá
+Giao diện minh họa 
+
+Hình 2-4: Giao diện danh sách bác sĩ
+
+
+Hình 2-5: Giao diện thêm hồ sơ bác sĩ
+
+
+Hình 2-6: Giao diện cập nhật hồ sơ bác sĩ
+
+
+
+2.4. Đặc tả UC1.3 – Quản lý danh mục dịch vụ
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên quản lý danh mục dịch vụ nha khoa. Dịch vụ được sử dụng trong đặt lịch khám, hồ sơ bệnh án, chỉ định điều trị và thanh toán. Mỗi dịch vụ có thể thuộc một chuyên khoa, có tên, đường dẫn slug, mô tả, giá, thời lượng thực hiện, ghi chú chuẩn bị trước khám, trạng thái hoạt động và thứ tự hiển thị.
+Tác nhân thực hiện
+Quản trị viên.
+Bệnh nhân/khách truy cập có thể xem danh sách dịch vụ đang hoạt động.
+Tiền điều kiện
+Quản trị viên đã đăng nhập hệ thống.
+Quản trị viên có quyền quản lý dịch vụ.
+Nếu dịch vụ liên kết chuyên khoa, chuyên khoa phải tồn tại.
+Hậu điều kiện
+Dịch vụ được thêm, sửa hoặc xóa trong hệ thống.
+Dịch vụ đang hoạt động có thể hiển thị cho người dùng và sử dụng trong đặt lịch/hồ sơ bệnh án.
+Nếu dữ liệu không hợp lệ, hệ thống không lưu thay đổi.
+Luồng sự kiện
+Luồng chính
+Quản trị viên chọn chức năng “Quản lý danh mục dịch vụ”.
+Hệ thống hiển thị danh sách dịch vụ.
+Quản trị viên có thể tìm kiếm dịch vụ hoặc lọc theo chuyên khoa.
+Quản trị viên chọn thêm mới, chỉnh sửa hoặc xóa dịch vụ.
+Hệ thống hiển thị biểu mẫu thông tin dịch vụ.
+Quản trị viên nhập:
+Tên dịch vụ.
+Chuyên khoa.
+Mô tả.
+Giá dịch vụ.
+Thời lượng thực hiện.
+Ghi chú chuẩn bị trước khám.
+Thứ tự hiển thị.
+Trạng thái hoạt động.
+Quản trị viên nhấn “Lưu”.
+Hệ thống tự sinh slug từ tên dịch vụ.
+Hệ thống kiểm tra slug có bị trùng không.
+Nếu hợp lệ, hệ thống lưu dịch vụ và cập nhật danh sách.
+Luồng phát sinh
+Nếu tên dịch vụ bị bỏ trống, hệ thống thông báo lỗi.
+Nếu dịch vụ đã tồn tại theo slug, hệ thống thông báo “Dịch vụ này đã tồn tại”.
+Nếu không tìm thấy dịch vụ khi sửa/xóa, hệ thống thông báo “Không tìm thấy dịch vụ”.
+Nếu người dùng không phải Admin thực hiện thêm/sửa/xóa, hệ thống từ chối quyền.
+Nếu người dùng hủy thao tác, hệ thống không lưu thay đổi.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+specialty_id
+[CELL]
+Chuyên khoa của dịch vụ
+[ROW]
+[CELL]
+name
+[CELL]
+Tên dịch vụ
+[ROW]
+[CELL]
+slug
+[CELL]
+Đường dẫn thân thiện
+[ROW]
+[CELL]
+description
+[CELL]
+Mô tả dịch vụ
+[ROW]
+[CELL]
+price
+[CELL]
+Giá dịch vụ
+[ROW]
+[CELL]
+duration_minutes
+[CELL]
+Thời lượng thực hiện
+[ROW]
+[CELL]
+preparation_note
+[CELL]
+Ghi chú chuẩn bị
+[ROW]
+[CELL]
+is_active
+[CELL]
+Trạng thái hoạt động
+[ROW]
+[CELL]
+sort_order
+[CELL]
+Thứ tự hiển thị
+Giao diện minh họa
+
+
+Hình 2-7: Giao diện danh sách dịch vụ
+
+
+Hình 2-8: Giao diện thêm dịch vụ
+
+Hình 2-9: Giao diện chỉnh sửa dịch vụ
+
+
+
+
+2.5. Đặc tả UC1.4 – Thiết lập giá dịch vụ
+Mô tả ý nghĩa
+Trong code, chức năng thiết lập giá dịch vụ không được tách thành một module riêng mà được thực hiện thông qua trường price của bảng services. Vì vậy, UC này được hiểu là thao tác cập nhật giá tiền cho từng dịch vụ nha khoa trong danh mục dịch vụ.
+Giá dịch vụ được sử dụng khi bác sĩ chỉ định dịch vụ điều trị trong hồ sơ bệnh án và khi lễ tân/thanh toán tính tổng chi phí khám bệnh.
+Tác nhân thực hiện
+Quản trị viên.
+Tiền điều kiện
+Quản trị viên đã đăng nhập hệ thống.
+Dịch vụ cần thiết lập giá đã tồn tại.
+Quản trị viên có quyền cập nhật dịch vụ.
+Hậu điều kiện
+Giá dịch vụ được cập nhật trong hệ thống.
+Giá mới được sử dụng cho các lần chỉ định dịch vụ và thanh toán phát sinh sau khi cập nhật.
+Các hóa đơn đã thanh toán trước đó không tự động thay đổi.
+Nếu giá không hợp lệ, hệ thống không lưu thay đổi.
+Luồng sự kiện
+Luồng chính
+Quản trị viên vào chức năng “Quản lý dịch vụ”.
+Hệ thống hiển thị danh sách dịch vụ kèm giá hiện tại.
+Quản trị viên chọn dịch vụ cần thiết lập giá.
+Hệ thống hiển thị biểu mẫu chỉnh sửa dịch vụ.
+Quản trị viên nhập giá mới vào trường “Giá dịch vụ”.
+Quản trị viên nhấn “Lưu”.
+Hệ thống kiểm tra dữ liệu.
+Nếu hợp lệ, hệ thống cập nhật trường price của dịch vụ.
+Hệ thống thông báo cập nhật thành công.
+Luồng phát sinh
+Nếu giá nhỏ hơn 0, hệ thống không chấp nhận.
+Nếu dịch vụ không tồn tại, hệ thống thông báo “Không tìm thấy dịch vụ”.
+Nếu người dùng không có quyền Admin, hệ thống từ chối thao tác.
+Nếu Quản trị viên hủy thao tác, giá dịch vụ giữ nguyên.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+price
+[CELL]
+Giá dịch vụ, kiểu số
+[ROW]
+[CELL]
+duration_minutes
+[CELL]
+Thời lượng thực hiện
+[ROW]
+[CELL]
+is_active
+[CELL]
+Dịch vụ có còn áp dụng hay không
+
+
+
+
+
+
+Giao diện minh họa
+
+
+Hình 2-10: Giao diện chỉnh sửa giá dịch vụ
+
+
+
+
+
+
+
+
+
+
+CHƯƠNG 3: ĐẶC TẢ UC2 – QUẢN LÝ LỊCH KHÁM
+3.1. Sơ đồ Use Case chi tiết
+
+
+
+Hình 3-1: Sơ đồ UC2 chi tiết – Quản lý lịch khám
+Nhóm chức năng Quản lý lịch khám bao gồm thiết lập ngày nghỉ, thiết lập ca làm việc, đăng ký lịch trực bác sĩ, đăng ký lịch khám của bệnh nhân và theo dõi lịch khám. Trong code, nhóm này chủ yếu liên quan đến các module holiday, shift, roster và appointment.
+3.2. Đặc tả UC2.1 – Thiết lập các ngày nghỉ
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên thiết lập các ngày nghỉ của phòng khám. Khi một ngày được cấu hình là ngày nghỉ đang hoạt động, hệ thống không cho phép bác sĩ đăng ký lịch trực và không cho phép bệnh nhân đặt lịch khám vào ngày đó.
+Trong code, chức năng này tương ứng với module holiday, route /api/v1/holidays.
+Tác nhân thực hiện
+Quản trị viên.
+Các người dùng đã đăng nhập có thể xem danh sách ngày nghỉ nếu được truy cập route GET.
+Tiền điều kiện
+Người dùng đã đăng nhập.
+Với thao tác thêm/sửa/xóa, người dùng phải có quyền Admin.
+Ngày nghỉ nhập vào phải đúng định dạng YYYY-MM-DD.
+Hậu điều kiện
+Ngày nghỉ được thêm, sửa hoặc xóa trong hệ thống.
+Ngày nghỉ được dùng để kiểm tra khi đăng ký lịch trực hoặc đặt lịch khám.
+Nếu ngày nghỉ đã tồn tại, hệ thống không tạo trùng.
+Luồng sự kiện
+Luồng chính
+Quản trị viên chọn chức năng “Ngày nghỉ”.
+Hệ thống hiển thị danh sách ngày nghỉ.
+Quản trị viên chọn “Thêm ngày nghỉ”.
+Hệ thống hiển thị biểu mẫu nhập ngày nghỉ.
+Quản trị viên nhập:
+Ngày nghỉ.
+Loại ngày nghỉ.
+Ghi chú.
+Quản trị viên nhấn “Lưu”.
+Hệ thống kiểm tra dữ liệu.
+Hệ thống kiểm tra ngày nghỉ đã tồn tại hay chưa.
+Nếu hợp lệ, hệ thống lưu ngày nghỉ.
+Hệ thống cập nhật danh sách ngày nghỉ.
+Luồng phát sinh
+Nếu ngày nghỉ bị bỏ trống, hệ thống thông báo “Ngày nghỉ không được để trống”.
+Nếu ngày nghỉ sai định dạng, hệ thống thông báo “Ngày nghỉ không hợp lệ”.
+Nếu loại nghỉ không thuộc national, clinic, emergency, hệ thống thông báo “Loại nghỉ không hợp lệ”.
+Nếu ngày nghỉ đã tồn tại, hệ thống thông báo “Ngày nghỉ này đã tồn tại”.
+Nếu không tìm thấy ngày nghỉ khi sửa/xóa, hệ thống thông báo “Không tìm thấy ngày nghỉ”.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+holiday_date
+[CELL]
+Ngày nghỉ
+[ROW]
+[CELL]
+holiday_type
+[CELL]
+Loại ngày nghỉ: national, clinic, emergency
+[ROW]
+[CELL]
+note
+[CELL]
+Ghi chú
+[ROW]
+[CELL]
+is_active
+[CELL]
+Trạng thái áp dụng
+
+Giao diện minh họa
+
+
+Hình 3-2: Giao diện danh sách ngày nghỉ
+
+
+Hình 3-3: Giao diện thêm ngày nghỉ
+
+
+
+3.3. Đặc tả UC2.2 – Thiết lập ca làm việc
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên thiết lập các ca làm việc trong phòng khám. Mỗi ca gồm tên ca, giờ bắt đầu, giờ kết thúc và trạng thái hoạt động. Ca làm việc được dùng khi bác sĩ đăng ký lịch trực và khi hệ thống xác định khung giờ đặt lịch khám.
+Trong code, chức năng này tương ứng với module shift, route /api/v1/shifts.
+Tác nhân thực hiện
+Quản trị viên.
+Tiền điều kiện
+Quản trị viên đã đăng nhập.
+Ca làm việc nhập vào phải có tên, giờ bắt đầu và giờ kết thúc.
+Giờ bắt đầu và giờ kết thúc phải đúng định dạng HH:mm.
+Hậu điều kiện
+Ca làm việc được thêm, sửa hoặc xóa.
+Ca làm việc đang hoạt động có thể được dùng trong đăng ký lịch trực.
+Nếu ca bị vô hiệu hóa, không nên dùng để tạo lịch trực mới.
+Luồng sự kiện
+Luồng chính
+Quản trị viên chọn chức năng “Ca làm việc”.
+Hệ thống hiển thị danh sách ca làm việc.
+Quản trị viên chọn “Thêm ca làm việc”.
+Hệ thống hiển thị biểu mẫu nhập thông tin ca.
+Quản trị viên nhập tên ca, giờ bắt đầu, giờ kết thúc.
+Quản trị viên nhấn “Lưu”.
+Hệ thống kiểm tra dữ liệu đầu vào.
+Nếu hợp lệ, hệ thống lưu ca làm việc.
+Hệ thống cập nhật danh sách ca làm việc.
+Luồng phát sinh
+Nếu tên ca bị bỏ trống, hệ thống thông báo “Tên ca không được để trống”.
+Nếu giờ bắt đầu sai định dạng, hệ thống thông báo “Giờ bắt đầu không hợp lệ”.
+Nếu giờ kết thúc sai định dạng, hệ thống thông báo “Giờ kết thúc không hợp lệ”.
+Nếu không tìm thấy ca làm việc khi sửa/xóa, hệ thống thông báo “Không tìm thấy ca làm việc”.
+Nếu ca làm việc bị vô hiệu hóa, hệ thống không cho dùng ca đó trong lịch trực.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+name
+[CELL]
+Tên ca làm việc
+[ROW]
+[CELL]
+start_time
+[CELL]
+Giờ bắt đầu
+[ROW]
+[CELL]
+end_time
+[CELL]
+Giờ kết thúc
+[ROW]
+[CELL]
+is_active
+[CELL]
+Trạng thái hoạt động
+
+
+
+
+
+Giao diện minh họa
+
+
+Hình 3-4: Giao diện danh sách ca làm việc
+
+
+Hình 3-5: Giao diện thêm ca làm việc
+
+
+3.4. Đặc tả UC2.3 – Đăng ký lịch trực của bác sĩ
+Mô tả ý nghĩa
+Chức năng này cho phép bác sĩ đăng ký lịch trực theo ngày và ca làm việc. Lịch trực do bác sĩ đăng ký được tạo ở trạng thái pending. Quản trị viên có quyền duyệt hoặc từ chối lịch trực. Nếu Admin tạo lịch trực, lịch được duyệt ngay ở trạng thái approved.
+Trong code, chức năng này tương ứng với module roster, route /api/v1/rosters.
+Tác nhân thực hiện
+Bác sĩ: đăng ký lịch trực.
+Quản trị viên: xem, duyệt, từ chối, xóa lịch trực.
+Lễ tân/Admin: xem bác sĩ khả dụng theo ngày và ca.
+Tiền điều kiện
+Người dùng đã đăng nhập.
+Bác sĩ có hồ sơ bác sĩ hợp lệ.
+Ca làm việc tồn tại và đang hoạt động.
+Ngày trực không phải ngày nghỉ.
+Bác sĩ không có đơn xin nghỉ vào ngày đó.
+Lịch trực không bị trùng với lịch đã đăng ký.
+Hậu điều kiện
+Lịch trực được lưu với trạng thái pending, approved hoặc rejected.
+Lịch trực được duyệt sẽ được dùng để hiển thị khung giờ đặt lịch khám.
+Nếu lịch trực bị từ chối, bác sĩ cần đăng ký lại nếu muốn trực ngày khác.
+
+Luồng sự kiện
+Luồng chính
+Bác sĩ chọn chức năng “Lịch trực”.
+Hệ thống hiển thị giao diện đăng ký lịch trực.
+Bác sĩ chọn ngày trực và ca làm việc.
+Bác sĩ nhập ghi chú nếu cần.
+Bác sĩ nhấn “Đăng ký”.
+Hệ thống kiểm tra ngày nghỉ.
+Hệ thống kiểm tra đơn xin nghỉ của bác sĩ trong ngày đó.
+Hệ thống kiểm tra ca làm việc có tồn tại và đang hoạt động không.
+Hệ thống kiểm tra lịch trực bị trùng.
+Nếu hợp lệ, hệ thống lưu lịch trực ở trạng thái pending.
+Quản trị viên vào chức năng “Lịch trực BS”.
+Quản trị viên chọn “Duyệt” hoặc “Từ chối”.
+Hệ thống cập nhật trạng thái lịch trực.
+Luồng phát sinh
+Nếu ngày là ngày nghỉ, hệ thống thông báo “Ngày này là ngày nghỉ của phòng khám”.
+Nếu bác sĩ đã xin nghỉ vào ngày đó, hệ thống thông báo “Bạn đã xin nghỉ vào ngày này nên không thể đăng ký ca làm việc”.
+Nếu ca làm việc không hợp lệ hoặc bị vô hiệu hóa, hệ thống thông báo “Ca làm việc không hợp lệ hoặc đã bị vô hiệu hóa”.
+Nếu lịch trực đã được đăng ký, hệ thống thông báo “Lịch trực này đã được đăng ký”.
+Nếu lịch không ở trạng thái pending, Admin không thể duyệt hoặc từ chối lại.
+Nếu bác sĩ xem lịch trực không thuộc quyền, hệ thống từ chối truy cập.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+doctor_profile_id
+[CELL]
+Bác sĩ đăng ký lịch trực
+[ROW]
+[CELL]
+shift_id
+[CELL]
+Ca làm việc
+[ROW]
+[CELL]
+roster_date
+[CELL]
+Ngày trực
+[ROW]
+[CELL]
+status
+[CELL]
+Trạng thái: pending, approved, rejected
+[ROW]
+[CELL]
+note
+[CELL]
+Ghi chú
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Giao diện minh họa
+
+
+Hình 3-6: Giao diện đăng ký lịch trực
+
+
+Hình 3-7: Giao diện duyệt lịch trực bác sĩ
+
+3.5. Đặc tả UC2.4 – Đăng ký lịch khám của bệnh nhân
+Mô tả ý nghĩa
+Chức năng này cho phép bệnh nhân, lễ tân hoặc Admin đặt lịch khám với bác sĩ. Khi đặt lịch, hệ thống kiểm tra bác sĩ có tồn tại, đang nhận lịch, ngày khám không ở quá khứ, không phải ngày nghỉ, bác sĩ có lịch trực đã duyệt, không phải Chủ Nhật, khung giờ chưa bị đặt và bác sĩ chưa vượt quá số bệnh nhân tối đa trong ngày.
+Trong code, chức năng này tương ứng với module appointment, route /api/v1/appointments.
+Tác nhân thực hiện
+Bệnh nhân.
+Lễ tân.
+Quản trị viên.
+Tiền điều kiện
+Người dùng đã đăng nhập.
+Bác sĩ được chọn tồn tại và đang nhận lịch.
+Ngày khám không phải ngày trong quá khứ.
+Ngày khám không phải ngày nghỉ của phòng khám.
+Bác sĩ có lịch trực đã duyệt trong ngày khám.
+Khung giờ khám chưa có người đặt.
+Hậu điều kiện
+Lịch khám được tạo với trạng thái pending.
+Hệ thống sinh mã đặt lịch booking_code.
+Hệ thống sinh số thứ tự queue_number theo bác sĩ và ngày khám.
+Trạng thái thanh toán ban đầu là pending.
+Luồng sự kiện
+Luồng chính
+Người dùng chọn chức năng “Đăng ký lịch khám”.
+Hệ thống hiển thị danh sách bác sĩ, dịch vụ và khung giờ trống.
+Người dùng chọn bác sĩ, dịch vụ, ngày khám và giờ khám.
+Người dùng nhập lý do khám.
+Nếu là lễ tân/Admin, người dùng có thể chọn bệnh nhân cần đặt lịch.
+Người dùng nhấn “Đặt lịch”.
+Hệ thống kiểm tra bác sĩ tồn tại và đang nhận lịch.
+Hệ thống kiểm tra ngày khám không ở quá khứ.
+Hệ thống kiểm tra ngày khám không phải ngày nghỉ.
+Hệ thống kiểm tra bác sĩ có lịch trực đã duyệt.
+Hệ thống kiểm tra không đặt vào Chủ Nhật.
+Hệ thống kiểm tra trùng khung giờ.
+Hệ thống kiểm tra số bệnh nhân tối đa trong ngày.
+Nếu hợp lệ, hệ thống tạo lịch khám ở trạng thái pending.
+Hệ thống hiển thị thông báo đặt lịch thành công.
+Luồng phát sinh
+Nếu không tìm thấy bác sĩ, hệ thống thông báo “Không tìm thấy bác sĩ”.
+Nếu bác sĩ không nhận lịch, hệ thống thông báo “Bác sĩ hiện không nhận lịch hẹn”.
+Nếu đặt lịch trong quá khứ, hệ thống thông báo “Không thể đặt lịch trong quá khứ”.
+Nếu ngày khám là ngày nghỉ, hệ thống thông báo “Phòng khám nghỉ ngày này. Vui lòng chọn ngày khác.”
+Nếu bác sĩ không có lịch trực, hệ thống thông báo “Bác sĩ không có lịch trực ngày này. Vui lòng chọn ngày khác hoặc bác sĩ khác.”
+Nếu đặt lịch Chủ Nhật, hệ thống thông báo “Phòng khám không làm việc vào Chủ Nhật”.
+Nếu khung giờ đã có người đặt, hệ thống thông báo “Khung giờ này đã có người đặt, vui lòng chọn giờ khác”.
+Nếu bác sĩ đã đủ lịch trong ngày, hệ thống thông báo “Bác sĩ đã đủ lịch trong ngày này”.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+booking_code
+[CELL]
+Mã đặt lịch
+[ROW]
+[CELL]
+patient_id
+[CELL]
+Bệnh nhân
+[ROW]
+[CELL]
+doctor_profile_id
+[CELL]
+Bác sĩ
+[ROW]
+[CELL]
+service_id
+[CELL]
+Dịch vụ khám
+[ROW]
+[CELL]
+appointment_date
+[CELL]
+Ngày khám
+[ROW]
+[CELL]
+appointment_time
+[CELL]
+Giờ khám
+[ROW]
+[CELL]
+reason
+[CELL]
+Lý do khám
+[ROW]
+[CELL]
+queue_number
+[CELL]
+Số thứ tự
+[ROW]
+[CELL]
+status
+[CELL]
+Trạng thái lịch hẹn
+[ROW]
+[CELL]
+payment_status
+[CELL]
+Trạng thái thanh toán
+
+
+
+
+Giao diện minh họa
+
+
+Hình 3-8: Giao diện đăng ký lịch khám
+
+
+Hình 3-9: Giao diện chọn bác sĩ, dịch vụ và giờ khám
+
+
+3.6. Đặc tả UC2.5 – Theo dõi lịch khám
+Mô tả ý nghĩa
+Chức năng này cho phép người dùng theo dõi danh sách lịch khám theo quyền của từng vai trò. Bệnh nhân chỉ xem được lịch của mình. Bác sĩ chỉ xem các lịch thuộc hồ sơ bác sĩ của mình. Admin và lễ tân có thể xem, xác nhận, check-in, đánh dấu không đến hoặc theo dõi trạng thái lịch khám trong ngày.
+Trong code, lịch hẹn có các trạng thái: pending, confirmed, checked_in, in_progress, completed, cancelled, no_show.
+Tác nhân thực hiện
+Quản trị viên.
+Lễ tân.
+Bác sĩ.
+Bệnh nhân.
+Tiền điều kiện
+Người dùng đã đăng nhập.
+Người dùng có quyền xem danh sách lịch khám.
+Hệ thống có dữ liệu lịch khám.
+Hậu điều kiện
+Danh sách lịch khám được hiển thị theo quyền của từng vai trò.
+Trạng thái lịch khám được cập nhật đúng quy trình.
+Màn hình monitor nhận cập nhật trạng thái qua socket khi có thay đổi.
+Luồng sự kiện
+Luồng chính
+Người dùng chọn chức năng “Lịch hẹn” hoặc “Monitor”.
+Hệ thống xác định vai trò người dùng.
+Nếu là bệnh nhân, hệ thống lọc lịch theo patient_id.
+Nếu là bác sĩ, hệ thống lọc lịch theo doctor_profile_id.
+Nếu là Admin/Lễ tân, hệ thống hiển thị danh sách lịch theo bộ lọc.
+Người dùng có thể lọc theo trạng thái, ngày, khoảng thời gian hoặc trạng thái thanh toán.
+Lễ tân/Admin có thể xác nhận lịch từ pending sang confirmed.
+Lễ tân/Admin có thể check-in lịch từ confirmed sang checked_in.
+Bác sĩ/Admin có thể hoàn thành lịch từ checked_in hoặc in_progress sang completed.
+Người dùng có quyền có thể hủy lịch nếu lịch còn ở trạng thái cho phép.
+Lễ tân/Admin có thể đánh dấu no-show cho lịch đã xác nhận.
+Luồng phát sinh
+Nếu không tìm thấy lịch hẹn, hệ thống thông báo “Không tìm thấy lịch hẹn”.
+Nếu xác nhận lịch không ở trạng thái pending, hệ thống không cho xác nhận.
+Nếu check-in lịch chưa được xác nhận, hệ thống thông báo “Chỉ xác nhận check-in cho lịch đã được duyệt”.
+Nếu hoàn thành lịch không ở trạng thái checked_in hoặc in_progress, hệ thống báo trạng thái không hợp lệ.
+Nếu bệnh nhân hủy lịch trước giờ hẹn dưới 2 giờ, hệ thống thông báo “Chỉ được hủy lịch trước ít nhất 2 giờ so với giờ hẹn”.
+Nếu bệnh nhân xem lịch của người khác, hệ thống từ chối quyền.
+Bảng trạng thái lịch hẹn
+
+[ROW]
+[CELL]
+Trạng thái
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+pending
+[CELL]
+Chờ xác nhận
+[ROW]
+[CELL]
+confirmed
+[CELL]
+Đã xác nhận
+[ROW]
+[CELL]
+checked_in
+[CELL]
+Đã check-in
+[ROW]
+[CELL]
+in_progress
+[CELL]
+Đang khám
+[ROW]
+[CELL]
+completed
+[CELL]
+Hoàn thành
+[ROW]
+[CELL]
+cancelled
+[CELL]
+Đã hủy
+[ROW]
+[CELL]
+no_show
+[CELL]
+Bệnh nhân không đến
+Giao diện minh họa
+
+
+
+Hình 3-10: Giao diện danh sách lịch khám
+
+
+Hình 3-11: Giao diện chi tiết lịch khám
+
+
+Hình 3-12: Giao diện monitor theo dõi lịch khám
+
+CHƯƠNG 4: ĐẶC TẢ UC3 – TIẾP ĐÓN VÀ KHÁM BỆNH
+4.1. Sơ đồ Use Case chi tiết
+
+
+
+Hình 4-1: Sơ đồ UC3 chi tiết – Tiếp đón và khám bệnh
+Nhóm chức năng Tiếp đón và khám bệnh mô tả quy trình từ khi bệnh nhân đến phòng khám, được lễ tân check-in, bác sĩ khám bệnh và cập nhật hồ sơ, sau đó bệnh nhân thanh toán chi phí. Nhóm chức năng này tương ứng với các module appointment, medical, payment và dashboard.
+4.2. Đặc tả UC3.1 – Tiếp đón người đến khám
+Mô tả ý nghĩa
+Chức năng này cho phép lễ tân hoặc Admin xác nhận bệnh nhân đã đến phòng khám. Khi check-in thành công, lịch hẹn chuyển sang trạng thái checked_in, thời gian check-in được ghi nhận và hệ thống tự động tạo hồ sơ bệnh án nháp nếu lịch hẹn chưa có hồ sơ bệnh án.
+Trong code, chức năng này nằm trong module appointment, route /api/v1/appointments/:id/check-in.
+Tác nhân thực hiện
+Lễ tân.
+Quản trị viên.
+Tiền điều kiện
+Người dùng đã đăng nhập với role admin hoặc receptionist.
+Lịch hẹn tồn tại.
+Lịch hẹn đang ở trạng thái confirmed.
+Hậu điều kiện
+Trạng thái lịch hẹn chuyển sang checked_in.
+Trường checked_in_at được cập nhật.
+Hồ sơ bệnh án nháp được tạo tự động nếu chưa có.
+Màn hình monitor được cập nhật trạng thái.
+Luồng sự kiện
+Luồng chính
+Lễ tân chọn chức năng “Check-in”.
+Hệ thống hiển thị danh sách lịch hẹn trong ngày.
+Lễ tân tìm kiếm bệnh nhân theo tên, số điện thoại hoặc mã lịch hẹn.
+Lễ tân chọn lịch hẹn cần check-in.
+Hệ thống hiển thị thông tin lịch hẹn.
+Lễ tân nhấn “Check-in”.
+Hệ thống kiểm tra lịch hẹn có tồn tại không.
+Hệ thống kiểm tra trạng thái lịch hẹn có phải confirmed không.
+Nếu hợp lệ, hệ thống cập nhật trạng thái sang checked_in.
+Hệ thống ghi nhận thời gian check-in.
+Hệ thống tự động tạo hồ sơ bệnh án nháp nếu chưa có.
+Hệ thống phát sự kiện cập nhật monitor.
+Luồng phát sinh
+Nếu không tìm thấy lịch hẹn, hệ thống thông báo “Không tìm thấy lịch hẹn”.
+Nếu lịch hẹn chưa được xác nhận, hệ thống thông báo “Chỉ xác nhận check-in cho lịch đã được duyệt”.
+Nếu hồ sơ bệnh án đã tồn tại, hệ thống không tạo thêm hồ sơ mới.
+Nếu tạo hồ sơ bệnh án tự động thất bại, lịch vẫn được check-in nhưng hệ thống ghi log lỗi.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+status
+[CELL]
+Trạng thái lịch hẹn
+[ROW]
+[CELL]
+checked_in_at
+[CELL]
+Thời gian check-in
+[ROW]
+[CELL]
+appointment_id
+[CELL]
+Lịch hẹn liên kết hồ sơ bệnh án
+[ROW]
+[CELL]
+chief_complaint
+[CELL]
+Lý do khám ban đầu, lấy từ reason của lịch hẹn
+
+
+
+
+
+Giao diện minh họa
+
+
+Hình 4-2: Giao diện danh sách check-in
+
+
+Hình 4-3: Giao diện xác nhận check-in
+4.3. Đặc tả UC3.2 – Khám bệnh và cập nhật hồ sơ
+Mô tả ý nghĩa
+Chức năng này cho phép bác sĩ hoặc Admin tạo và cập nhật hồ sơ bệnh án cho bệnh nhân. Hồ sơ bệnh án được liên kết với một lịch hẹn và chỉ có một hồ sơ cho mỗi lịch hẹn. Bác sĩ chỉ được tạo hoặc cập nhật hồ sơ của lịch hẹn mà mình phụ trách.
+Tác nhân thực hiện
+Bác sĩ.
+Quản trị viên.
+Bệnh nhân chỉ được xem hồ sơ của mình.
+Tiền điều kiện
+Người dùng đã đăng nhập.
+Lịch hẹn tồn tại.
+Bệnh nhân đã được check-in hoặc đã có lịch hẹn hợp lệ.
+Với bác sĩ, lịch hẹn phải thuộc bác sĩ đang đăng nhập.
+Mỗi lịch hẹn chỉ có một hồ sơ bệnh án.
+Hậu điều kiện
+Hồ sơ bệnh án được tạo hoặc cập nhật.
+Đơn thuốc và dịch vụ điều trị có thể được lưu kèm hồ sơ.
+Bệnh nhân có thể xem hồ sơ bệnh án của mình.
+Nếu hồ sơ đã hoàn thành, bác sĩ không được sửa trừ khi là Admin.
+Luồng sự kiện
+Luồng chính
+Bác sĩ chọn chức năng “Hồ sơ bệnh án”.
+Hệ thống hiển thị danh sách hồ sơ hoặc bệnh nhân cần khám.
+Bác sĩ chọn lịch hẹn/bệnh nhân cần cập nhật hồ sơ.
+Hệ thống hiển thị thông tin bệnh nhân và lịch hẹn.
+Bác sĩ nhập:
+Triệu chứng chính.
+Khám lâm sàng.
+Chẩn đoán.
+Mã ICD nếu có.
+Chỉ số sinh hiệu nếu có.
+Chỉ định xét nghiệm/cận lâm sàng.
+Kế hoạch điều trị.
+Ghi chú.
+Ngày tái khám.
+Trạng thái hồ sơ.
+Bác sĩ nhập đơn thuốc nếu có.
+Bác sĩ nhấn “Lưu”.
+Hệ thống kiểm tra quyền thao tác.
+Hệ thống kiểm tra lịch hẹn đã có hồ sơ chưa nếu tạo mới.
+Nếu hợp lệ, hệ thống lưu hồ sơ bệnh án.
+Hệ thống hiển thị thông báo thành công.
+Luồng phát sinh
+Nếu không tìm thấy lịch hẹn, hệ thống thông báo “Không tìm thấy lịch hẹn”.
+Nếu lịch hẹn đã có hồ sơ bệnh án, hệ thống thông báo “Lịch hẹn này đã có hồ sơ bệnh án”.
+Nếu bác sĩ không phụ trách lịch hẹn, hệ thống thông báo “Bạn không phụ trách lịch hẹn này”.
+Nếu hồ sơ đã hoàn chỉnh và người sửa không phải Admin, hệ thống thông báo “Hồ sơ đã hoàn chỉnh, không thể chỉnh sửa”.
+Nếu bệnh nhân xem hồ sơ của người khác, hệ thống thông báo không có quyền.
+Nếu bác sĩ kê đơn cho hồ sơ không thuộc mình, hệ thống từ chối quyền.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+appointment_id
+[CELL]
+Lịch hẹn liên kết
+[ROW]
+[CELL]
+patient_id
+[CELL]
+Bệnh nhân
+[ROW]
+[CELL]
+doctor_profile_id
+[CELL]
+Bác sĩ phụ trách
+[ROW]
+[CELL]
+chief_complaint
+[CELL]
+Triệu chứng chính
+[ROW]
+[CELL]
+clinical_findings
+[CELL]
+Khám lâm sàng
+[ROW]
+[CELL]
+diagnosis
+[CELL]
+Chẩn đoán
+[ROW]
+[CELL]
+icd_code
+[CELL]
+Mã ICD
+[ROW]
+[CELL]
+vitals
+[CELL]
+Chỉ số sinh hiệu dạng JSON
+[ROW]
+[CELL]
+lab_orders
+[CELL]
+Chỉ định xét nghiệm/cận lâm sàng
+[ROW]
+[CELL]
+treatment_plan
+[CELL]
+Kế hoạch điều trị
+[ROW]
+[CELL]
+notes
+[CELL]
+Ghi chú
+[ROW]
+[CELL]
+follow_up_date
+[CELL]
+Ngày tái khám
+
+
+Giao diện minh họa
+
+
+Hình 4-4: Giao diện danh sách hồ sơ bệnh án
+
+
+Hình 4-5: Giao diện cập nhật hồ sơ bệnh án
+
+
+
+Hình 4-6: Giao diện kê đơn thuốc
+
+
+Hình 4-7: Giao diện chỉ định dịch vụ điều trị
+
+
+
+4.4. Đặc tả UC3.3 – Thanh toán chi phí khám bệnh
+Mô tả ý nghĩa
+Chức năng này cho phép lễ tân hoặc Admin tạo thanh toán tiền mặt, xác nhận thanh toán online, tạo thanh toán VNPay hoặc hoàn tiền. Hệ thống tính số tiền dựa trên dịch vụ điều trị trong hồ sơ bệnh án; nếu hồ sơ chưa có dịch vụ hoặc tổng dịch vụ bằng 0, hệ thống dùng phí khám của bác sĩ.
+Trong code, chức năng này tương ứng với module payment, route /api/v1/payments.
+Tác nhân thực hiện
+Lễ tân.
+Quản trị viên.
+Bệnh nhân, đối với thanh toán online/VNPay cho lịch hẹn của chính mình.
+Tiền điều kiện
+Lịch hẹn tồn tại.
+Bệnh nhân đã phát sinh chi phí khám hoặc dịch vụ.
+Giao dịch chưa ở trạng thái paid.
+Với thanh toán tiền mặt, người dùng phải là Admin hoặc Lễ tân.
+Với VNPay/online, bệnh nhân chỉ được thanh toán lịch hẹn của chính mình.
+Hậu điều kiện
+Giao dịch thanh toán được tạo.
+Nếu thanh toán tiền mặt thành công, trạng thái thanh toán là paid.
+Nếu thanh toán online cần xác nhận, trạng thái là pending_confirmation.
+Nếu thanh toán VNPay đang chờ, trạng thái là pending.
+Khi thanh toán thành công, lịch hẹn được cập nhật payment_status = paid.
+Nếu hoàn tiền, trạng thái thanh toán chuyển sang refunded.
+Luồng sự kiện
+Luồng chính: Thanh toán tiền mặt
+Lễ tân chọn chức năng “Thanh toán”.
+Hệ thống hiển thị danh sách lịch hẹn/hồ sơ cần thanh toán.
+Lễ tân chọn bệnh nhân hoặc lịch hẹn.
+Hệ thống tính số tiền:
+Nếu có hồ sơ bệnh án và dịch vụ điều trị: tổng tiền = giá dịch vụ × số lượng.
+Nếu không có dịch vụ: dùng phí khám của bác sĩ.
+Lễ tân nhập ghi chú nếu có.
+Lễ tân chọn phương thức thanh toán tiền mặt.
+Lễ tân nhấn “Xác nhận thanh toán”.
+Hệ thống kiểm tra giao dịch đã thanh toán chưa.
+Hệ thống tạo hoặc cập nhật giao dịch.
+Hệ thống cập nhật trạng thái thanh toán của lịch hẹn sang paid.
+Hệ thống gửi thông báo thanh toán thành công cho bệnh nhân nếu có cấu hình.
+Luồng chính: Thanh toán online/VNPay
+Bệnh nhân mở hóa đơn hoặc lịch hẹn cần thanh toán.
+Bệnh nhân chọn thanh toán online/VNPay.
+Hệ thống kiểm tra bệnh nhân có đúng là chủ lịch hẹn không.
+Hệ thống tính số tiền cần thanh toán.
+Hệ thống tạo mã giao dịch.
+Hệ thống tạo URL thanh toán.
+Bệnh nhân được chuyển đến trang thanh toán.
+Sau khi thanh toán, hệ thống xử lý kết quả trả về.
+Nếu thanh toán thành công, giao dịch chuyển sang paid.
+Nếu thất bại, giao dịch chuyển sang failed.
+Luồng phát sinh
+Nếu không tìm thấy lịch hẹn, hệ thống thông báo “Không tìm thấy lịch hẹn”.
+Nếu không tìm thấy hồ sơ bệnh án, hệ thống thông báo “Không tìm thấy hồ sơ bệnh án”.
+Nếu giao dịch đã thanh toán, hệ thống thông báo “Giao dịch này đã được thanh toán”.
+Nếu bệnh nhân thanh toán lịch hẹn của người khác, hệ thống thông báo không có quyền.
+Nếu số tiền thanh toán nhỏ hơn hoặc bằng 0, hệ thống thông báo “Số tiền thanh toán phải lớn hơn 0”.
+Nếu VNPay trả về chữ ký không hợp lệ, hệ thống đánh dấu giao dịch thất bại.
+Nếu hoàn tiền giao dịch chưa thanh toán, hệ thống thông báo “Chỉ hoàn tiền cho giao dịch đã thanh toán”.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+appointment_id
+[CELL]
+Lịch hẹn
+[ROW]
+[CELL]
+medical_record_id
+[CELL]
+Hồ sơ bệnh án
+[ROW]
+[CELL]
+user_id
+[CELL]
+Người thanh toán
+[ROW]
+[CELL]
+transaction_code
+[CELL]
+Mã giao dịch
+[ROW]
+[CELL]
+amount
+[CELL]
+Số tiền
+[ROW]
+[CELL]
+method
+[CELL]
+Phương thức: cash, bank_transfer, vnpay, momo
+[ROW]
+[CELL]
+status
+[CELL]
+pending, pending_confirmation, paid, failed, refunded
+[ROW]
+[CELL]
+paid_at
+[CELL]
+Thời gian thanh toán
+[ROW]
+[CELL]
+refunded_at
+[CELL]
+Thời gian hoàn tiền
+[ROW]
+[CELL]
+refund_reason
+[CELL]
+Lý do hoàn tiền
+[ROW]
+[CELL]
+payment_url
+[CELL]
+URL thanh toán online
+Giao diện minh họa
+
+
+Hình 4-8: Giao diện danh sách thanh toán
+
+
+
+
+
+Hình 4-9: Giao diện chi tiết thanh toán
+
+Hình 4-10: Giao diện kết quả thanh toán
+
+
+
+
+
+4.5. Đặc tả UC3.4 – Thống kê doanh thu
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên xem thống kê tổng quan và doanh thu của phòng khám. Doanh thu được tính từ các giao dịch có trạng thái paid. Hệ thống hỗ trợ thống kê theo khoảng ngày, theo ngày hoặc theo tháng, hiển thị số người dùng, số bệnh nhân mới, số bác sĩ, số lịch khám, tỷ lệ hoàn thành, doanh thu, lịch đang chờ và điểm đánh giá trung bình.
+Trong code, chức năng này nằm trong module dashboard, route /api/v1/dashboard/admin và các hàm thống kê doanh thu trong dashboard.repository.
+Tác nhân thực hiện
+Quản trị viên.
+Tiền điều kiện
+Quản trị viên đã đăng nhập.
+Hệ thống có dữ liệu lịch hẹn hoặc thanh toán.
+Người dùng có quyền xem dashboard/báo cáo.
+Hậu điều kiện
+Báo cáo doanh thu được hiển thị.
+Doanh thu theo ngày/tháng được tính từ các thanh toán đã trả.
+Hệ thống hiển thị các chỉ số tổng quan của phòng khám.
+Nếu không có dữ liệu, báo cáo hiển thị giá trị 0 hoặc danh sách rỗng.
+Luồng sự kiện
+Luồng chính
+Quản trị viên chọn chức năng “Báo cáo & Thống kê”.
+Hệ thống hiển thị bộ lọc thời gian.
+Quản trị viên chọn khoảng thời gian hoặc kỳ thống kê.
+Hệ thống truy vấn dữ liệu người dùng, bác sĩ, lịch hẹn, thanh toán và đánh giá.
+Hệ thống tính:
+Tổng người dùng đang hoạt động.
+Số bệnh nhân mới.
+Tổng bác sĩ đang nhận lịch.
+Tổng lịch hẹn.
+Số lịch hoàn thành.
+Số lịch bị hủy.
+Số lịch chờ xác nhận.
+Tổng doanh thu.
+Tỷ lệ hoàn thành.
+Điểm đánh giá trung bình.
+Hệ thống hiển thị biểu đồ doanh thu.
+Hệ thống hiển thị biểu đồ lịch hẹn.
+Hệ thống hiển thị top bác sĩ và lịch hẹn gần đây.
+Luồng phát sinh
+Nếu không có dữ liệu thanh toán, doanh thu hiển thị là 0.
+Nếu không có lịch hẹn, tỷ lệ hoàn thành hiển thị là 0.
+Nếu người dùng không phải Admin truy cập báo cáo Admin, hệ thống từ chối quyền.
+Nếu truy vấn dữ liệu thất bại, hệ thống hiển thị thông báo lỗi.
+Dữ liệu thống kê chính trong code
+
+[ROW]
+[CELL]
+Chỉ số
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+totalUsers
+[CELL]
+Tổng người dùng đang hoạt động
+[ROW]
+[CELL]
+newPatients
+[CELL]
+Bệnh nhân mới trong kỳ
+[ROW]
+[CELL]
+totalDoctors
+[CELL]
+Bác sĩ đang nhận lịch
+[ROW]
+[CELL]
+totalAppointments
+[CELL]
+Tổng lịch hẹn
+[ROW]
+[CELL]
+completedAppointments
+[CELL]
+Lịch hẹn đã hoàn thành
+[ROW]
+[CELL]
+cancelledAppointments
+[CELL]
+Lịch hẹn đã hủy
+[ROW]
+[CELL]
+pendingAppointments
+[CELL]
+Lịch chờ xác nhận
+[ROW]
+[CELL]
+totalRevenue
+[CELL]
+Doanh thu từ payment có trạng thái paid
+[ROW]
+[CELL]
+completionRate
+[CELL]
+Tỷ lệ hoàn thành lịch khám
+[ROW]
+[CELL]
+avgRating
+[CELL]
+Điểm đánh giá trung bình
+Giao diện minh họa
+Hình 4-11: Giao diện Dashboard AdminHình 4-12: Biểu đồ doanh thu
+
+
+Hình 4-13: Báo cáo lịch hẹn và top bác sĩ
+
+
+
+
+
+CHƯƠNG 5: ĐẶC TẢ UC4 – TÍNH LƯƠNG BÁC SĨ
+5.1. Sơ đồ Use Case chi tiết 
+
+
+Hình 5-1: Sơ đồ UC4 chi tiết – Tính lương bác sĩ
+Nhóm chức năng Tính lương bác sĩ được triển khai trong module salary, route /api/v1/salaries. Giao diện tương ứng nằm trong Frontend/src/features/salary/SalaryPage.jsx, gồm các màn hình: Cấu hình lương, Cập nhật độ khó ca bệnh, Tính lương ca làm việc demo, Lập phiếu lương tháng, Báo cáo tháng tất cả bác sĩ, Báo cáo năm một bác sĩ và Báo cáo năm tất cả bác sĩ.
+5.2. Đặc tả UC4.1 – Thiết lập mức tiền cơ bản cho một giờ
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên thiết lập mức tiền cơ bản cho một giờ làm việc của bác sĩ. Đây là tham số chính dùng trong công thức tính lương. Trong code, giá trị mặc định là 210000 đồng/giờ, lưu ở trường base_hourly_rate của bảng salary_configs.
+Tác nhân thực hiện
+Quản trị viên.
+Tiền điều kiện
+Quản trị viên đã đăng nhập.
+Người dùng có quyền Admin.
+Module lương đã được khởi tạo.
+Hậu điều kiện
+Mức tiền cơ bản được lưu vào cấu hình lương.
+Mức tiền này được dùng khi tính lương ca làm việc và lập phiếu lương tháng.
+Nếu chưa có cấu hình, hệ thống tự tạo cấu hình mặc định.
+Luồng sự kiện
+Luồng chính
+Quản trị viên chọn “Tính lương BS”.
+Hệ thống mở màn hình “Cấu hình lương”.
+Hệ thống hiển thị mức tiền cơ bản hiện tại.
+Quản trị viên nhập mức tiền mới.
+Quản trị viên nhấn “Lưu cấu hình”.
+Hệ thống kiểm tra dữ liệu.
+Nếu hợp lệ, hệ thống cập nhật base_hourly_rate.
+Hệ thống hiển thị thông báo thành công.
+Luồng phát sinh
+Nếu mức tiền không phải số, hệ thống yêu cầu nhập lại.
+Nếu mức tiền nhỏ hơn hoặc bằng 0, hệ thống không nên lưu.
+Nếu người dùng không phải Admin, hệ thống từ chối quyền.
+Nếu chưa có bản ghi cấu hình, hệ thống tự tạo cấu hình lương.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+base_hourly_rate
+[CELL]
+Mức tiền cơ bản cho một giờ
+Giao diện minh họa
+
+
+Hình 5-2: Giao diện cấu hình mức tiền cơ bản
+5.3. Đặc tả UC4.2 – Thiết lập hệ số ca làm việc các ngày trong tuần
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên thiết lập hệ số ca làm việc theo từng ngày trong tuần. Hệ số này được lưu trong trường shift_coefficients của bảng salary_configs. Mặc định trong code: thứ Hai đến thứ Sáu là 1.0, thứ Bảy là 1.3, Chủ Nhật là 1.5.
+Tác nhân thực hiện
+Quản trị viên.
+Tiền điều kiện
+Quản trị viên đã đăng nhập.
+Cấu hình lương tồn tại hoặc hệ thống có thể tự tạo cấu hình.
+Người dùng có quyền Admin.
+Hậu điều kiện
+Hệ số ca làm việc được cập nhật.
+Hệ số này được dùng khi lập phiếu lương tháng.
+Phiếu lương tính lại sẽ áp dụng hệ số mới.
+Luồng sự kiện
+Luồng chính
+Quản trị viên mở màn hình “Cấu hình lương”.
+Hệ thống hiển thị danh sách hệ số theo ngày trong tuần.
+Quản trị viên nhập hệ số cho từng ngày.
+Quản trị viên nhấn “Lưu cấu hình”.
+Hệ thống cập nhật trường shift_coefficients.
+Hệ thống hiển thị thông báo thành công.
+Luồng phát sinh
+Nếu hệ số không phải số, hệ thống yêu cầu nhập lại.
+Nếu hệ số nhỏ hơn hoặc bằng 0, hệ thống không nên lưu.
+Nếu người dùng không phải Admin, hệ thống từ chối quyền.
+Nếu phiếu lương đã lập trước đó, hệ số mới chỉ ảnh hưởng khi tạo lại hoặc tính lại phiếu lương.
+Dữ liệu mặc định trong code
+
+[ROW]
+[CELL]
+Ngày
+[CELL]
+Hệ số mặc định
+[ROW]
+[CELL]
+monday
+[CELL]
+1.0
+[ROW]
+[CELL]
+tuesday
+[CELL]
+1.0
+[ROW]
+[CELL]
+wednesday
+[CELL]
+1.0
+[ROW]
+[CELL]
+thursday
+[CELL]
+1.0
+[ROW]
+[CELL]
+friday
+[CELL]
+1.0
+[ROW]
+[CELL]
+saturday
+[CELL]
+1.3
+[ROW]
+[CELL]
+sunday
+[CELL]
+1.5
+Giao diện minh họa 
+
+Hình 5-3: Giao diện thiết lập hệ số ca làm việc
+5.4. Đặc tả UC4.3 – Nhập hệ số các ca cần xử lý phức tạp trong tháng
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên cập nhật mức độ phức tạp của từng ca khám trong tháng. Hệ số này được lưu trong trường complexity_level của lịch hẹn. Trong code, hệ số phức tạp hợp lệ nằm trong khoảng từ 0 đến 0.5.
+Tác nhân thực hiện
+Quản trị viên.
+Tiền điều kiện
+Quản trị viên đã đăng nhập.
+Hệ thống có lịch hẹn của bác sĩ trong tháng.
+Lịch hẹn tồn tại trong bảng appointments.
+Hậu điều kiện
+Hệ số phức tạp của lịch hẹn được cập nhật.
+Hệ số này được cộng vào công thức tính lương khi lập phiếu lương.
+Nếu hệ số không hợp lệ, hệ thống không lưu thay đổi.
+Luồng sự kiện
+Luồng chính
+Quản trị viên chọn màn hình “Cập nhật độ khó ca bệnh”.
+Hệ thống yêu cầu chọn bác sĩ, tháng và năm.
+Quản trị viên chọn bác sĩ và thời gian cần xem.
+Hệ thống hiển thị danh sách lịch hẹn trong tháng.
+Quản trị viên nhập hệ số phức tạp cho từng lịch hẹn.
+Quản trị viên nhấn “Lưu”.
+Hệ thống kiểm tra hệ số.
+Nếu hệ số từ 0 đến 0.5, hệ thống cập nhật complexity_level.
+Hệ thống hiển thị thông báo thành công.
+Luồng phát sinh
+Nếu thiếu doctorProfileId, tháng hoặc năm, hệ thống thông báo “Vui lòng cung cấp doctorProfileId, month và year”.
+Nếu không tìm thấy lịch hẹn, hệ thống thông báo “Không tìm thấy lịch hẹn”.
+Nếu hệ số nhỏ hơn 0 hoặc lớn hơn 0.5, hệ thống thông báo “Hệ số phức tạp phải từ 0 đến 0.5”.
+Nếu người dùng không phải Admin, hệ thống từ chối quyền.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+complexity_level
+[CELL]
+Hệ số phức tạp của ca khám, từ 0 đến 0.5
+Giao diện minh họa
+Hình 5-4: Giao diện cập nhật độ khó ca bệnh
+
+
+\
+
+
+5.5. Đặc tả UC4.4 – Lập phiếu lương cho một bác sĩ trong một tháng
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên lập phiếu lương tháng cho một bác sĩ. Hệ thống lấy danh sách lịch trực đã duyệt của bác sĩ trong tháng, lấy các lịch hẹn đã hoàn thành trong từng ngày trực, tính tổng hệ số phức tạp của bệnh nhân và tính tiền lương dựa trên mức tiền cơ bản, hệ số ca và hệ số học hàm/học vị của bác sĩ.
+Trong code, chức năng này tương ứng với route /api/v1/salaries/slips/generate.
+Tác nhân thực hiện
+Quản trị viên.
+Tiền điều kiện
+Quản trị viên đã đăng nhập.
+Bác sĩ tồn tại trong hệ thống.
+Tháng và năm cần tính lương được cung cấp.
+Cấu hình lương đã tồn tại.
+Bác sĩ có lịch trực đã duyệt trong tháng.
+Hậu điều kiện
+Phiếu lương tháng được tạo hoặc cập nhật.
+Phiếu lương có trạng thái draft.
+Chi tiết từng ca làm việc được lưu dưới dạng JSON.
+Nếu phiếu lương đã tồn tại, hệ thống cập nhật lại phiếu lương.
+Luồng sự kiện
+Luồng chính
+Quản trị viên chọn “Lập phiếu lương tháng”.
+Hệ thống hiển thị form chọn bác sĩ, tháng và năm.
+Quản trị viên chọn bác sĩ cần lập phiếu.
+Quản trị viên nhấn “Tạo phiếu lương”.
+Hệ thống lấy cấu hình lương.
+Hệ thống lấy thông tin bác sĩ.
+Hệ thống xác định hệ số bác sĩ theo học hàm/học vị.
+Hệ thống lấy tất cả lịch trực đã duyệt của bác sĩ trong tháng.
+Với mỗi lịch trực, hệ thống lấy ca làm việc và tính số giờ.
+Hệ thống lấy hệ số ngày trong tuần từ shift_coefficients.
+Hệ thống lấy các lịch hẹn đã hoàn thành trong ngày đó.
+Hệ thống cộng tổng hệ số phức tạp của các lịch hẹn.
+Hệ thống tính số giờ quy đổi và tiền lương từng ca.
+Hệ thống cộng tổng tiền lương tháng.
+Hệ thống tạo hoặc cập nhật phiếu lương.
+Hệ thống hiển thị phiếu lương cho Quản trị viên.
+Công thức theo code
+Số giờ ca:
+Số giờ = Giờ kết thúc - Giờ bắt đầu
+Tổng hệ số bệnh nhân:
+Tổng hệ số bệnh nhân = Tổng complexity_level của các lịch hẹn đã completed
+Số giờ quy đổi:
+Số giờ quy đổi = Số giờ ca × (Hệ số ca + Tổng hệ số bệnh nhân)
+Tiền lương ca:
+Tiền ca = Số giờ quy đổi × Hệ số bác sĩ × Mức tiền một giờ
+Tổng lương tháng:
+Tổng lương tháng = Tổng tiền các ca trong tháng
+Hệ số bác sĩ mặc định trong code
+
+[ROW]
+[CELL]
+Học hàm/học vị
+[CELL]
+Hệ số
+[ROW]
+[CELL]
+BS.
+[CELL]
+1.2
+[ROW]
+[CELL]
+ThS.
+[CELL]
+1.5
+[ROW]
+[CELL]
+TS.
+[CELL]
+2.0
+[ROW]
+[CELL]
+PGS.
+[CELL]
+2.5
+[ROW]
+[CELL]
+GS.
+[CELL]
+3.0
+Luồng phát sinh
+Nếu thiếu bác sĩ, tháng hoặc năm, hệ thống thông báo “Vui lòng cung cấp doctorProfileId, month và year”.
+Nếu không tìm thấy hồ sơ bác sĩ, hệ thống thông báo “Không tìm thấy hồ sơ bác sĩ”.
+Nếu tháng không có lịch trực đã duyệt, phiếu lương có thể có tổng ca và tổng tiền bằng 0.
+Nếu phiếu lương đã tồn tại, hệ thống cập nhật lại phiếu thay vì tạo trùng.
+Nếu người dùng không phải Admin, hệ thống từ chối quyền.
+Dữ liệu chính trong code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+doctor_profile_id
+[CELL]
+Bác sĩ được tính lương
+[ROW]
+[CELL]
+month
+[CELL]
+Tháng tính lương
+[ROW]
+[CELL]
+year
+[CELL]
+Năm tính lương
+[ROW]
+[CELL]
+total_shifts
+[CELL]
+Tổng số ca
+[ROW]
+[CELL]
+total_hours
+[CELL]
+Tổng số giờ
+[ROW]
+[CELL]
+total_amount
+[CELL]
+Tổng tiền lương
+[ROW]
+[CELL]
+details
+[CELL]
+Chi tiết từng ca
+[ROW]
+[CELL]
+status
+[CELL]
+Trạng thái phiếu: draft, confirmed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Giao diện minh họa
+Hình 5-5: Giao diện lập phiếu lương tháng
+
+Hình 5-6: Giao diện chi tiết phiếu lương bác sĩ
+
+
+
+
+5.6. Đặc tả UC4.5 – Báo cáo tiền lương tất cả bác sĩ trong một tháng
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên xem báo cáo lương của tất cả bác sĩ trong một tháng. Báo cáo lấy dữ liệu từ các phiếu lương tháng đã được tạo trong bảng salary_slips.
+Trong code, chức năng này tương ứng với route /api/v1/salaries/reports/month.
+Tác nhân thực hiện
+Quản trị viên.
+Tiền điều kiện
+Quản trị viên đã đăng nhập.
+Có dữ liệu phiếu lương trong tháng hoặc hệ thống trả về danh sách rỗng.
+Người dùng có quyền Admin.
+Hậu điều kiện
+Báo cáo lương tháng được hiển thị.
+Hệ thống tính tổng số bác sĩ có phiếu lương và tổng tiền lương toàn bộ bác sĩ trong tháng.
+Danh sách phiếu lương được sắp xếp theo tổng tiền giảm dần.
+Luồng sự kiện
+Luồng chính
+Quản trị viên chọn “Báo cáo tháng (Tất cả BS)”.
+Hệ thống hiển thị bộ lọc tháng và năm.
+Quản trị viên chọn tháng, năm.
+Quản trị viên nhấn “Tạo báo cáo”.
+Hệ thống kiểm tra tháng và năm.
+Hệ thống lấy tất cả phiếu lương trong tháng.
+Hệ thống tính tổng số bác sĩ.
+Hệ thống tính tổng tiền lương phải trả.
+Hệ thống hiển thị báo cáo.
+Luồng phát sinh
+Nếu thiếu tháng hoặc năm, hệ thống thông báo “Vui lòng cung cấp month và year”.
+Nếu tháng chưa có phiếu lương, hệ thống hiển thị danh sách rỗng và tổng tiền bằng 0.
+Nếu người dùng không có quyền, hệ thống từ chối truy cập.
+Dữ liệu đầu ra theo code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+month
+[CELL]
+Tháng báo cáo
+[ROW]
+[CELL]
+year
+[CELL]
+Năm báo cáo
+[ROW]
+[CELL]
+totalDoctors
+[CELL]
+Số bác sĩ có phiếu lương
+[ROW]
+[CELL]
+totalAmount
+[CELL]
+Tổng tiền lương
+[ROW]
+[CELL]
+slips
+[CELL]
+Danh sách phiếu lương
+
+
+
+
+
+
+
+
+Giao diện minh họa
+Hình 5-7: Giao diện báo cáo lương tất cả bác sĩ trong tháng
+
+5.7. Đặc tả UC4.6 – Báo cáo tiền lương của một bác sĩ trong một năm
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên hoặc bác sĩ xem báo cáo lương của một bác sĩ trong một năm. Báo cáo hiển thị đủ 12 tháng; tháng nào chưa có phiếu lương thì hiển thị số ca, số giờ và số tiền bằng 0.
+Trong code, chức năng này tương ứng với route /api/v1/salaries/reports/year/doctor.
+Tác nhân thực hiện
+Quản trị viên.
+Bác sĩ.
+Tiền điều kiện
+Người dùng đã đăng nhập.
+Bác sĩ cần xem báo cáo tồn tại trong hệ thống.
+Nếu là bác sĩ, chỉ nên xem dữ liệu lương của chính mình theo phân quyền giao diện.
+Năm cần xem được cung cấp.
+Hậu điều kiện
+Báo cáo lương năm của một bác sĩ được hiển thị.
+Hệ thống hiển thị dữ liệu 12 tháng.
+Hệ thống tính tổng lương, tổng ca và tổng giờ trong năm.
+Luồng sự kiện
+Luồng chính
+Người dùng chọn “Báo cáo năm (1 Bác sĩ)”.
+Hệ thống hiển thị form chọn bác sĩ và năm.
+Người dùng chọn bác sĩ cần xem.
+Người dùng chọn năm.
+Người dùng nhấn “Tạo báo cáo”.
+Hệ thống kiểm tra dữ liệu.
+Hệ thống lấy thông tin bác sĩ.
+Hệ thống lấy phiếu lương của bác sĩ trong năm.
+Hệ thống tạo bảng 12 tháng.
+Với tháng chưa có dữ liệu, hệ thống gán giá trị 0.
+Hệ thống tính tổng tiền lương, tổng ca và tổng giờ trong năm.
+Hệ thống hiển thị báo cáo.
+Luồng phát sinh
+Nếu thiếu bác sĩ hoặc năm, hệ thống thông báo “Vui lòng cung cấp doctorProfileId và year”.
+Nếu không tìm thấy hồ sơ bác sĩ, hệ thống thông báo “Không tìm thấy hồ sơ bác sĩ”.
+Nếu năm không có phiếu lương, hệ thống hiển thị 12 tháng với dữ liệu bằng 0.
+Nếu người dùng không có quyền, hệ thống từ chối truy cập.
+Dữ liệu đầu ra theo code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+doctor
+[CELL]
+Thông tin bác sĩ
+[ROW]
+[CELL]
+year
+[CELL]
+Năm báo cáo
+[ROW]
+[CELL]
+yearTotalAmount
+[CELL]
+Tổng lương năm
+[ROW]
+[CELL]
+yearTotalShifts
+[CELL]
+Tổng số ca trong năm
+[ROW]
+[CELL]
+yearTotalHours
+[CELL]
+Tổng số giờ trong năm
+[ROW]
+[CELL]
+monthlyData
+[CELL]
+Dữ liệu 12 tháng
+
+
+
+
+
+
+
+
+
+
+
+
+Giao diện minh họa
+Hình 5-8: Giao diện báo cáo lương một bác sĩ trong năm
+
+Hình 5-9: Biểu đồ lương theo tháng của bác sĩ
+
+
+
+
+5.8. Đặc tả UC4.7 – Báo cáo tiền lương tất cả bác sĩ trong một năm
+Mô tả ý nghĩa
+Chức năng này cho phép Quản trị viên xem báo cáo tổng hợp tiền lương của tất cả bác sĩ trong một năm. Hệ thống nhóm dữ liệu phiếu lương theo từng bác sĩ, tạo dữ liệu 12 tháng cho mỗi bác sĩ, tính tổng tiền lương từng bác sĩ và tổng lương toàn phòng khám.
+Trong code, chức năng này tương ứng với route /api/v1/salaries/reports/year/all.
+Tác nhân thực hiện
+Quản trị viên.
+Tiền điều kiện
+Quản trị viên đã đăng nhập.
+Năm cần xem báo cáo được cung cấp.
+Hệ thống có hoặc không có dữ liệu phiếu lương trong năm.
+Hậu điều kiện
+Báo cáo lương năm của tất cả bác sĩ được hiển thị.
+Hệ thống tính tổng số bác sĩ có dữ liệu lương.
+Hệ thống tính tổng lương toàn phòng khám trong năm.
+Danh sách bác sĩ được sắp xếp theo tổng lương giảm dần.
+Luồng sự kiện
+Luồng chính
+Quản trị viên chọn “Báo cáo năm (Tất cả BS)”.
+Hệ thống hiển thị bộ lọc chọn năm.
+Quản trị viên chọn năm cần báo cáo.
+Quản trị viên nhấn “Tạo báo cáo”.
+Hệ thống kiểm tra năm.
+Hệ thống lấy toàn bộ phiếu lương trong năm.
+Hệ thống nhóm phiếu lương theo từng bác sĩ.
+Hệ thống tạo dữ liệu 12 tháng cho mỗi bác sĩ.
+Hệ thống tính tổng lương, tổng ca và tổng giờ của từng bác sĩ.
+Hệ thống tính tổng tiền lương toàn phòng khám.
+Hệ thống sắp xếp bác sĩ theo tổng lương giảm dần.
+Hệ thống hiển thị báo cáo.
+Luồng phát sinh
+Nếu thiếu năm, hệ thống thông báo “Vui lòng cung cấp year”.
+Nếu năm không có dữ liệu, hệ thống hiển thị danh sách rỗng và tổng tiền bằng 0.
+Nếu người dùng không phải Admin, hệ thống từ chối quyền.
+Nếu truy vấn dữ liệu thất bại, hệ thống hiển thị thông báo lỗi.
+Dữ liệu đầu ra theo code
+
+[ROW]
+[CELL]
+Trường dữ liệu
+[CELL]
+Ý nghĩa
+[ROW]
+[CELL]
+year
+[CELL]
+Năm báo cáo
+[ROW]
+[CELL]
+totalDoctors
+[CELL]
+Số bác sĩ có dữ liệu
+[ROW]
+[CELL]
+grandTotalAmount
+[CELL]
+Tổng tiền lương toàn phòng khám
+[ROW]
+[CELL]
+doctors
+[CELL]
+Danh sách bác sĩ và dữ liệu lương 12 tháng
+
+
+
+Giao diện minh họa
+Hình 5-10: Giao diện báo cáo lương tất cả bác sĩ trong năm
+
+Hình 5-11: Biểu đồ tổng hợp lương bác sĩ theo năm
+
+
+
+
+KẾT LUẬN
+Nội dung đặc tả trên đã được xây dựng lại dựa trên chức năng thật trong mã nguồn website quản lý phòng khám nha khoa. Bốn nhóm chức năng gồm Quản lý hệ thống, Quản lý lịch khám, Tiếp đón và khám bệnh, Tính lương bác sĩ đều được đối chiếu với các module backend, route API, model dữ liệu và giao diện frontend hiện có trong dự án.
+So với bản đặc tả viết theo ý tưởng ban đầu, bản này sát với sản phẩm hơn vì đã bám vào các trạng thái, trường dữ liệu, phân quyền và luồng xử lý thật trong code, ví dụ như trạng thái lịch hẹn pending, confirmed, checked_in, completed, trạng thái thanh toán pending, paid, refunded, hệ số lương base_hourly_rate, shift_coefficients, doctor_coefficients và hệ số phức tạp complexity_level.
+Tài liệu này có thể được dùng làm nền tảng để vẽ sơ đồ Use Case chi tiết, xây dựng Activity Diagram, Sequence Diagram và viết Test-case tương ứng với đúng chức năng đã triển khai trong hệ thống.
+
+
+
+TÀI LIỆU THAM KHẢO
+[1] Nhóm phát triển, Mã nguồn website quản lý phòng khám nha khoa, Dự án bài tập lớn học phần Đánh giá và Kiểm định chất lượng phần mềm, Trường Đại học Phenikaa, 2026.
+[2] Nhóm phát triển, Tài liệu đặc tả Use Case website quản lý phòng khám nha khoa, Trường Đại học Phenikaa, 2026.
+[3] TS. Mai Thúy Nga, Bài giảng học phần Đánh giá và Kiểm định chất lượng phần mềm, Trường Đại học Phenikaa, 2026.
+[4] Nguyễn Văn Ba, Phân tích và thiết kế hệ thống thông tin, Nhà xuất bản Đại học Quốc gia Hà Nội.
+[5] Roger S. Pressman, Software Engineering: A Practitioner’s Approach, McGraw-Hill Education.
+[6] Ian Sommerville, Software Engineering, Pearson Education.
+[7] Martin Fowler, UML Distilled: A Brief Guide to the Standard Object Modeling Language, Addison-Wesley.
+[8] Object Management Group, Unified Modeling Language Specification, tài liệu đặc tả chuẩn UML.
+[9] React Documentation, React – The library for web and native user interfaces, tài liệu hướng dẫn xây dựng giao diện người dùng bằng React.
+[10] Vite Documentation, Vite – Next Generation Frontend Tooling, tài liệu hướng dẫn công cụ phát triển Frontend Vite.
+[11] Node.js Documentation, Node.js API Documentation, tài liệu nền tảng chạy JavaScript phía máy chủ.
+[12] Express.js Documentation, Express – Node.js Web Application Framework, tài liệu framework xây dựng API Backend.
+[13] Sequelize Documentation, Sequelize ORM Documentation, tài liệu ánh xạ đối tượng – quan hệ dùng trong Node.js.
+[14] MySQL Documentation, MySQL Reference Manual, tài liệu hệ quản trị cơ sở dữ liệu MySQL.
+[15] JSON Web Token, JWT Introduction and Specification, tài liệu về cơ chế xác thực người dùng bằng token.
+[16] Socket.IO Documentation, Socket.IO Realtime Application Framework, tài liệu hỗ trợ giao tiếp thời gian thực.
+[17] Postman Documentation, Postman API Platform Documentation, tài liệu hỗ trợ kiểm thử API.
+[18] Apache JMeter Documentation, Apache JMeter User Manual, tài liệu hỗ trợ kiểm thử hiệu năng phần mềm.
+[19] VNPay, Tài liệu tích hợp cổng thanh toán VNPay, tài liệu tham khảo cho chức năng thanh toán trực tuyến.
+[20] Cloudinary Documentation, Cloudinary Image and Video API Documentation, tài liệu tham khảo cho chức năng upload và quản lý tệp tin.

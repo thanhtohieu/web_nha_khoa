@@ -1,0 +1,285 @@
+Number of shared strings: 317
+Sheets in file: ['Quản lí ng dùng', 'Quản lí lịch', 'Tiếp đón', 'Lương bác sĩ']
+
+==================================================
+SHEET: Quản lí ng dùng (path: xl/worksheets/sheet1.xml)
+==================================================
+Total Rows: 1000
+Row  1: A1: 'Category' | B1: 'Test Case ID' | C1: 'Test Case Description' | D1: 'Test Procedures: Steps to Perform' | E1: 'Test Procedures: Step Expected Result' | F1: 'Test Input Value' | G1: 'Test Case Expected Result' | H1: 'Test Case Program Result' | I1: 'Status'
+Row  2: A2: 'User Mgmt' | B2: 'TC1.01' | C2: 'Đăng nhập thành công với các vai trò khác nhau' | D2: '1. Truy cập trang login.
+
+2. Nhập Email và Pass.
+
+3. Nhấn Login.' | E2: '1. Form hiển thị.
+
+2. Nhận dữ liệu.
+
+3. Xác thực thành công.' | F2: 'admin@phongkham.vn
+
+letan@phongkham.vn
+
+bs.minh@phongkham.vn' | G2: 'Đăng nhập thành công. Chuyển hướng đúng Dashboard theo vai trò (Role).' | H2: 'Pass' | I2: 'Pass'
+Row  3: A3: 'User Mgmt' | B3: 'TC1.02' | C3: 'Kiểm tra Validation khi để trống trường' | D3: '1. Để trống Email hoặc Pass.
+
+2. Nhấn Login.' | E3: '1. Hệ thống bắt sự kiện.
+
+2. Kích hoạt thông báo lỗi.' | F3: 'Để trống' | G3: 'Hệ thống báo lỗi: "Vui lòng nhập Email/Mật khẩu". Không gửi request đi.' | H3: 'Pass' | I3: 'Pass'
+Row  4: A4: 'User Mgmt' | B4: 'TC1.03' | C4: 'Kiểm tra định dạng Email không hợp lệ (Cơ bản)' | D4: '1. Nhập email sai định dạng.
+
+2. Nhấn Login.' | E4: 'Hệ thống kiểm tra định dạng email (Regex).' | F4: 'admin@phongkham (thiếu .vn)' | G4: 'Báo lỗi: "Định dạng email không hợp lệ".' | H4: 'Pass' | I4: 'Pass'
+Row  5: A5: 'User Mgmt' | B5: 'TC1.04' | C5: 'Kiểm tra các trường hợp định dạng Email sai đặc biệt' | D5: '1. Nhập email chứa ký tự sai quy chuẩn.
+
+2. Nhấn Lưu hoặc Đăng nhập.' | E5: 'Backend kiểm tra Regex nâng cao.' | F5: 'admin@@phongkham.vn
+
+abc#123@gmail
+
+khôngcó@gmail.com' | G5: 'Hệ thống báo lỗi: "Định dạng email không hợp lệ". Không cho phép lưu.' | H5: 'Pass' | I5: 'Pass'
+Row  6: A6: 'User Mgmt' | B6: 'TC1.05' | C6: 'Kiểm tra tính hợp lệ của Số điện thoại' | D6: '1. Nhập số điện thoại sai định dạng hoặc quá ngắn.
+
+2. Nhấn Lưu.' | E6: 'Hệ thống kiểm tra độ dài và kiểu dữ liệu (chỉ số).' | F6: '0905abc123
+
+090 555 !@#
+
+12345 (quá ngắn)' | G6: 'Hệ thống báo lỗi: "Số điện thoại chỉ được chứa số (0-9) và từ 10-11 ký tự".' | H6: 'Pass' | I6: 'Pass'
+Row  7: A7: 'User Mgmt' | B7: 'TC1.06' | C7: 'Kiểm tra chức năng Đăng xuất (Logout)' | D7: '1. Nhấn nút Đăng xuất.
+
+2. Thử nhấn nút "Back" trên trình duyệt.' | E7: '1. Hủy Session/Token.
+
+2. Kiểm tra điều hướng lịch sử.' | F7: 'Pass' | G7: 'Phiên làm việc kết thúc. Không thể quay lại trang Dashboard khi chưa login lại.' | H7: 'Pass' | I7: 'Pass'
+Row  8: A8: 'User Mgmt' | B8: 'TC1.07' | C8: 'Kiểm tra độ mạnh mật khẩu khi đổi (Độ dài)' | D8: '1. Vào mục Đổi mật khẩu.
+
+2. Nhập pass quá đơn giản (123).' | E8: 'Hệ thống đo độ dài chuỗi ký tự nhập vào.' | F8: 'Pass: 123' | G8: 'Hệ thống yêu cầu mật khẩu tối thiểu 8 ký tự, có chữ hoa, ký tự đặc biệt.' | H8: 'Pass' | I8: 'Pass'
+Row  9: A9: 'User Mgmt' | B9: 'TC1.08' | C9: 'Kiểm tra độ mạnh mật khẩu khi đăng ký/đổi (Ký tự)' | D9: '1. Vào mục quản lý/đổi mật khẩu.
+
+2. Nhập pass thiếu ký tự hoa/đặc biệt.
+
+3. Nhấn Lưu.' | E9: 'Hệ thống đối chiếu mẫu bảo mật mật khẩu.' | F9: '123
+
+aaaaaa
+
+password (toàn chữ thường)' | G9: 'Hệ thống báo lỗi: "Mật khẩu yếu. Cần ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và ký tự đặc biệt".' | H9: 'Pass' | I9: 'Pass'
+Row 10: A10: 'User Mgmt' | B10: 'TC1.09' | C10: 'Kiểm tra tính hợp lệ của Họ và tên (Chống XSS)' | D10: '1. Nhập họ tên chứa số hoặc mã độc script.
+
+2. Nhấn Lưu.' | E10: 'Hệ thống thực hiện sanitize hoặc chặn thẻ HTML/Script.' | F10: 'Nguyễn Văn 123
+
+Admin <script>alert(1)</script>' | G10: 'Hệ thống báo lỗi hoặc tự động loại bỏ các chữ số và thẻ HTML/Script để chống tấn công XSS.' | H10: 'Pass' | I10: 'Pass'
+Row 11: A11: 'User Mgmt' | B11: 'TC1.10' | C11: 'Chặn truy cập trái phép bằng URL (Security)' | D11: '1. Đăng nhập bằng tài khoản Bệnh nhân.
+
+2. Thử truy cập trực tiếp link /admin/dashboard.' | E11: '1. Đăng nhập benhnhan1@gmail.com.
+
+2. Chuyển hướng URL.' | F11: 'URL: /admin/settings' | G11: 'Hệ thống báo lỗi "403 Forbidden" hoặc đẩy về trang chủ bệnh nhân.' | H11: 'Pass' | I11: 'Pass'
+Row 12: A12: 'User Mgmt' | B12: 'TC1.11' | C12: 'Thêm mới tài khoản Bác sĩ/Nhân viên' | D12: '1. Vào mục Quản lý nhân sự.
+
+2. Nhập thông tin BS mới.
+
+3. Nhấn Lưu.' | E12: '1. Kiểm tra tính hợp lệ dữ liệu đầu vào.
+
+2. Ghi nhận vào DB.' | F12: 'Họ tên, Chuyên khoa, Email mới' | G12: 'Tài khoản mới được tạo. Có thể dùng tài khoản đó đăng nhập ngay.' | H12: 'Pass' | I12: 'Pass'
+Row 13: A13: 'User Mgmt' | B13: 'TC1.12' | C13: 'Khóa tài khoản nhân viên nghỉ việc' | D13: '1. Chọn tài khoản cần khóa.
+
+2. Đổi trạng thái sang "Inactive/Locked".' | E13: '1. Cập nhật flag trạng thái trong DB.
+
+2. Từ chối phiên đăng nhập mới.' | F13: 'User: bs.hoa@phongkham.vn (Bác sĩ 2)' | G13: 'Hệ thống xác nhận khóa. Bác sĩ 2 không thể đăng nhập dù đúng mật khẩu.' | H13: 'Pass' | I13: 'Pass'
+Row 14: A14: 'User Mgmt' | B14: 'TC1.13' | C14: 'Reset mật khẩu cho nhân viên' | D14: '1. Chọn nhân viên.
+
+2. Nhấn "Reset Password".' | E14: 'Ghi đè mật khẩu cũ bằng pass mặc định (hoặc tạo link).' | F14: 'User: Lễ tân' | G14: 'Mật khẩu được đặt về mặc định (hoặc gửi link). Lễ tân đăng nhập bằng pass mới.' | H14: 'Pass' | I14: 'Pass'
+Row 15: A15: 'User Mgmt' | B15: 'TC1.14' | C15: 'Đăng ký hồ sơ Bệnh nhân mới' | D15: '1. Vào Quản lý bệnh nhân.
+
+2. Nhập thông tin cá nhân.
+
+3. Nhấn Đăng ký.' | E15: '1. Tạo mới bản ghi bệnh nhân.
+
+2. Chạy hàm tự động sinh mã ID.' | F15: 'benhnhan_test@gmail.com' | G15: 'Hồ sơ được tạo thành công, mã bệnh nhân (ID) được sinh tự động.' | H15: 'Pass' | I15: 'Pass'
+Row 16: A16: 'User Mgmt' | B16: 'TC1.15' | C16: 'Kiểm tra trùng lặp Email (Duplicate)' | D16: '1. Thêm người dùng mới.
+
+2. Nhập email đã có trong máy.' | E16: 'Query kiểm tra sự tồn tại của Email trong DB.' | F16: 'admin@phongkham.vn' | G16: 'Hệ thống báo lỗi: "Email này đã tồn tại trong hệ thống".' | H16: 'Pass' | I16: 'Pass'
+Row 17: A17: 'User Mgmt' | B17: 'TC1.16' | C17: 'Bác sĩ tự cập nhật thông tin cá nhân' | D17: '1. Đăng nhập Bác sĩ Minh.
+
+2. Vào "Thông tin cá nhân".
+
+3. Đổi số điện thoại/Avatar.' | E17: '1. Cập nhật dữ liệu profile cá nhân.
+
+2. Đồng bộ hiển thị.' | F17: 'bs.minh@phongkham.vn' | G17: 'Thông tin được lưu. Hiển thị đúng ở cả trang quản lý và trang đặt lịch.' | H17: 'Pass' | I17: 'Pass'
+
+==================================================
+SHEET: Quản lí lịch (path: xl/worksheets/sheet2.xml)
+==================================================
+Total Rows: 1000
+Row  1: A1: 'Category' | B1: 'Test Case ID' | C1: 'Test Case Description' | D1: 'Test Procedures: Steps to Perform' | E1: 'Test Procedures: Step Expected Result' | F1: 'Test Input Value' | G1: 'Test Case Expected Result' | H1: 'Test Case Program Result' | I1: 'Status'
+Row  2: A2: 'Chức năng' | B2: 'TC2.1' | C2: 'Đặt lịch - Bệnh nhân đặt lịch trực tuyến thành công' | D2: '1. Đăng nhập Bệnh nhân.
+
+2. Chọn mục "Đặt lịch".
+
+3. Chọn bác sĩ, ngày và khung giờ.
+
+4. Nhấn "Xác nhận".' | E2: 'Hệ thống ghi nhận các bước và hiển thị thông báo' | F2: 'benhnhan1@gmail.com
+
+Bác sĩ: Minh
+
+Giờ: 09:00 AM' | G2: 'Hệ thống báo đặt lịch thành công. Trạng thái lịch là "Chờ xác nhận".' | H2: 'Pass' | I2: 'High'
+Row  3: A3: 'Chức năng' | B3: 'TC2.2' | C3: 'Đặt lịch - Lễ tân đặt lịch cho bệnh nhân đến trực tiếp' | D3: '1. Đăng nhập Lễ tân.
+
+2. Chọn "Quản lý lịch khám".
+
+3. Nhập email/SĐT bệnh nhân.
+
+4. Chọn bác sĩ và giờ khám.' | E3: 'Hệ thống hiển thị giao diện nhập và điều phối' | F3: 'letan@phongkham.vn
+
+benhnhan2@gmail.com' | G3: 'Lịch khám hiển thị ngay trên bảng điều phối của Lễ tân và Bác sĩ.' | H3: 'Pass' | I3: 'High'
+Row  4: A4: 'Logic' | B4: 'TC2.3' | C4: 'Kiểm tra trùng lịch (Double Booking)' | D4: 'Lễ tân đặt lịch cho BN2 cùng giờ với BN1 (đã đặt ở TC2.1) trên cùng 1 bác sĩ.' | E4: 'Hệ thống kiểm tra tính trùng lặp của slot' | F4: 'Bác sĩ: Minh
+
+Giờ: 09:00 AM' | G4: 'Hệ thống báo lỗi: "Khung giờ này đã có bệnh nhân. Vui lòng chọn giờ khác".' | H4: 'Pass' | I4: 'High'
+Row  5: A5: 'Cập nhật' | B5: 'TC2.4' | C5: 'Thay đổi thời gian/bác sĩ khám' | D5: '1. Lễ tân chọn một lịch hẹn hiện có.
+
+2. Nhấn "Chỉnh sửa".
+
+3. Thay đổi bác sĩ hoặc giờ.' | E5: 'Form chỉnh sửa hiển thị thông tin cũ và cho phép lưu' | F5: 'Đổi từ bs.minh sang bs.hoa' | G5: 'Thông tin được cập nhật. Hệ thống gửi thông báo (nếu có) cho bác sĩ mới.' | H5: 'Pass' | I5: 'Medium'
+Row  6: A6: 'Hủy lịch' | B6: 'TC2.5' | C6: 'Bệnh nhân/Lễ tân hủy lịch hẹn' | D6: '1. Chọn lịch hẹn đã đặt.
+
+2. Nhấn "Hủy lịch".
+
+3. Nhập lý do hủy.' | E6: 'Hệ thống hiển thị popup/ô nhập lý do hủy' | F6: 'Lý do: "Việc bận"' | G6: 'Trạng thái chuyển sang "Đã hủy". Khung giờ đó trở nên "Trống" cho người khác đặt.' | H6: 'Pass' | I6: 'Medium'
+Row  7: A7: 'Xem lịch' | B7: 'TC2.6' | C7: 'Bác sĩ xem danh sách lịch hẹn trong ngày' | D7: '1. Đăng nhập Bác sĩ.
+
+2. Vào mục "Lịch làm việc".
+
+3. Chọn xem theo ngày/tuần.' | E7: 'Hệ thống tải dữ liệu lịch trình tương ứng' | F7: 'bs.minh@phongkham.vn' | G7: 'Hiển thị đúng danh sách các bệnh nhân đã đặt lịch với bác sĩ đó.' | H7: 'Pass' | I7: 'High'
+Row  8: A8: 'Trạng thái' | B8: 'TC2.7' | C8: 'Tự động cập nhật trạng thái khi khám xong' | D8: '1. Bác sĩ hoàn tất khám (từ Chức năng 1).' | E8: 'Trạng thái chuyển đổi ngầm trên hệ thống' | F8: 'Trạng thái: "Đã khám"' | G8: 'Trong bảng Quản lý lịch, trạng thái lịch hẹn tự động chuyển từ "Đã xác nhận" -> "Hoàn thành".' | H8: 'Pass' | I8: 'Medium'
+Row  9: A9: 'Bảo mật' | B9: 'TC2.8' | C9: 'Bệnh nhân không thể xem lịch của người khác' | D9: '1. Đăng nhập Bệnh nhân 1.
+
+2. Tìm cách truy cập danh sách lịch của Bệnh nhân 2 qua URL.' | E9: 'Hệ thống check quyền (Authorization) của user' | F9: 'URL: /booking-details/BN2' | G9: 'Hệ thống báo lỗi "Truy cập bị từ chối" hoặc chuyển về trang cá nhân.' | H9: 'Pass' | I9: 'High'
+Row 10: A10: 'Logic' | B10: 'TC2.9' | C10: 'Đặt lịch vào ngày nghỉ/quá khứ' | D10: '1. Chọn ngày khám là ngày hôm qua.
+
+2. Nhấn "Xác nhận".' | E10: 'Hệ thống validate trường thời gian' | F10: 'Ngày: [Ngày quá khứ]' | G10: 'Hệ thống báo lỗi: "Không thể đặt lịch cho thời gian trong quá khứ".' | H10: 'Pass' | I10: 'Medium'
+Row 11: A11: 'Giao diện' | B11: 'TC2.10' | C11: 'Kiểm tra hiển thị lịch trống (Slot)' | D11: '1. Mở form đặt lịch.
+
+2. Kiểm tra các giờ đã có người đặt.' | E11: 'Các slot đã đặt phải bị ẩn hoặc disable' | F11: 'N/A' | G11: 'Các khung giờ đã có người đặt không thể click chọn.' | H11: 'Pass' | I11: 'High'
+Row 12: A12: 'Dữ liệu sai (Invalid)' | B12: 'TN2.1' | C12: 'Kiểm tra trường Ngày khám với dữ liệu sai' | D12: '1. Vào form đặt lịch.
+
+2. Nhập/chọn dữ liệu sai vào ô Ngày khám.
+
+3. Nhấn Xác nhận.' | E12: 'Hệ thống validate định dạng ngày' | F12: 'Ngày khám: 32/13/2026, abc-xyz-2026, 20/06/2020' | G12: 'Hệ thống không cho chọn hoặc báo lỗi: "Ngày khám không hợp lệ".' | H12: 'Pass' | I12: 'Medium'
+Row 13: B13: 'TN2.2' | C13: 'Kiểm tra trường Giờ khám với dữ liệu sai' | D13: '1. Vào form đặt lịch.
+
+2. Cố tình nhập/gửi dữ liệu giờ sai định dạng.
+
+3. Nhấn Xác nhận.' | E13: 'Hệ thống validate định dạng giờ' | F13: 'Giờ khám: 25:00, 9am, 09:hh' | G13: 'Hệ thống yêu cầu chọn đúng khung giờ (Slot) có sẵn trong danh sách.' | H13: 'Pass' | I13: 'Medium'
+Row 14: B14: 'TN2.3' | C14: 'Kiểm tra trường Triệu chứng (SQL Injection/Độ dài)' | D14: '1. Vào form đặt lịch.
+
+2. Nhập text quá dài hoặc mã độc vào ô Triệu chứng.
+
+3. Nhấn Xác nhận.' | E14: 'Hệ thống thực hiện sanitize và check độ dài dữ liệu' | F14: 'Triệu chứng:Văn bản > 2000 ký tự hoặc chứa đoạn mã (' OR 1=1 --)' | G14: 'Hệ thống giới hạn số lượng ký tự và thực hiện lọc (sanitize) để tránh lỗi Database.' | H14: 'Pass' | I14: 'High'
+
+==================================================
+SHEET: Tiếp đón (path: xl/worksheets/sheet3.xml)
+==================================================
+Total Rows: 1000
+Row  1: A1: 'Category' | B1: 'Test Case ID' | C1: 'Test Case Description' | D1: 'Test Procedures: Steps to Perform' | E1: 'Test Procedures: Step Expected Result' | F1: 'Test Input Value' | G1: 'Test Case Expected Result' | H1: 'Test Case Program Result' | I1: 'Status'
+Row  2: A2: 'Clinical' | B2: 'TC3.01' | C2: 'Lễ tân tiếp đón bệnh nhân từ lịch hẹn (Positive)' | D2: '1. Đăng nhập Lễ tân.
+
+2. Chọn BN có lịch hẹn hôm nay.
+
+3. Nhấn "Bắt đầu điều trị".
+
+(Lưu ý: Dùng đồng hồ bấm giờ để đo thời gian phản hồi)' | E2: '1. Hiển thị danh sách chờ.
+
+2. Trạng thái BN chuyển đổi.' | F2: 'Tài khoản: letan@phongkham.vn
+
+BN: Nguyễn Triệu Long' | G2: 'Trạng thái đổi thành "Đang điều trị". Màn hình sảnh chờ cập nhật tên BN vào phòng khám sau tối đa 2 giây (Real-time).' | H2: 'Pass' | I2: 'Pass'
+Row  3: B3: 'TC3.02' | C3: 'Bác sĩ lập đơn thuốc và chỉ dẫn (Positive)' | D3: '1. Đăng nhập Bác sĩ.
+
+2. Chọn BN đang khám.
+
+3. Nhập tên thuốc, liều dùng.
+
+4. Nhấn "Lưu & In".' | E3: '1. Form đơn thuốc hiển thị.
+
+2. Dữ liệu được ghi nhận vào DB.' | F3: 'Thuốc: Paracetamol
+
+Liều: 2 viên/ngày, sau ăn' | G3: 'Hệ thống lưu thành công đơn thuốc. Hiển thị hộp thoại in đúng khổ A5 có đầy đủ mã vạch (Barcode), tên BS và chữ ký số.' | H3: 'Pass' | I3: 'Pass'
+Row  4: B4: 'TC3.03' | C4: 'Tải lên tệp ảnh X-Quang dung lượng lớn (Negative)' | D4: '1. Tại hồ sơ BN, chọn "Tải lên X-Quang".
+
+2. Chọn tệp ảnh > 10MB.
+
+3. Nhấn "Upload".' | E4: 'Hệ thống kiểm tra kích thước tệp (Size validation).' | F4: 'Tệp: XRay_Raw_15MB.jpg
+
+(Chuẩn bị thêm tệp biên: 10.1MB)' | G4: 'Hiển thị lỗi: "Tệp hình ảnh quá lớn. Nha khoa chỉ hỗ trợ ảnh X-Quang tối đa 10MB...".' | H4: 'Pass' | I4: 'Pass'
+Row  5: B5: 'TC3.03b' | C5: 'Kiểm tra cận biên dưới tải file ảnh X-Quang (Boundary)' | D5: '1. Tại hồ sơ BN, chọn "Tải lên X-Quang".
+
+2. Chọn tệp ảnh sát ngưỡng cho phép.
+
+3. Nhấn "Upload".' | E5: 'Hệ thống chấp nhận tệp hợp lệ.' | F5: 'Tệp: XRay_9.9MB.jpg' | G5: 'Tải lên thành công, ảnh hiển thị rõ nét trong hồ sơ bệnh án.' | H5: 'Pass' | I5: 'Pass'
+Row  6: B6: 'TC3.04' | C6: 'Để trống trường chẩn đoán bắt buộc (Negative)' | D6: '1. Bác sĩ thực hiện khám bệnh.
+
+2. Nhấn "Kết thúc ca khám" nhưng bỏ trống ô chẩn đoán.' | E6: 'Hệ thống kiểm tra ràng buộc (Constraint check).' | F6: 'Ô Chẩn đoán: [Để trống]' | G6: 'Chặn không cho kết thúc ca khám. Hiển thị thông báo đỏ: "Vui lòng nhập chẩn đoán lâm sàng trước khi hoàn tất".' | H6: 'Pass' | I6: 'Pass'
+Row  7: B7: 'TC3.05' | C7: 'Nhập sai định dạng số lượng thuốc (Negative)' | D7: '1. Tại giao diện kê đơn.
+
+2. Nhập số lượng thuốc là ký tự chữ hoặc số âm.
+
+3. Nhấn "Thêm".' | E7: 'Frontend kiểm tra kiểu dữ liệu (Input validation).' | F7: 'Số lượng: -10 hoặc mười' | G7: 'Hệ thống báo lỗi ngay tại ô nhập: "Số lượng phải là số nguyên dương". Chặn không cho thêm vào đơn.' | H7: 'Pass' | I7: 'Pass'
+Row  8: B8: 'TC3.06' | C8: 'Bảo mật hồ sơ bệnh án giữa các bệnh nhân (Security)' | D8: '1. Đăng nhập Bệnh nhân A.
+
+2. Thử truy cập URL bệnh án của Bệnh nhân B.' | E8: 'Hệ thống kiểm tra quyền (Session/Token check).' | F8: 'URL: /record/patient-B-ID' | G8: 'Hệ thống từ chối truy cập, trả về mã 403 Forbidden hoặc redirect về trang cá nhân.' | H8: 'Pass' | I8: 'Pass'
+Row  9: B9: 'TC3.06b' | C9: 'Phân quyền - Lễ tân sửa đơn thuốc của Bác sĩ (Security)' | D9: '1. Đăng nhập tài khoản Lễ tân.
+
+2. Tìm cách truy cập form chỉnh sửa hoặc gửi request sửa đơn thuốc đã kê.' | E9: 'Hệ thống kiểm tra quyền hạn của Role Lễ tân.' | F9: 'Tài khoản: letan@phongkham.vn' | G9: 'Chức năng chỉnh sửa đơn thuốc bị ẩn/khóa. Hệ thống chặn mọi request thay đổi đơn thuốc từ tài khoản không phải Bác sĩ.' | H9: 'Pass' | I9: 'Pass'
+Row 10: B10: 'TC3.07' | C10: 'Chèn mã SQL/XSS vào nội dung khám (Security)' | D10: 'Tại ô "Ghi chú điều trị", nhập các đoạn mã script hoặc lệnh SQL.' | E10: 'Backend thực hiện lọc dữ liệu (Sanitize).' | F10: '<script>alert('XSS')</script> hoặc ' OR 1=1 --' | G10: 'Lưu dữ liệu dưới dạng văn bản thuần túy. Không thực thi mã độc/không lỗi câu lệnh SQL khi xem lại hồ sơ.' | H10: 'Pass' | I10: 'Pass'
+Row 11: B11: 'TC3.08' | C11: 'Đồng bộ hóa doanh thu sau khi khám (Logic)' | D11: '1. Bác sĩ hoàn tất ca khám có sử dụng dịch vụ trả phí.
+
+2. Kiểm tra sổ tạm tính.' | E11: '1. Hệ thống tính toán tổng phí dịch vụ.
+
+2. Đồng bộ dữ liệu tài chính.' | F11: 'Dịch vụ: Nhổ răng khôn (1.000.000đ)' | G11: 'Doanh thu dự kiến được đồng bộ ngay vào sổ tạm tính của ngày sau khi bác sĩ nhấn kết thúc.' | H11: 'Pass' | I11: 'Pass'
+
+==================================================
+SHEET: Lương bác sĩ (path: xl/worksheets/sheet4.xml)
+==================================================
+Total Rows: 1000
+Row  1: A1: 'Category' | B1: 'Test Case ID' | C1: 'Test Case Description' | D1: 'Test Procedures: Steps to Perform' | E1: 'Test Procedures: Step Expected Result' | F1: 'Test Input Value' | G1: 'Test Case Expected Result' | H1: 'Test Case Program Result' | I1: 'Status'
+Row  2: A2: 'Salary' | B2: 'TC4.01' | C2: 'Tính lương theo tổng ca khám thực tế (Thành công)' | D2: '1. Admin chọn BS Minh.
+
+2. Hệ thống đếm số ca có trạng thái "Đã khám" trong tháng.' | E2: '1. Truy vấn đúng số ca khám.
+
+2. Áp dụng đơn giá cố định.' | F2: '20 ca khám (Trạng thái: Done)
+
+Đơn giá: 100k/ca' | G2: 'Tổng lương hiển thị: 2.000.000đ. Không tính các ca "Chờ khám".' | H2: 'Pass' | I2: 'Pass'
+Row  3: B3: 'TC4.01b' | C3: 'Đồng bộ dữ liệu tính lương tức thời (Real-time)' | D3: '1. Bác sĩ kết thúc 1 ca khám mới.
+
+2. Admin vào ngay màn hình bảng lương của Bác sĩ đó để check tổng số ca.' | E3: '1. Hệ thống đồng bộ dữ liệu ngay lập tức (Real-time).' | F3: 'Trạng thái ca khám: Chuyển sang "Đã khám"' | G3: 'Hệ thống tự động cộng thêm ca khám mới này vào bảng lương dựa trên dữ liệu từ "Sổ tạm tính".' | H3: 'Pass' | I3: 'Pass'
+Row  4: B4: 'TC4.02' | C4: 'Tính hoa hồng dịch vụ chuyên sâu (Thành công)' | D4: '1. Hệ thống quét các hóa đơn dịch vụ BS đã thực hiện.
+
+2. Áp dụng tỷ lệ % hoa hồng cấu hình sẵn.' | E4: '1. Lọc đúng dịch vụ của BS.
+
+2. Tính toán chính xác số tiền % theo doanh thu.' | F4: 'Dịch vụ: Niềng răng
+
+Doanh thu: 12.000.000đ
+
+Hoa hồng: 10%' | G4: 'Cộng thêm 1.200.000đ vào lương chính. Giá trị tròn trịa, không bị lệch hoặc lỗi làm tròn số thập phân (Ví dụ: Không bị ra 1.199.999đ).' | H4: 'Pass' | I4: 'Pass'
+Row  5: B5: 'TC4.03' | C5: 'Loại bỏ ca khám bị hủy khỏi bảng lương (Ngoại lệ)' | D5: '1. Kiểm tra danh sách ca khám của BS.
+
+2. Đối chiếu ca khám trạng thái "Đã hủy" (Cancelled).' | E5: '1. Hệ thống nhận diện trạng thái 'Đã hủy'.
+
+2. Không đưa vào công thức tính.' | F5: '5 ca thành công, 2 ca hủy' | G5: 'Tổng lương chỉ tính trên 5 ca. Các ca hủy có giá trị bằng 0đ.' | H5: 'Pass' | I5: 'Pass'
+Row  6: B6: 'TC4.04' | C6: 'Nhập sai tỷ lệ hoa hồng (Lỗi dữ liệu)' | D6: '1. Admin vào cấu hình lương.
+
+2. Nhập giá trị hoa hồng vượt ngưỡng hoặc là chữ.' | E6: '1. Hệ thống kiểm tra miền giá trị (0-100).' | F6: '150 hoặc mười lăm' | G6: 'Hiển thị thông báo: "Tỷ lệ hoa hồng phải là số từ 0 đến 100". Ngăn chặn lưu dữ liệu.' | H6: 'Pass' | I6: 'Pass'
+Row  7: B7: 'TC4.05' | C7: 'Nhập ký tự đặc biệt vào tiền thưởng (Lỗi dữ liệu)' | D7: '1. Admin nhập khoản thưởng thêm.
+
+2. Nhập số kèm ký tự lạ hoặc mã độc.' | E7: '1. Backend thực hiện lọc dữ liệu (Sanitize).
+
+2. Kiểm tra định dạng số.' | F7: '500k hoặc <script>' | G7: 'Hệ thống báo lỗi: "Vui lòng chỉ nhập số nguyên". Chặn gửi request API không hợp lệ.' | H7: 'Pass' | I7: 'Pass'
+Row  8: B8: 'TC4.06' | C8: 'Phân quyền truy cập bảng tài chính (Ngoại lệ/Bảo mật)' | D8: '1. Đăng nhập tài khoản Bác sĩ/Lễ tân.
+
+2. Thử truy cập menu "Quản lý lương tổng".' | E8: '1. Hệ thống check đặc quyền nhân viên.' | F8: 'URL: /admin/salary-all' | G8: 'Từ chối truy cập. Hiển thị: "Bạn không có đặc quyền thao tác trên danh mục tài chính".' | H8: 'Pass' | I8: 'Pass'
+Row  9: B9: 'TC4.06b' | C9: 'Bảo mật - Chặn quyền sửa cấu hình bảng giá lương (Security)' | D9: '1. Đăng nhập tài khoản Bác sĩ/Lễ tân.
+
+2. Cố tình gửi request thay đổi bảng giá/định mức lương qua API hoặc công cụ.' | E9: '1. Hệ thống kiểm tra quyền hạn nghiêm ngặt của Role Admin.' | F9: 'Tài khoản: letan@phongkham.vn / bacsi@phongkham.vn' | G9: 'Trả về lỗi 403 Forbidden. Tuyệt đối không cho phép Lễ tân hoặc Bác sĩ chỉnh sửa bất kỳ định mức lương nào.' | H9: 'Pass' | I9: 'Pass'
+Row 10: B10: 'TC4.07' | C10: 'Tính lương khi có giảm giá/Voucher (Logic)' | D10: '1. Bệnh nhân thanh toán có dùng Voucher.
+
+2. Tính hoa hồng cho BS dựa trên số tiền thực thu.' | E10: '1. Hệ thống trừ khoản giảm giá trước khi tính % hoa hồng.' | F10: 'Hóa đơn gốc: 12.000.000đ
+
+Hóa đơn sau giảm: 10.300.000đ' | G10: 'Hoa hồng được tính dựa trên số tiền thực thu là 10.300.000đ (Thay vì tính trên giá gốc 12.000.000đ).' | H10: 'Pass' | I10: 'Untested'
+Row 11: B11: 'TC4.08' | C11: 'Xuất phiếu lương PDF/Excel (Thành công)' | D11: '1. Admin nhấn nút "Xuất báo cáo".
+
+2. Kiểm tra tệp tải về.' | E11: '1. Generate file từ dữ liệu tháng.
+
+2. Hiển thị hộp thoại download.' | F11: 'Tháng: 06/2026' | G11: 'Tải về thành công file PDF/Excel có đầy đủ Mã BS, Số ca, Hoa hồng và Tổng nhận.' | H11: 'Pass' | I11: 'Pass'
